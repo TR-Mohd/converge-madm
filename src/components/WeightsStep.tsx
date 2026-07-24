@@ -70,7 +70,7 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="math-insights-grid">
         <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-5 space-y-1.5">
           <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]">Consistency Ratio (CR)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-white">{(cr * 100).toFixed(1)}%</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FE9A00]">{(cr * 100).toFixed(1)}%</p>
           <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-wider text-emerald-800 dark:text-[#6EE7B7] bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800 px-2 py-0.5 rounded-none w-fit">
             <ShieldCheck className="w-3 h-3" /> Valid Index
           </div>
@@ -78,14 +78,14 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
 
         <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-5 space-y-1.5">
           <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]">Consistency Index (CI)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-white">{ci.toFixed(4)}</p>
-          <p className="text-[9px] text-gray-400 dark:text-[#4B5563] uppercase tracking-wider">Variance Score</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FE9A00]">{ci.toFixed(4)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-white uppercase tracking-wider">Variance Score</p>
         </div>
 
         <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-5 space-y-1.5">
           <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]">Principal Eigenvalue (λ)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-white">{lambdaMax.toFixed(3)}</p>
-          <p className="text-[9px] text-gray-400 dark:text-[#4B5563] uppercase tracking-wider">Factors: n = {criteria.length}</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FE9A00]">{lambdaMax.toFixed(3)}</p>
+          <p className="text-[11px] text-gray-400 dark:text-white uppercase tracking-wider">Factors: n = {criteria.length}</p>
         </div>
       </div>
 
