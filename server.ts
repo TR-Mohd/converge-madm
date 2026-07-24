@@ -1,7 +1,8 @@
 import express from "express";
 import path from "path";
-import { GoogleGenAI, Type } from "@google/genai";
+import { Type } from "@google/genai";
 import dotenv from "dotenv";
+import { generateWithFallback, getGeminiClient } from "./api/_gemini";
 
 dotenv.config();
 
@@ -10,22 +11,10 @@ const PORT = 3000;
 
 app.use(express.json());
 
-// Lazy-initialized Gemini Client to prevent crash if key is missing on start
-let aiClient: GoogleGenAI | null = null;
-
-function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is required but missing.");
-  }
-  return new GoogleGenAI({
-    apiKey: apiKey,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
-  });
+/** Returns true when an error looks like a Gemini quota exhaustion. */
+function isQuotaError(err: any): boolean {
+  const msg = String(err?.message || err || "").toLowerCase();
+  return err?.status === 429 || msg.includes("resource_exhausted") || msg.includes("quota");
 }
 
 // API endpoint to extract structured decision data from plain text
@@ -56,8 +45,7 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
 
     let text: string | null = null;
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
           systemInstruction: systemPrompt,
@@ -113,7 +101,8 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
       text = response.text || null;
     } catch (aiErr: any) {
       console.warn("AI extraction call failed:", aiErr?.message || aiErr);
-      return res.status(500).json({
+      const status = isQuotaError(aiErr) ? 429 : 500;
+      return res.status(status).json({
         error: aiErr?.message || "Gemini AI extraction service is currently unavailable."
       });
     }
@@ -218,8 +207,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
 
     // Attempt 1: Search-grounded generation
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: promptMessage,
         config: {
           tools: [{ googleSearch: {} }],
@@ -235,8 +223,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     // Attempt 2: Standard Gemini model generation (without Google Search tool)
     if (!text) {
       try {
-        const fallbackResponse = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
+        const fallbackResponse = await generateWithFallback(ai, {
           contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
           config: {
             responseMimeType: "application/json",
@@ -312,8 +299,7 @@ Please write a friendly, helpful, and highly insightful analytical summary of wh
 
     let summaryText = "";
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: promptMessage,
         config: {
           systemInstruction: "You are a professional decision advisor. Write a friendly, analytical, and concise evaluation of the MADM results. Focus on explaining trade-offs clearly without technical jargon."
