@@ -1,51 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Exact Converge Theme Specification from Themes.md */
 :root {
-  /* Canvas & Surface Colors (Light Mode) */
-  --bg-app: #FBF9F7;
+  --bg-app: #F9F7F4;
   --bg-surface: #FFFFFF;
-  --bg-surface-elevated: #F5F2EC;
+  --bg-surface-inset: #FBF9F7;
   --bg-input: #FFFFFF;
 
-  /* Structural Borders */
   --border-subtle: #E5E1DA;
   --border-medium: #D1CCC4;
 
-  /* Brand Accents */
   --accent-primary: #121212;
   --accent-hover: #2A2A2A;
-  --accent-text: #121212;
+  --accent-text: #FFFFFF;
 
-  /* Typography */
   --text-heading: #121212;
   --text-body: #2B2B2B;
-  --text-secondary: #666666;
-  --text-muted: #999999;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
 }
 
 :root.dark,
 .dark {
-  /* Canvas & Surface Colors (Dark Mode) */
   --bg-app: #0D0F12;
   --bg-surface: #15181E;
-  --bg-surface-elevated: #1C2028;
+  --bg-surface-inset: #1A1E27;
   --bg-input: #121419;
 
-  /* Structural Borders */
   --border-subtle: #262A33;
   --border-medium: #2C323E;
 
-  /* Brand Accents */
   --accent-primary: #F59E0B;
   --accent-hover: #FBBF24;
-  --accent-text: #FBBF24;
+  --accent-text: #000000;
 
-  /* Typography */
   --text-heading: #FFFFFF;
   --text-body: #F3F4F6;
-  --text-secondary: #D1D5DB;
-  --text-muted: #9CA3AF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #4B5563;
 }
 
 @theme {
@@ -55,7 +48,7 @@
 
   --color-bg-app: var(--bg-app);
   --color-bg-surface: var(--bg-surface);
-  --color-bg-surface-elevated: var(--bg-surface-elevated);
+  --color-bg-surface-inset: var(--bg-surface-inset);
   --color-bg-input: var(--bg-input);
 
   --color-border-subtle: var(--border-subtle);
