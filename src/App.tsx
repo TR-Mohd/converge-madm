@@ -181,11 +181,19 @@ export default function App() {
           <div className="flex items-center gap-3" id="header-actions">
             <button
               onClick={toggleTheme}
-              className="p-2 bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center justify-center transition cursor-pointer"
+              className="px-3 py-2 text-[10px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center gap-1.5 transition cursor-pointer"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
               id="btn-toggle-theme"
             >
-              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-[#F59E0B]" />}
+              {theme === "light" ? (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-[#121212]" /> DARK
+                </>
+              ) : (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-[#F59E0B]" /> LIGHT
+                </>
+              )}
             </button>
 
             {(decisionData || userPrompt) && (

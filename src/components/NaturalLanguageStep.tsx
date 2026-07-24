@@ -171,16 +171,16 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       {/* Description Inputs Section */}
       {!extractedData ? (
         <div className="space-y-8" id="input-prompt-section">
-          <div className="bg-[#FBF9F7] border border-[#E5E1DA] rounded-none p-6" id="presets-card">
-            <h3 className="text-xs uppercase tracking-widest font-bold text-gray-500 flex items-center gap-1.5 mb-4">
-              <Sparkles className="w-4 h-4 text-[#121212]" /> Presets & Quick Examples
+          <div className="bg-[#FBF9F7] dark:bg-[#1B1F27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-6" id="presets-card">
+            <h3 className="text-xs uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF] flex items-center gap-1.5 mb-4">
+              <Sparkles className="w-4 h-4 text-[#121212] dark:text-[#F59E0B]" /> Presets & Quick Examples
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4" id="preset-buttons-grid">
               {PRESET_EXAMPLES.map((ex, idx) => (
                 <button
                   key={idx}
                   onClick={() => handlePresetClick(ex.text)}
-                  className="text-left p-4 bg-white dark:bg-[#1A1E27] hover:bg-[#FBF9F7] dark:hover:bg-[#1C2028] border border-[#E5E1DA] dark:border-[#2C323E] hover:border-[#121212] dark:hover:border-[#F59E0B] rounded-none transition duration-200 flex flex-col justify-between group cursor-pointer"
+                  className="text-left p-4 bg-white dark:bg-[#15181E] hover:bg-[#FBF9F7] dark:hover:bg-[#1C2028] border border-[#E5E1DA] dark:border-[#2C323E] hover:border-[#121212] dark:hover:border-[#F59E0B] rounded-none transition duration-200 flex flex-col justify-between group cursor-pointer"
                   id={`preset-${idx}`}
                 >
                   <span className="font-bold text-xs text-[#121212] dark:text-white group-hover:underline mb-2 block">
