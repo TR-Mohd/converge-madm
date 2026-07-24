@@ -188,21 +188,24 @@ export default function DataGridStep({
           <thead>
             <tr className="bg-[#FBF9F7] border-b border-[#E5E1DA]" id="table-headers-row">
               <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-widest font-sans">Alternatives</th>
-              {criteria.map((crit, idx) => (
-                <th key={idx} className="p-4 border-l border-[#E5E1DA]" id={`header-col-${idx}`}>
-                  <div className="text-xs font-bold text-[#121212] flex flex-col">
-                    <span className="truncate uppercase tracking-wider">
-                      {crit.name} {crit.unit && crit.unit !== "points" ? `(${crit.unit})` : ""}
-                    </span>
-                    <span className="text-[10px] font-mono text-[#121212] font-semibold mt-0.5">
-                      {((weights[idx] ?? 0) * 100).toFixed(1)}% weight
-                    </span>
-                    <span className="text-[9px] font-mono font-normal text-gray-400 capitalize mt-0.5">
-                      {crit.type === "benefit" ? "↑ benefit" : "↓ cost"}
-                    </span>
-                  </div>
-                </th>
-              ))}
+              {criteria.map((crit, idx) => {
+                const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "points";
+                return (
+                  <th key={idx} className="p-4 border-l border-[#E5E1DA]" id={`header-col-${idx}`}>
+                    <div className="text-xs font-bold text-[#121212] flex flex-col">
+                      <span className="truncate uppercase tracking-wider">
+                        {crit.name} <span className="font-mono text-gray-500 font-normal">({uom})</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-[#121212] font-semibold mt-0.5">
+                        {((weights[idx] ?? 0) * 100).toFixed(1)}% weight
+                      </span>
+                      <span className="text-[9px] font-mono font-normal text-gray-400 capitalize mt-0.5">
+                        {crit.type === "benefit" ? "↑ benefit" : "↓ cost"}
+                      </span>
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -215,9 +218,10 @@ export default function DataGridStep({
 
                 {/* Score columns */}
                 {criteria.map((crit, cIdx) => {
-                  const unitInfo = getUnitType(crit.unit);
+                  const effectiveUnit = (crit.unit && crit.unit.trim()) ? crit.unit.trim() : "points";
+                  const unitInfo = getUnitType(effectiveUnit);
                   const hasPrefix = !!unitInfo.prefix;
-                  const hasSuffix = !!unitInfo.suffix && unitInfo.suffix !== "points";
+                  const hasSuffix = !!unitInfo.suffix;
 
                   return (
                     <td key={cIdx} className="p-3 border-l border-[#E5E1DA]" id={`table-cell-${rIdx}-${cIdx}`}>

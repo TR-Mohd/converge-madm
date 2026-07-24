@@ -41,8 +41,12 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
   };
 
   const handleExtract = async () => {
-    if (!description.trim()) {
-      setError("Please describe your decision before extracting.");
+    const trimmed = description.trim();
+    
+    // Check if the prompt is a simple greeting, chitchat question, or lacks real decision context
+    const chitchatRegex = /^(hi+|hello|hey+|greetings|good\s*(morning|afternoon|evening|day)|test|demo|howdy|what'?s?\s*up|yo|help|yes|no|how\s+are\s+you|who\s+are\s+you|what\s+is|tell\s+me)\b/i;
+    if (!trimmed || trimmed.length < 15 || chitchatRegex.test(trimmed)) {
+      setError("Please describe a real decision problem you are evaluating (e.g., 'Choosing between iPhone 16, Samsung S24, and Pixel 9 based on price, battery life, and camera quality'). General chatter or short questions do not contain options or evaluation factors.");
       return;
     }
 
@@ -61,10 +65,18 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       }
 
       const data: DecisionData = await response.json();
-      setExtractedData(data);
+      const sanitizedCriteria = (data.criteria || []).map(c => {
+        let u = (c.unit && c.unit.trim()) ? c.unit.trim() : "pts (1-10)";
+        const uLower = u.toLowerCase();
+        if (uLower === "points" || uLower === "pts" || uLower === "score") {
+          u = "pts (1-10)";
+        }
+        return { ...c, unit: u };
+      });
+      setExtractedData({ ...data, criteria: sanitizedCriteria });
       setGoal(data.decision_goal);
       setAlternatives(data.alternatives);
-      setCriteria(data.criteria);
+      setCriteria(sanitizedCriteria);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
@@ -97,7 +109,11 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
   };
 
   const handleAddCriterion = () => {
-    setCriteria([...criteria, { name: `Criterion ${criteria.length + 1}`, type: "benefit", unit: "points" }]);
+    if (criteria.length >= 10) {
+      setError("You can have a maximum of 10 factors/criteria.");
+      return;
+    }
+    setCriteria([...criteria, { name: `Criterion ${criteria.length + 1}`, type: "benefit", unit: "pts (1-10)" }]);
     setError(null);
   };
 
@@ -256,9 +272,9 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8" id="edit-lists-grid">
+          <div className="flex flex-col gap-6" id="edit-lists-grid">
             {/* Alternatives (Max 6) */}
-            <div className="bg-white border border-[#E5E1DA] rounded-none p-6 space-y-4" id="edit-alternatives-card">
+            <div className="bg-white border border-[#E5E1DA] rounded-none p-4 sm:p-6 space-y-4" id="edit-alternatives-card">
               <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                 <div>
                   <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212]">Alternatives</h3>
@@ -274,10 +290,10 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 </button>
               </div>
 
-              <div className="space-y-3 max-h-[250px] overflow-y-auto pr-1" id="alternatives-inputs">
+              <div className="space-y-3" id="alternatives-inputs">
                 {alternatives.map((alt, idx) => (
-                  <div key={idx} className="flex gap-2 items-center" id={`alt-input-wrapper-${idx}`}>
-                    <span className="text-xs font-mono text-gray-400 w-5 text-right">{idx + 1}.</span>
+                  <div key={idx} className="flex gap-2.5 items-center" id={`alt-input-wrapper-${idx}`}>
+                    <span className="text-xs font-mono text-gray-400 w-5 text-right shrink-0">{idx + 1}.</span>
                     <input
                       type="text"
                       value={alt}
@@ -288,7 +304,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                     />
                     <button
                       onClick={() => handleRemoveAlternative(idx)}
-                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer shrink-0"
                       id={`alt-delete-${idx}`}
                       title="Remove"
                     >
@@ -299,12 +315,15 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
               </div>
             </div>
 
-            {/* Criteria (Min 2) */}
-            <div className="bg-white border border-[#E5E1DA] rounded-none p-6 space-y-4" id="edit-criteria-card">
+            {/* Criteria / Factors (Min 2) */}
+            <div className="bg-white border border-[#E5E1DA] rounded-none p-4 sm:p-6 space-y-4" id="edit-criteria-card">
               <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                 <div>
                   <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212]">Factors</h3>
-                  <p className="text-[10px] text-gray-400 mt-0.5">Criteria used to compare (Min 2)</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">Criteria used to compare (Min 2, Max 10)</p>
+                  <p className="text-[10px] text-gray-500 mt-1 font-mono">
+                    Qualitative factors default to a 1–10 scale (<span className="text-black font-semibold">pts (1-10)</span>). You can edit the Unit (UoM) for any factor.
+                  </p>
                 </div>
                 <button
                   onClick={handleAddCriterion}
@@ -315,44 +334,89 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 </button>
               </div>
 
-              <div className="space-y-3 max-h-[250px] overflow-y-auto pr-1" id="criteria-inputs">
+              <div className="space-y-3" id="criteria-inputs">
                 {criteria.map((crit, idx) => (
-                  <div key={idx} className="flex gap-2 items-center" id={`crit-input-wrapper-${idx}`}>
-                    <span className="text-xs font-mono text-gray-400 w-5 text-right">{idx + 1}.</span>
-                    <input
-                      type="text"
-                      value={crit.name}
-                      onChange={(e) => handleCriterionChange(idx, "name", e.target.value)}
-                      className="grow rounded-none border border-gray-200 px-3 py-2 text-xs focus:border-[#121212] focus:ring-0 bg-white"
-                      placeholder={`Criterion name`}
-                      id={`crit-input-${idx}`}
-                    />
-                    <input
-                      type="text"
-                      value={crit.unit || ""}
-                      onChange={(e) => handleCriterionChange(idx, "unit", e.target.value)}
-                      className="w-24 rounded-none border border-gray-200 px-3 py-2 text-xs focus:border-[#121212] focus:ring-0 bg-white font-mono text-[#121212]"
-                      placeholder={`Unit (e.g. $, hrs)`}
-                      id={`crit-unit-${idx}`}
-                    />
-                    <select
-                      value={crit.type}
-                      onChange={(e) => handleCriterionChange(idx, "type", e.target.value)}
-                      className="rounded-none border border-gray-200 px-2 py-2 text-xs text-[#121212] bg-gray-50 focus:border-[#121212] focus:ring-0 cursor-pointer shrink-0"
-                      id={`crit-select-${idx}`}
-                      title="Is high value a benefit or cost?"
-                    >
-                      <option value="benefit">Benefit (↑)</option>
-                      <option value="cost">Cost (↓)</option>
-                    </select>
-                    <button
-                      onClick={() => handleRemoveCriterion(idx)}
-                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer shrink-0"
-                      id={`crit-delete-${idx}`}
-                      title="Remove"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div
+                    key={idx}
+                    className="bg-gray-50/60 md:bg-transparent border border-gray-200/80 md:border-0 p-3 md:p-0 space-y-2.5 md:space-y-0 flex flex-col md:flex-row md:items-center gap-2"
+                    id={`crit-input-wrapper-${idx}`}
+                  >
+                    {/* Top row: Index, Factor Name input, and Delete button (on mobile) */}
+                    <div className="flex gap-2 items-center grow min-w-0">
+                      <span className="text-xs font-mono text-gray-400 w-5 text-right shrink-0">{idx + 1}.</span>
+                      <input
+                        type="text"
+                        value={crit.name}
+                        onChange={(e) => handleCriterionChange(idx, "name", e.target.value)}
+                        className="grow min-w-0 rounded-none border border-gray-200 px-3 py-2 text-xs focus:border-[#121212] focus:ring-0 bg-white"
+                        placeholder={`Factor / Criterion name`}
+                        id={`crit-input-${idx}`}
+                      />
+                      <button
+                        onClick={() => handleRemoveCriterion(idx)}
+                        className="md:hidden p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer shrink-0"
+                        id={`crit-delete-mobile-${idx}`}
+                        title="Remove factor"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Bottom row on mobile / Right side controls on desktop: Unit & Type toggle */}
+                    <div className="flex gap-2 items-center pl-7 md:pl-0 shrink-0 flex-wrap sm:flex-nowrap">
+                      <div className="grow md:grow-0 md:w-36 min-w-0">
+                        <input
+                          type="text"
+                          value={crit.unit ?? ""}
+                          onChange={(e) => handleCriterionChange(idx, "unit", e.target.value)}
+                          onBlur={(e) => {
+                            if (!e.target.value.trim()) {
+                              handleCriterionChange(idx, "unit", "pts (1-10)");
+                            }
+                          }}
+                          className="w-full rounded-none border border-gray-200 px-3 py-2 text-xs focus:border-[#121212] focus:ring-0 bg-white font-mono text-[#121212]"
+                          placeholder={`Unit (e.g. pts (1-10), $, hrs)`}
+                          id={`crit-unit-${idx}`}
+                          title="Edit Unit of Measure (UoM)"
+                        />
+                      </div>
+                      <div className="shrink-0">
+                        <div className="flex border border-gray-200 rounded-none overflow-hidden" id={`crit-toggle-${idx}`}>
+                          <button
+                            type="button"
+                            onClick={() => handleCriterionChange(idx, "type", "benefit")}
+                            className={`px-2.5 py-2 text-xs font-mono transition cursor-pointer flex items-center gap-1 ${
+                              crit.type === "benefit"
+                                ? "bg-[#121212] text-white font-semibold"
+                                : "bg-white text-gray-400 hover:text-gray-700 hover:bg-gray-50"
+                            }`}
+                            title="Benefit: Higher values are better"
+                          >
+                            <span>↑</span> Benefit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleCriterionChange(idx, "type", "cost")}
+                            className={`px-2.5 py-2 text-xs font-mono transition cursor-pointer flex items-center gap-1 border-l border-gray-200 ${
+                              crit.type === "cost"
+                                ? "bg-[#121212] text-white font-semibold"
+                                : "bg-white text-gray-400 hover:text-gray-700 hover:bg-gray-50"
+                            }`}
+                            title="Cost: Lower values are better"
+                          >
+                            <span>↓</span> Cost
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveCriterion(idx)}
+                        className="hidden md:block p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer shrink-0"
+                        id={`crit-delete-desktop-${idx}`}
+                        title="Remove factor"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
