@@ -47,7 +47,7 @@ export default async function handler(req: any, res: any) {
     let lastAiError: string | null = null;
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.0-flash",
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
           systemInstruction: systemPrompt,
