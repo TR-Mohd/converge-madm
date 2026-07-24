@@ -101,6 +101,19 @@ export function calculateAHP(
 }
 
 /**
+ * Converts a slider value in [-8, 8] to the ratio r = w_i / w_j it encodes.
+ * This is the exact inverse of mapRatioToSlider (up to integer rounding),
+ * and matches the ratio convention used when building the AHP matrix in
+ * calculateAHP (matrix[i][j] = w_i / w_j).
+ */
+export function sliderToRatio(v: number): number {
+  const saatyVal = getSaatyValue(v);
+  if (v < 0) return saatyVal; // A more important: wi/wj = saatyVal
+  if (v > 0) return 1 / saatyVal; // B more important: wi/wj = 1/saatyVal
+  return 1;
+}
+
+/**
  * Maps a ratio r = w_i / w_j back to the slider value in [-8, 8].
  */
 export function mapRatioToSlider(r: number): number {
@@ -148,10 +161,22 @@ export function smartAdjustComparisons(
 
   for (let alpha = 0.05; alpha <= 1.0; alpha += 0.05) {
     const candidateComparisons = comparisons.map((comp, idx) => {
-      const origVal = comp.value;
-      const targetVal = consistentValues[idx];
-      const interpolatedVal = origVal + alpha * (targetVal - origVal);
-      const roundedVal = Math.max(-8, Math.min(8, Math.round(interpolatedVal)));
+      // Saaty's scale is a ratio (multiplicative) scale, not a linear one:
+      // the "distance" between slider values 2 and 6 (ratios 3 and 7) is not
+      // the same as between 0 and 4 (ratios 1 and 5). Interpolating on the
+      // raw integer slider index therefore distorts the user's original
+      // relative preference strength more than necessary when forcing
+      // consistency. Interpolating in log-ratio space respects the
+      // multiplicative structure and finds a genuinely smaller perturbation.
+      const origRatio = sliderToRatio(comp.value);
+      const targetRatio = sliderToRatio(consistentValues[idx]);
+
+      const logOrig = Math.log(origRatio);
+      const logTarget = Math.log(targetRatio);
+      const interpolatedLog = logOrig + alpha * (logTarget - logOrig);
+      const interpolatedRatio = Math.exp(interpolatedLog);
+
+      const roundedVal = mapRatioToSlider(interpolatedRatio);
       return {
         ...comp,
         value: roundedVal,
@@ -213,15 +238,64 @@ export function analyzeComparisonsInconsistency(
 }
 
 /**
- * Helper to strip non-numeric characters and parse clean float.
+ * Helper to parse numeric input robustly, handling:
+ *  - plain numbers: "42", "3.5"
+ *  - ranges: "10-12", "10 to 12", "10–12" -> averaged
+ *  - metric multipliers: "2.5k" -> 2500, "1.2M" -> 1200000
+ *  - units/noise: "$799", "12 hrs", "45%"
+ *
+ * Unlike a naive character-strip, this does NOT silently collapse a range
+ * like "10-12" into "10" by accident (which previously happened because
+ * parseFloat("10-12") short-circuits at the first "-"). Ranges are
+ * explicitly detected and averaged instead.
+ *
+ * Returns NaN (not 0) when the input has no discernible number, so callers
+ * can detect and surface bad data instead of it silently becoming a 0 that
+ * skews TOPSIS normalization.
  */
 export function parseCleanNumeric(val: string | number): number {
   if (typeof val === "number") return val;
-  if (!val) return 0;
-  // Keep decimal points, signs, and digits
-  const cleaned = val.replace(/[^0-9.-]/g, "");
-  const num = parseFloat(cleaned);
-  return isNaN(num) ? 0 : num;
+  if (val === null || val === undefined) return NaN;
+
+  const str = String(val).trim();
+  if (!str) return NaN;
+
+  // 1. Range detection: "10-12", "10 to 12", "10–12", "10—12" -> average
+  //    Requires two distinct numeric tokens separated by a range delimiter.
+  const rangeMatch = str.match(
+    /(-?\d+(?:\.\d+)?)\s*(?:-|–|—|to)\s*(-?\d+(?:\.\d+)?)/i
+  );
+  if (rangeMatch) {
+    const a = parseFloat(rangeMatch[1]);
+    const b = parseFloat(rangeMatch[2]);
+    if (!isNaN(a) && !isNaN(b)) {
+      return (a + b) / 2;
+    }
+  }
+
+  // 2. Metric multiplier suffix: "2.5k", "1.2M", "3B" (case-insensitive,
+  //    optional space, optional trailing unit text like "2.5k users")
+  const multMatch = str.match(/(-?\d+(?:\.\d+)?)\s*([kKmMbB])(?:[a-zA-Z]*)?\b/);
+  if (multMatch) {
+    const num = parseFloat(multMatch[1]);
+    const suffix = multMatch[2].toLowerCase();
+    const multiplier = suffix === "k" ? 1e3 : suffix === "m" ? 1e6 : 1e9;
+    if (!isNaN(num)) {
+      return num * multiplier;
+    }
+  }
+
+  // 3. Plain number with surrounding noise: "$799", "12 hrs", "45%"
+  //    Extract the first standalone numeric token rather than stripping
+  //    all non-numeric chars blindly (which can merge unrelated digits
+  //    together, e.g. "v2 - 3 stars" -> "2-3" -> misparsed as a range/23).
+  const plainMatch = str.match(/-?\d+(?:\.\d+)?/);
+  if (plainMatch) {
+    const num = parseFloat(plainMatch[0]);
+    return isNaN(num) ? NaN : num;
+  }
+
+  return NaN;
 }
 
 /**
@@ -240,12 +314,43 @@ export function calculateTOPSIS(
   const m = alternatives.length;
   const n = criteria.length;
 
+  if (weights.length !== n) {
+    throw new Error(
+      `Mismatch between weights count (${weights.length}) and criteria count (${n}). ` +
+        `Please re-run the AHP pairwise weighting step.`
+    );
+  }
+
   // Convert raw text inputs into numbers
   const dataMatrix: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
+  const invalidCells: { alternative: string; criterion: string; raw: string }[] = [];
+
   for (let i = 0; i < m; i++) {
     for (let j = 0; j < n; j++) {
-      dataMatrix[i][j] = parseCleanNumeric(rawData[i]?.[j] ?? "0");
+      const raw = rawData[i]?.[j] ?? "";
+      const parsed = parseCleanNumeric(raw === "" ? "0" : raw);
+      if (isNaN(parsed)) {
+        invalidCells.push({
+          alternative: alternatives[i],
+          criterion: criteria[j]?.name ?? `criterion ${j}`,
+          raw: String(raw),
+        });
+        dataMatrix[i][j] = 0; // placeholder only; error below prevents using it
+      } else {
+        dataMatrix[i][j] = parsed;
+      }
     }
+  }
+
+  if (invalidCells.length > 0) {
+    const details = invalidCells
+      .map((c) => `"${c.raw}" (${c.alternative} / ${c.criterion})`)
+      .join(", ");
+    throw new Error(
+      `Unable to parse ${invalidCells.length} data cell(s) as numbers: ${details}. ` +
+        `Fix these values before running TOPSIS — invalid cells would otherwise ` +
+        `silently distort the ranking.`
+    );
   }
 
   // 1. Vector Normalization

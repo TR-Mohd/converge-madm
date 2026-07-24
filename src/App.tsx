@@ -55,15 +55,20 @@ export default function App() {
     setRawData(gridMatrix);
     
     if (decisionData && ahpResult) {
-      // Calculate TOPSIS on the raw matrix
-      const topsisRankings = calculateTOPSIS(
-        decisionData.alternatives,
-        decisionData.criteria,
-        ahpResult.weights,
-        gridMatrix
-      );
-      setRankings(topsisRankings);
-      setCurrentStep(5);
+      try {
+        // Calculate TOPSIS on the raw matrix
+        const topsisRankings = calculateTOPSIS(
+          decisionData.alternatives,
+          decisionData.criteria,
+          ahpResult.weights,
+          gridMatrix
+        );
+        setRankings(topsisRankings);
+        setCurrentStep(5);
+      } catch (err) {
+        // Re-throw so DataGridStep catches it, remains on Step 4, and highlights invalid cells
+        throw err;
+      }
     }
   };
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Criterion } from "../types";
-import { parseCleanNumeric } from "../utils/math";
 import { ArrowRight, Table2, Info, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 
 interface DataGridStepProps {
@@ -42,6 +41,7 @@ export default function DataGridStep({
 }: DataGridStepProps) {
   const [gridData, setGridData] = useState<string[][]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [invalidCellKeys, setInvalidCellKeys] = useState<Set<string>>(new Set());
   const [isAutoFilling, setIsAutoFilling] = useState(false);
 
   // Initialize raw grid data matrix
@@ -62,6 +62,11 @@ export default function DataGridStep({
     );
     setGridData(updated);
     setError(null);
+    if (invalidCellKeys.has(`${rowIndex}-${colIndex}`)) {
+      const nextKeys = new Set(invalidCellKeys);
+      nextKeys.delete(`${rowIndex}-${colIndex}`);
+      setInvalidCellKeys(nextKeys);
+    }
   };
 
   const handleAutoFillWithAI = async () => {
@@ -130,25 +135,55 @@ export default function DataGridStep({
   };
 
   const handleSubmit = () => {
-    // Basic validation: all cells must be filled and numeric
+    setError(null);
+    setInvalidCellKeys(new Set());
+
+    // 1. Explicit empty-cell check BEFORE calling onNext
+    const emptyKeys = new Set<string>();
+    const missingCells: string[] = [];
+
     for (let i = 0; i < alternatives.length; i++) {
       for (let j = 0; j < criteria.length; j++) {
         const cellValue = gridData[i]?.[j];
         if (!cellValue || cellValue.trim() === "") {
-          setError(`Please fill out the performance score for "${alternatives[i]}" under "${criteria[j].name}".`);
-          return;
-        }
-
-        const numericVal = parseCleanNumeric(cellValue);
-        // Ensure there is at least one digit or a number
-        if (isNaN(numericVal) || cellValue.replace(/[^0-9.-]/g, "").trim() === "") {
-          setError(`The value "${cellValue}" for "${alternatives[i]}" under "${criteria[j].name}" cannot be parsed as a number. Please enter a valid numerical value.`);
-          return;
+          emptyKeys.add(`${i}-${j}`);
+          missingCells.push(`"${alternatives[i]}" / "${criteria[j].name}"`);
         }
       }
     }
 
-    onNext(gridData);
+    if (emptyKeys.size > 0) {
+      setError(
+        `Please fill out performance scores for all cells before running TOPSIS. Missing ${emptyKeys.size} value(s): ${missingCells.slice(0, 3).join(", ")}${missingCells.length > 3 ? "..." : ""}.`
+      );
+      setInvalidCellKeys(emptyKeys);
+      return;
+    }
+
+    // 2. All cells have input; call onNext and catch unparsable cell errors from calculateTOPSIS
+    try {
+      onNext(gridData);
+    } catch (err: any) {
+      const errMsg = err?.message || "An error occurred while calculating TOPSIS rankings.";
+      setError(errMsg);
+
+      // Parse error message to identify invalid alternative/criterion combos:
+      // e.g. Unable to parse 1 data cell(s) as numbers: "abc" (Alt B / Price)
+      const keys = new Set<string>();
+      const matches = errMsg.matchAll(/\((.*?)\s*\/\s*(.*?)\)/g);
+      for (const match of matches) {
+        const altName = match[1].trim();
+        const critName = match[2].trim();
+
+        const rIdx = alternatives.findIndex((a) => a.trim() === altName);
+        const cIdx = criteria.findIndex((c) => c.name.trim() === critName);
+
+        if (rIdx !== -1 && cIdx !== -1) {
+          keys.add(`${rIdx}-${cIdx}`);
+        }
+      }
+      setInvalidCellKeys(keys);
+    }
   };
 
   return (
@@ -222,6 +257,7 @@ export default function DataGridStep({
                   const unitInfo = getUnitType(effectiveUnit);
                   const hasPrefix = !!unitInfo.prefix;
                   const hasSuffix = !!unitInfo.suffix;
+                  const isInvalidCell = invalidCellKeys.has(`${rIdx}-${cIdx}`);
 
                   return (
                     <td key={cIdx} className="p-3 border-l border-[#E5E1DA]" id={`table-cell-${rIdx}-${cIdx}`}>
@@ -235,7 +271,11 @@ export default function DataGridStep({
                           type="text"
                           value={gridData[rIdx]?.[cIdx] ?? ""}
                           onChange={(e) => handleCellChange(rIdx, cIdx, e.target.value)}
-                          className={`w-full rounded-none border border-gray-200 py-2 text-xs focus:border-[#121212] focus:ring-0 font-mono text-[#121212] placeholder-gray-300 bg-white ${
+                          className={`w-full rounded-none py-2 text-xs focus:ring-0 font-mono text-[#121212] placeholder-gray-300 ${
+                            isInvalidCell
+                              ? "border-2 border-rose-500 bg-rose-50/50 focus:border-rose-600"
+                              : "border border-gray-200 focus:border-[#121212] bg-white"
+                          } ${
                             hasPrefix ? "pl-7" : "pl-3"
                           } ${hasSuffix ? "pr-10" : "pr-3"}`}
                           placeholder="Value..."
