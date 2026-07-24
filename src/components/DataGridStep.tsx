@@ -218,7 +218,7 @@ export default function DataGridStep({
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none scrollbar-dark" id="performance-table-container">
+      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none" id="performance-table-container">
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">

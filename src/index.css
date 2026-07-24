@@ -54,22 +54,47 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Dark mode custom scrollbar */
-.dark .scrollbar-dark::-webkit-scrollbar {
+:root {
+  color-scheme: light;
+  scrollbar-color: #C5C0B5 #F1EFE9;
+  scrollbar-width: thin;
+}
+
+.dark {
+  color-scheme: dark;
+  scrollbar-color: #2C323E #121419;
+  scrollbar-width: thin;
+}
+
+/* Light mode scrollbar - WebKit */
+::-webkit-scrollbar {
   height: 6px;
   width: 6px;
 }
 
-.dark .scrollbar-dark::-webkit-scrollbar-track {
-  background: #1B1F27;
+::-webkit-scrollbar-track {
+  background: #F1EFE9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C5C0B5;
   border-radius: 9999px;
 }
 
-.dark .scrollbar-dark::-webkit-scrollbar-thumb {
-  background: #FE9A00;
+::-webkit-scrollbar-thumb:hover {
+  background: #A89F94;
+}
+
+/* Dark mode scrollbar - WebKit */
+.dark ::-webkit-scrollbar-track {
+  background: #121419;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #2C323E;
   border-radius: 9999px;
 }
 
-.dark .scrollbar-dark::-webkit-scrollbar-thumb:hover {
-  background: #FFB900;
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #F59E0B;
 }
