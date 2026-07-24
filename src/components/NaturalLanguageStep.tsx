@@ -180,13 +180,13 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 <button
                   key={idx}
                   onClick={() => handlePresetClick(ex.text)}
-                  className="text-left p-4 bg-white dark:bg-[#1C1C1C] hover:bg-[#FBF9F7] dark:hover:bg-neutral-800 border border-[#E5E1DA] dark:border-[#333333] hover:border-[#121212] dark:hover:border-[#FBF9F7] rounded-none transition duration-200 flex flex-col justify-between group cursor-pointer"
+                  className="text-left p-4 bg-white dark:bg-[#1A1E27] hover:bg-[#FBF9F7] dark:hover:bg-[#1C2028] border border-[#E5E1DA] dark:border-[#2C323E] hover:border-[#121212] dark:hover:border-[#F59E0B] rounded-none transition duration-200 flex flex-col justify-between group cursor-pointer"
                   id={`preset-${idx}`}
                 >
-                  <span className="font-bold text-xs text-[#121212] dark:text-[#FBF9F7] group-hover:underline mb-2 block">
+                  <span className="font-bold text-xs text-[#121212] dark:text-white group-hover:underline mb-2 block">
                     {ex.title}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                  <span className="text-xs text-gray-500 dark:text-[#9CA3AF] line-clamp-2 leading-relaxed">
                     {ex.text}
                   </span>
                 </button>
@@ -195,10 +195,10 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           </div>
 
           <div className="space-y-3" id="textarea-section">
-            <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500" htmlFor="decision-description">
+            <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]" htmlFor="decision-description">
               Describe your decision in plain English
             </label>
-            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-serif italic">
+            <p className="text-xs text-gray-500 dark:text-[#9CA3AF] leading-relaxed font-serif italic">
               Detail what you are choosing between, what factors are important to you, and any constraints you might have.
             </p>
             <div className="relative">
@@ -208,13 +208,13 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="I need to choose a laptop. I am comparing Apple MacBook, Dell XPS, and Lenovo ThinkPad. I care about battery life, RAM, weight, and low price..."
-                className="w-full rounded-none border border-[#E5E1DA] dark:border-[#333333] p-4 focus:border-[#121212] dark:focus:border-[#FBF9F7] focus:ring-0 text-sm placeholder-gray-400 dark:placeholder-gray-600 bg-white dark:bg-[#1C1C1C] text-[#121212] dark:text-[#FBF9F7] font-serif italic resize-none min-h-[140px]"
+                className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] p-4 focus:border-[#121212] dark:focus:border-[#FBBF24] focus:ring-0 text-sm placeholder-gray-400 dark:placeholder-[#4B5563] bg-white dark:bg-[#121419] text-[#121212] dark:text-white font-serif italic resize-none min-h-[140px]"
               />
             </div>
           </div>
 
           {error && (
-            <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-rose-300 text-xs" id="nl-error">
+            <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-[#FDA4AF] text-xs" id="nl-error">
               <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
               <div>{error}</div>
             </div>
@@ -224,16 +224,16 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             <button
               onClick={handleExtract}
               disabled={loading}
-              className={`px-8 py-4 rounded-none font-bold text-xs uppercase tracking-widest text-white dark:text-[#121212] flex items-center gap-2 shadow-sm transition duration-200 cursor-pointer ${
+              className={`px-8 py-4 rounded-none font-bold text-xs uppercase tracking-widest text-white dark:text-black flex items-center gap-2 shadow-sm transition duration-200 cursor-pointer ${
                 loading
-                  ? "bg-gray-400 dark:bg-neutral-700 cursor-not-allowed"
-                  : "bg-[#121212] dark:bg-[#FBF9F7] hover:bg-neutral-800 dark:hover:bg-white"
+                  ? "bg-gray-400 dark:bg-[#4B5563] cursor-not-allowed"
+                  : "bg-[#121212] hover:bg-neutral-800 dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24]"
               }`}
               id="btn-extract"
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white dark:border-[#121212] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
                   Analyzing text...
                 </>
               ) : (
@@ -254,11 +254,11 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           className="space-y-8"
           id="editable-extracted-section"
         >
-          <div className="bg-[#FBF9F7] dark:bg-[#262626] border-l-4 border-[#121212] dark:border-[#FBF9F7] rounded-none p-6 flex gap-4 items-start" id="nlp-success-banner">
-            <Sparkles className="w-5 h-5 text-[#121212] dark:text-[#FBF9F7] shrink-0 mt-0.5" />
+          <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-l-4 border-[#121212] dark:border-[#F59E0B] rounded-none p-6 flex gap-4 items-start" id="nlp-success-banner">
+            <Sparkles className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="font-bold text-xs uppercase tracking-widest text-[#121212] dark:text-[#FBF9F7]">Gemini AI Extraction Complete</h4>
-              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-serif italic">
+              <h4 className="font-bold text-xs uppercase tracking-widest text-[#121212] dark:text-white">Gemini AI Extraction Complete</h4>
+              <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
                 The decision matrix elements have been parsed below. Please review, edit, or adjust alternatives and factors to match your exact intentions before advancing.
               </p>
             </div>
@@ -436,23 +436,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-neutral-800" id="edit-step-navigation">
+          <div className="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-[#262A33]" id="edit-section-footer">
             <button
               onClick={() => {
                 setExtractedData(null);
                 setError(null);
               }}
-              className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400 hover:text-[#121212] dark:hover:text-[#FBF9F7] transition cursor-pointer"
-              id="btn-edit-back"
+              className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+              id="btn-re-edit"
             >
-              ← Back to Edit Prompt
+              ← Edit Prompt
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3 bg-[#121212] dark:bg-[#FBF9F7] hover:bg-neutral-800 dark:hover:bg-white text-white dark:text-[#121212] text-[11px] uppercase tracking-widest font-bold shadow-sm transition flex items-center gap-2 cursor-pointer"
-              id="btn-edit-confirm"
+              className="px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
+              id="btn-confirm-matrix"
             >
-              Confirm & Compare Criteria <ArrowRight className="w-4 h-4" />
+              Confirm Setup & Start Comparisons <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </motion.div>

@@ -188,12 +188,12 @@ export default function DataGridStep({
 
   return (
     <div className="space-y-8" id="datagrid-step-container">
-      <div className="bg-[#FBF9F7] dark:bg-[#262626] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-6 flex flex-col md:flex-row gap-4 items-start justify-between" id="datagrid-intro-card">
+      <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-6 flex flex-col md:flex-row gap-4 items-start justify-between" id="datagrid-intro-card">
         <div className="flex gap-3.5 items-start">
-          <Table2 className="w-5 h-5 text-[#121212] dark:text-[#FBF9F7] shrink-0 mt-0.5" />
+          <Table2 className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-[#FBF9F7]">Performance Inputs Reference</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-serif italic">
+            <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Performance Inputs Reference</h3>
+            <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
               Now enter the raw, actual performance metrics for each alternative. You can write units (e.g., <strong className="text-black dark:text-white italic">"$1,200"</strong>, <strong className="text-black dark:text-white italic">"16GB"</strong>, <strong className="text-black dark:text-white italic">"12 hours"</strong>). Converge will automatically parse the numbers.
             </p>
           </div>
@@ -201,40 +201,40 @@ export default function DataGridStep({
         <button
           onClick={handleAutoFillWithAI}
           disabled={isAutoFilling}
-          className="px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-white dark:text-[#121212] bg-[#121212] dark:bg-[#FBF9F7] hover:bg-neutral-800 dark:hover:bg-white disabled:bg-gray-400 dark:disabled:bg-neutral-700 rounded-none shrink-0 transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+          className="px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-white dark:text-black bg-[#121212] hover:bg-neutral-800 dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] disabled:bg-gray-400 dark:disabled:bg-[#4B5563] rounded-none shrink-0 transition cursor-pointer flex items-center gap-1.5 shadow-sm"
           id="btn-prefill"
         >
           {isAutoFilling ? (
             <>
-              <RefreshCw className="w-3.5 h-3.5 animate-spin text-white dark:text-[#121212]" />
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-white dark:text-black" />
               Searching Web with AI...
             </>
           ) : (
             <>
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400 dark:text-amber-500 dark:fill-amber-500" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400 dark:text-black dark:fill-black" />
               Auto-Fill with AI
             </>
           )}
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#333333] rounded-none bg-white dark:bg-[#1C1C1C] shadow-none" id="performance-table-container">
+      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none" id="performance-table-container">
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
-            <tr className="bg-[#FBF9F7] dark:bg-[#262626] border-b border-[#E5E1DA] dark:border-[#333333]" id="table-headers-row">
-              <th className="p-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest font-sans">Alternatives</th>
+            <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
+              <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans">Alternatives</th>
               {criteria.map((crit, idx) => {
                 const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "points";
                 return (
-                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#333333]" id={`header-col-${idx}`}>
-                    <div className="text-xs font-bold text-[#121212] dark:text-[#FBF9F7] flex flex-col">
+                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E]" id={`header-col-${idx}`}>
+                    <div className="text-xs font-bold text-[#121212] dark:text-white flex flex-col">
                       <span className="truncate uppercase tracking-wider">
-                        {crit.name} <span className="font-mono text-gray-500 dark:text-gray-400 font-normal">({uom})</span>
+                        {crit.name} <span className="font-mono text-gray-500 dark:text-[#9CA3AF] font-normal">({uom})</span>
                       </span>
-                      <span className="text-[10px] font-mono text-[#121212] dark:text-[#FBF9F7] font-semibold mt-0.5">
+                      <span className="text-[10px] font-mono text-[#121212] dark:text-[#FBBF24] font-semibold mt-0.5">
                         {((weights[idx] ?? 0) * 100).toFixed(1)}% weight
                       </span>
-                      <span className="text-[9px] font-mono font-normal text-gray-400 dark:text-gray-500 capitalize mt-0.5">
+                      <span className="text-[9px] font-mono font-normal text-gray-400 dark:text-[#4B5563] capitalize mt-0.5">
                         {crit.type === "benefit" ? "↑ benefit" : "↓ cost"}
                       </span>
                     </div>
@@ -245,9 +245,9 @@ export default function DataGridStep({
           </thead>
           <tbody>
             {alternatives.map((alt, rIdx) => (
-              <tr key={rIdx} className="border-b border-[#E5E1DA] dark:border-[#333333] hover:bg-gray-50/50 dark:hover:bg-neutral-800/50 transition" id={`table-row-${rIdx}`}>
+              <tr key={rIdx} className="border-b border-[#E5E1DA] dark:border-[#2C323E] hover:bg-gray-50/50 dark:hover:bg-[#1C2028]/50 transition" id={`table-row-${rIdx}`}>
                 {/* Alternative column */}
-                <td className="p-4 text-xs font-bold text-[#121212] dark:text-[#FBF9F7] bg-[#FBF9F7]/30 dark:bg-[#262626]/30">
+                <td className="p-4 text-xs font-bold text-[#121212] dark:text-white bg-[#FBF9F7]/30 dark:bg-[#1A1E27]/30">
                   {alt}
                 </td>
 
@@ -260,10 +260,10 @@ export default function DataGridStep({
                   const isInvalidCell = invalidCellKeys.has(`${rIdx}-${cIdx}`);
 
                   return (
-                    <td key={cIdx} className="p-3 border-l border-[#E5E1DA] dark:border-[#333333]" id={`table-cell-${rIdx}-${cIdx}`}>
+                    <td key={cIdx} className="p-3 border-l border-[#E5E1DA] dark:border-[#2C323E]" id={`table-cell-${rIdx}-${cIdx}`}>
                       <div className="relative flex items-center">
                         {hasPrefix && (
-                          <span className="absolute left-3 text-xs font-mono text-gray-400 dark:text-gray-500 select-none">
+                          <span className="absolute left-3 text-xs font-mono text-gray-400 dark:text-[#9CA3AF] select-none">
                             {unitInfo.prefix}
                           </span>
                         )}
@@ -271,10 +271,10 @@ export default function DataGridStep({
                           type="text"
                           value={gridData[rIdx]?.[cIdx] ?? ""}
                           onChange={(e) => handleCellChange(rIdx, cIdx, e.target.value)}
-                          className={`w-full rounded-none py-2 text-xs focus:ring-0 font-mono text-[#121212] dark:text-[#FBF9F7] placeholder-gray-300 dark:placeholder-gray-600 ${
+                          className={`w-full rounded-none py-2 text-xs focus:ring-0 font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563] ${
                             isInvalidCell
                               ? "border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40 focus:border-rose-600"
-                              : "border border-gray-200 dark:border-neutral-700 focus:border-[#121212] dark:focus:border-[#FBF9F7] bg-white dark:bg-[#121212]"
+                              : "border border-gray-200 dark:border-[#2C323E] focus:border-[#121212] dark:focus:border-[#FBBF24] bg-white dark:bg-[#121419]"
                           } ${
                             hasPrefix ? "pl-7" : "pl-3"
                           } ${hasSuffix ? "pr-10" : "pr-3"}`}
@@ -282,7 +282,7 @@ export default function DataGridStep({
                           id={`cell-input-${rIdx}-${cIdx}`}
                         />
                         {hasSuffix && (
-                          <span className="absolute right-3 text-[10px] font-mono text-gray-400 dark:text-gray-500 select-none">
+                          <span className="absolute right-3 text-[10px] font-mono text-gray-400 dark:text-[#9CA3AF] select-none">
                             {unitInfo.suffix}
                           </span>
                         )}
@@ -297,36 +297,35 @@ export default function DataGridStep({
       </div>
 
       {error && (
-        <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-rose-300 text-xs" id="grid-error">
+        <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-[#FDA4AF] text-xs" id="grid-error">
           <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
           <div>{error}</div>
         </div>
       )}
 
       {/* Info on vector normalization */}
-      <div className="bg-[#FBF9F7] dark:bg-[#262626] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-4 flex gap-3 text-xs text-gray-600 dark:text-gray-300 leading-relaxed font-serif italic" id="normalization-info-card">
-        <Info className="w-5 h-5 shrink-0 text-gray-400 dark:text-gray-500 mt-0.5" />
+      <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-4 flex gap-3 text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic" id="normalization-info-card">
+        <Info className="w-5 h-5 shrink-0 text-gray-400 dark:text-[#9CA3AF] mt-0.5" />
         <p>
           <strong className="text-black dark:text-white not-italic font-sans uppercase tracking-widest text-[10px] block mb-1">Vector Normalization Engine</strong>
           Converge divides each cell's rating by the column's total vector length (sum of squares), then combines it with your computed AHP weights to find the Euclidean distance of each alternative from both the ideal and anti-ideal outcomes.
         </p>
       </div>
 
-      {/* Footer Navigation */}
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100" id="grid-navigation">
+      <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]" id="datagrid-navigation">
         <button
           onClick={onBack}
-          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 hover:text-[#121212] transition cursor-pointer"
-          id="btn-grid-back"
+          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+          id="btn-datagrid-back"
         >
-          ← Back to Weights
+          ← Adjust Weights
         </button>
         <button
           onClick={handleSubmit}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white text-[11px] uppercase tracking-widest font-bold shadow-sm transition flex items-center gap-2 cursor-pointer"
-          id="btn-grid-submit"
+          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer"
+          id="btn-datagrid-next"
         >
-          Compute TOPSIS Rankings <ArrowRight className="w-4 h-4" />
+          Calculate Final Ranking <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>
