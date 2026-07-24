@@ -104,24 +104,24 @@ export default function AhpComparisonStep({
     
     if (val < 0) {
       return (
-        <span>
-          <strong className="text-[#121212] font-serif italic font-bold">{critA}</strong> is{" "}
-          <span className="text-[#121212] underline decoration-[#121212] decoration-1 font-medium">{label.toLowerCase()}</span> than{" "}
-          <strong className="text-gray-500">{critB}</strong>. (Scale: {getSaatyValue(val)})
+        <span className="text-gray-600 dark:text-[#E5E7EB]">
+          <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critA}</strong> is{" "}
+          <span className="text-[#121212] dark:text-white underline decoration-[#121212] dark:decoration-[#FE9A00] decoration-1 font-bold">{label.toLowerCase()}</span> than{" "}
+          <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critB}</strong>. (Scale: {getSaatyValue(val)})
         </span>
       );
     } else if (val > 0) {
       return (
-        <span>
-          <strong className="text-[#121212] font-serif italic font-bold">{critB}</strong> is{" "}
-          <span className="text-[#121212] underline decoration-[#121212] decoration-1 font-medium">{label.toLowerCase()}</span> than{" "}
-          <strong className="text-gray-500">{critA}</strong>. (Scale: {getSaatyValue(val)})
+        <span className="text-gray-600 dark:text-[#E5E7EB]">
+          <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critB}</strong> is{" "}
+          <span className="text-[#121212] dark:text-white underline decoration-[#121212] dark:decoration-[#FE9A00] decoration-1 font-bold">{label.toLowerCase()}</span> than{" "}
+          <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critA}</strong>. (Scale: {getSaatyValue(val)})
         </span>
       );
     } else {
       return (
-        <span className="text-gray-500 font-medium">
-          Both are <span className="font-bold text-[#121212] underline decoration-gray-300">equally important</span>. (Scale: 1)
+        <span className="text-gray-600 dark:text-[#E5E7EB] font-medium">
+          Both <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critA}</strong> and <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critB}</strong> are <span className="font-bold text-[#121212] dark:text-white underline decoration-gray-300 dark:decoration-[#FE9A00]">equally important</span>. (Scale: 1)
         </span>
       );
     }
