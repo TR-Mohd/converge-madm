@@ -38,6 +38,23 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
       "CRITICAL MANDATE: EVERY SINGLE CRITERION MUST HAVE AN EXPLICIT UNIT OF MEASURE ('unit' field). NEVER leave 'unit' empty or null. " +
       "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'.";
 
+/** Preserves HTTP status codes (403, 401, 429) from Gemini API errors. */
+function getAIErrorStatus(err: any): number {
+  if (isQuotaError(err)) return 429;
+  const msg = typeof err === "string" ? err : String(err?.message || JSON.stringify(err) || "");
+  if (
+    err?.status === 403 ||
+    err?.status === 401 ||
+    msg.includes("403") ||
+    msg.includes("401") ||
+    msg.includes("leaked") ||
+    msg.includes("PERMISSION_DENIED")
+  ) {
+    return 403;
+  }
+  return 500;
+}
+
     let text: string | null = null;
     try {
       const response = await generateWithFallback(ai, {
@@ -96,7 +113,7 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
       text = response.text || null;
     } catch (aiErr: any) {
       console.warn("AI extraction call failed:", aiErr?.message || aiErr);
-      const status = isQuotaError(aiErr) ? 429 : 500;
+      const status = getAIErrorStatus(aiErr);
       return res.status(status).json({
         error: aiErr?.message || "Gemini AI extraction service is currently unavailable."
       });

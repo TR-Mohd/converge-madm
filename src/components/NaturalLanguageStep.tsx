@@ -67,10 +67,11 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             ? errData.error
             : JSON.stringify(errData.error ?? "");
           const isQuota = response.status === 429 || raw.includes("RESOURCE_EXHAUSTED") || raw.includes("quota") || raw.includes("429") || raw.includes("limit");
+          const isDenied = response.status === 401 || response.status === 403 || raw.includes("403") || raw.includes("leaked") || raw.includes("PERMISSION_DENIED");
           if (isQuota) {
             friendlyMsg = "The AI service is temporarily unavailable due to high demand. Please wait a moment and try again.";
-          } else if (response.status === 401 || response.status === 403) {
-            friendlyMsg = "Access to the AI service was denied. Please check your API configuration.";
+          } else if (isDenied) {
+            friendlyMsg = "Access to the AI service was denied or your API key is invalid/reported as leaked. Please update your GEMINI_API_KEY in .env.";
           } else if (response.status >= 500) {
             friendlyMsg = "The server encountered an error. Please try again in a few seconds.";
           } else if (raw.includes("invalid") || raw.includes("parse")) {
