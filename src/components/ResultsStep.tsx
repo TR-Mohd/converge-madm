@@ -147,9 +147,9 @@ export default function ResultsStep({
                 id={`ranking-item-${idx}`}
               >
                 {/* Alternative Name & Badge */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 md:w-64 shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-none flex items-center justify-center font-bold text-xs ${
+                    className={`w-8 h-8 rounded-none flex items-center justify-center font-bold text-xs shrink-0 ${
                       isFirst
                         ? "bg-[#121212] text-white border border-[#121212]"
                         : "bg-white text-gray-500 border border-[#E5E1DA]"
@@ -157,32 +157,33 @@ export default function ResultsStep({
                   >
                     #{idx + 1}
                   </div>
-                  <div>
-                    <h4 className="text-xs uppercase tracking-wider font-bold text-[#121212]">{item.alternative}</h4>
+                  <div className="truncate">
+                    <h4 className="text-xs uppercase tracking-wider font-bold text-[#121212] truncate">{item.alternative}</h4>
                     <p className="text-[10px] text-gray-400 font-mono mt-0.5">TOPSIS Index V_{idx + 1}</p>
                   </div>
                 </div>
 
                 {/* Score progress bar */}
-                <div className="grow max-w-md space-y-1.5" id={`score-bar-wrapper-${idx}`}>
-                  <div className="flex justify-between text-[9px] uppercase tracking-wider text-gray-400 font-bold">
+                <div className="grow space-y-1.5" id={`score-bar-wrapper-${idx}`}>
+                  <div className="flex justify-between text-[10px] uppercase tracking-wider text-gray-500 font-bold">
                     <span>Performance Proximity</span>
-                    <span>{scorePercent}%</span>
+                    <span className="font-mono text-[#121212]">{scorePercent}%</span>
                   </div>
-                  <div className="w-full h-1 bg-gray-100 rounded-none overflow-hidden">
+                  <div className="w-full h-2 bg-gray-100 border border-gray-200/60 rounded-none overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${item.score * 100}%` }}
                       transition={{ duration: 0.6, delay: idx * 0.1 }}
-                      className={`h-full rounded-none ${isFirst ? "bg-[#121212]" : "bg-gray-400"}`}
+                      className={`h-full rounded-none ${isFirst ? "bg-[#121212]" : "bg-gray-500"}`}
                     />
                   </div>
                 </div>
 
                 {/* score badge */}
-                <div className="text-right shrink-0" id={`score-badge-${idx}`}>
-                  <span className={`font-mono text-xs font-bold border p-1 px-2.5 bg-white text-[#121212] rounded-none ${
-                    isFirst ? "border-[#121212]" : "border-[#E5E1DA]"
+                <div className="text-right shrink-0 md:w-28" id={`score-badge-${idx}`}>
+                  <div className="text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1">Closeness C_i</div>
+                  <span className={`font-mono text-xs font-bold border py-1 px-3 inline-block bg-white text-[#121212] rounded-none ${
+                    isFirst ? "border-[#121212] shadow-sm" : "border-[#E5E1DA]"
                   }`}>
                     {item.score.toFixed(4)}
                   </span>
