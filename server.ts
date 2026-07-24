@@ -30,7 +30,7 @@ function getGeminiClient(): GoogleGenAI {
 }
 
 // API endpoint to extract structured decision data from plain text
-app.post("/api/extract", async (req: any, res: any) => {
+app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
   try {
     const { description } = req.body;
     const trimmed = typeof description === "string" ? description.trim() : "";
@@ -193,7 +193,7 @@ app.post("/api/extract", async (req: any, res: any) => {
 });
 
 // API endpoint to auto-fill performance scores with web-search grounded real-world data
-app.post("/api/auto-fill", async (req: any, res: any) => {
+app.post(["/api/auto-fill", "/auto-fill"], async (req: any, res: any) => {
   try {
     const { alternatives, criteria, decision_goal } = req.body;
     if (!alternatives || !criteria || !Array.isArray(alternatives) || !Array.isArray(criteria)) {
@@ -298,7 +298,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
 });
 
 // API endpoint to generate the final analytical summary
-app.post("/api/summarize", async (req: any, res: any) => {
+app.post(["/api/summarize", "/summarize"], async (req: any, res: any) => {
   try {
     const { decision_goal, alternatives, criteria, weights, rankings, user_prompt } = req.body;
 

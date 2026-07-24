@@ -60,8 +60,14 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Failed to extract decision elements.");
+        let errMsg = "Failed to extract decision elements.";
+        try {
+          const errData = await response.json();
+          errMsg = errData.error || errMsg;
+        } catch {
+          errMsg = `Server error (${response.status}): ${response.statusText || "Invalid server response"}`;
+        }
+        throw new Error(errMsg);
       }
 
       const data: DecisionData = await response.json();
