@@ -1,37 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
-
-function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is required but missing.");
-  }
-  return new GoogleGenAI({
-    apiKey: apiKey,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
-  });
-}
-
-async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 1): Promise<any> {
-  let attempt = 0;
-  while (true) {
-    try {
-      return await ai.models.generateContent(params);
-    } catch (err: any) {
-      const errMsg = String(err?.message || err || "");
-      const is429 = err?.status === 429 || err?.status === "RESOURCE_EXHAUSTED" || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED");
-      if (is429 && attempt < maxRetries) {
-        attempt++;
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
+import { getGeminiClient, generateWithFallback } from "./_gemini";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -64,8 +31,7 @@ Please write a friendly, helpful, and highly insightful analytical summary of wh
 
     let summaryText = "";
     try {
-      const response = await generateContentWithRetry(ai, {
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: promptMessage,
         config: {
           systemInstruction: "You are a professional decision advisor. Write a friendly, analytical, and concise evaluation of the MADM results. Focus on explaining trade-offs clearly without technical jargon."

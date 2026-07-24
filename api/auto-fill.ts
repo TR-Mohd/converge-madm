@@ -1,37 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
-
-function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is required but missing.");
-  }
-  return new GoogleGenAI({
-    apiKey: apiKey,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
-  });
-}
-
-async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 1): Promise<any> {
-  let attempt = 0;
-  while (true) {
-    try {
-      return await ai.models.generateContent(params);
-    } catch (err: any) {
-      const errMsg = String(err?.message || err || "");
-      const is429 = err?.status === 429 || err?.status === "RESOURCE_EXHAUSTED" || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED");
-      if (is429 && attempt < maxRetries) {
-        attempt++;
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
+import { getGeminiClient, generateWithFallback } from "./_gemini";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -74,8 +41,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     let text: string | null = null;
 
     try {
-      const response = await generateContentWithRetry(ai, {
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: promptMessage,
         config: {
           tools: [{ googleSearch: {} }],
@@ -90,8 +56,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
 
     if (!text) {
       try {
-        const fallbackResponse = await generateContentWithRetry(ai, {
-          model: "gemini-3.6-flash",
+        const fallbackResponse = await generateWithFallback(ai, {
           contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
           config: {
             responseMimeType: "application/json",

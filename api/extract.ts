@@ -1,37 +1,5 @@
-import { GoogleGenAI, Type } from "@google/genai";
-
-function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY environment variable is required but missing.");
-  }
-  return new GoogleGenAI({
-    apiKey: apiKey,
-    httpOptions: {
-      headers: {
-        "User-Agent": "aistudio-build",
-      },
-    },
-  });
-}
-
-async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 1): Promise<any> {
-  let attempt = 0;
-  while (true) {
-    try {
-      return await ai.models.generateContent(params);
-    } catch (err: any) {
-      const errMsg = String(err?.message || err || "");
-      const is429 = err?.status === 429 || err?.status === "RESOURCE_EXHAUSTED" || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED");
-      if (is429 && attempt < maxRetries) {
-        attempt++;
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
+import { Type } from "@google/genai";
+import { getGeminiClient, generateWithFallback } from "./_gemini";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -64,8 +32,7 @@ export default async function handler(req: any, res: any) {
     let text: string | null = null;
     let lastAiError: string | null = null;
     try {
-      const response = await generateContentWithRetry(ai, {
-        model: "gemini-3.6-flash",
+      const response = await generateWithFallback(ai, {
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
           systemInstruction: systemPrompt,
