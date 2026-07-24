@@ -169,7 +169,7 @@ export default function App() {
       <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 py-5 px-8 transition-colors duration-200" id="app-header">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={handleReset} id="logo-block">
-            <div className="w-10 h-10 rounded-sm bg-[#121212] text-white dark:bg-[#F59E0B] dark:text-black flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
               <BrainCircuit className="w-5.5 h-5.5" />
             </div>
             <div className="flex items-baseline gap-2">

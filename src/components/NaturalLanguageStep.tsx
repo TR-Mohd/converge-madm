@@ -263,9 +263,9 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
               </p>
             </div>
           </div>
-
+          
           <div className="space-y-3" id="edit-goal-section">
-            <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500" htmlFor="decision-goal">
+            <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]" htmlFor="decision-goal">
               Decision Title / Goal
             </label>
             <input
@@ -273,23 +273,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
               id="decision-goal"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              className="w-full rounded-none border border-[#E5E1DA] dark:border-[#333333] px-4 py-3 focus:border-[#121212] dark:focus:border-[#FBF9F7] focus:ring-0 text-sm font-semibold bg-white dark:bg-[#1C1C1C] text-[#121212] dark:text-[#FBF9F7]"
+              className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] px-4 py-3 focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 text-sm font-semibold bg-white dark:bg-[#121419] text-[#121212] dark:text-white"
               placeholder="e.g., Selecting a Programming Laptop"
             />
           </div>
 
           <div className="flex flex-col gap-6" id="edit-lists-grid">
             {/* Alternatives (Max 6) */}
-            <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-4 sm:p-6 space-y-4" id="edit-alternatives-card">
-              <div className="flex justify-between items-center border-b border-gray-100 dark:border-neutral-800 pb-3">
+            <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] rounded-none p-4 sm:p-6 space-y-4" id="edit-alternatives-card">
+              <div className="flex justify-between items-center border-b border-gray-100 dark:border-[#262A33] pb-3">
                 <div>
-                  <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-[#FBF9F7]">Alternatives</h3>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Options you are evaluating (Max 6)</p>
+                  <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Alternatives</h3>
+                  <p className="text-[10px] text-gray-400 dark:text-[#9CA3AF] mt-0.5">Options you are evaluating (Max 6)</p>
                 </div>
                 <button
                   onClick={handleAddAlternative}
                   disabled={alternatives.length >= 6}
-                  className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-[#FBF9F7] hover:bg-gray-50 dark:hover:bg-neutral-800 border border-[#121212] dark:border-[#FBF9F7] rounded-none flex items-center gap-1 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-black bg-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] border border-[#121212] dark:border-[#FE9A00] rounded-none flex items-center gap-1 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   id="btn-add-alternative"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add
@@ -299,18 +299,18 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
               <div className="space-y-3" id="alternatives-inputs">
                 {alternatives.map((alt, idx) => (
                   <div key={idx} className="flex gap-2.5 items-center" id={`alt-input-wrapper-${idx}`}>
-                    <span className="text-xs font-mono text-gray-400 dark:text-gray-500 w-5 text-right shrink-0">{idx + 1}.</span>
+                    <span className="text-xs font-mono text-gray-400 dark:text-[#9CA3AF] w-5 text-right shrink-0">{idx + 1}.</span>
                     <input
                       type="text"
                       value={alt}
                       onChange={(e) => handleAlternativeChange(idx, e.target.value)}
-                      className="grow rounded-none border border-gray-200 dark:border-neutral-700 px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FBF9F7] focus:ring-0 bg-white dark:bg-[#121212] text-[#121212] dark:text-[#FBF9F7]"
+                      className="grow rounded-none border border-gray-200 dark:border-[#2C323E] px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 bg-white dark:bg-[#121419] text-[#121212] dark:text-white"
                       placeholder={`Alternative name`}
                       id={`alt-input-${idx}`}
                     />
                     <button
                       onClick={() => handleRemoveAlternative(idx)}
-                      className="p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
+                      className="p-2 text-gray-400 dark:text-[#9CA3AF] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
                       id={`alt-delete-${idx}`}
                       title="Remove"
                     >
@@ -322,18 +322,18 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             </div>
 
             {/* Criteria / Factors (Min 2) */}
-            <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-4 sm:p-6 space-y-4" id="edit-criteria-card">
-              <div className="flex justify-between items-center border-b border-gray-100 dark:border-neutral-800 pb-3">
+            <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] rounded-none p-4 sm:p-6 space-y-4" id="edit-criteria-card">
+              <div className="flex justify-between items-center border-b border-gray-100 dark:border-[#262A33] pb-3">
                 <div>
-                  <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-[#FBF9F7]">Factors</h3>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Criteria used to compare (Min 2, Max 10)</p>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 font-mono">
-                    Qualitative factors default to a 1–10 scale (<span className="text-black dark:text-white font-semibold">pts (1-10)</span>). You can edit the Unit (UoM) for any factor.
+                  <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Factors</h3>
+                  <p className="text-[10px] text-gray-400 dark:text-[#9CA3AF] mt-0.5">Criteria used to compare (Min 2, Max 10)</p>
+                  <p className="text-[10px] text-gray-500 dark:text-[#9CA3AF] mt-1 font-mono">
+                    Qualitative factors default to a 1–10 scale (<span className="text-black dark:text-[#FFB900] font-semibold">pts (1-10)</span>). You can edit the Unit (UoM) for any factor.
                   </p>
                 </div>
                 <button
                   onClick={handleAddCriterion}
-                  className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-[#FBF9F7] hover:bg-gray-50 dark:hover:bg-neutral-800 border border-[#121212] dark:border-[#FBF9F7] rounded-none flex items-center gap-1 transition cursor-pointer"
+                  className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-black bg-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] border border-[#121212] dark:border-[#FE9A00] rounded-none flex items-center gap-1 transition cursor-pointer"
                   id="btn-add-criterion"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add
@@ -344,23 +344,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 {criteria.map((crit, idx) => (
                   <div
                     key={idx}
-                    className="bg-gray-50/60 dark:bg-neutral-900/60 md:bg-transparent border border-gray-200/80 dark:border-neutral-800 md:border-0 p-3 md:p-0 space-y-2.5 md:space-y-0 flex flex-col md:flex-row md:items-center gap-2"
+                    className="bg-gray-50/60 dark:bg-[#1A1E27] md:bg-transparent border border-gray-200/80 dark:border-[#2C323E] md:border-0 p-3 md:p-0 space-y-2.5 md:space-y-0 flex flex-col md:flex-row md:items-center gap-2"
                     id={`crit-input-wrapper-${idx}`}
                   >
                     {/* Top row: Index, Factor Name input, and Delete button (on mobile) */}
                     <div className="flex gap-2 items-center grow min-w-0">
-                      <span className="text-xs font-mono text-gray-400 dark:text-gray-500 w-5 text-right shrink-0">{idx + 1}.</span>
+                      <span className="text-xs font-mono text-gray-400 dark:text-[#9CA3AF] w-5 text-right shrink-0">{idx + 1}.</span>
                       <input
                         type="text"
                         value={crit.name}
                         onChange={(e) => handleCriterionChange(idx, "name", e.target.value)}
-                        className="grow min-w-0 rounded-none border border-gray-200 dark:border-neutral-700 px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FBF9F7] focus:ring-0 bg-white dark:bg-[#121212] text-[#121212] dark:text-[#FBF9F7]"
+                        className="grow min-w-0 rounded-none border border-gray-200 dark:border-[#2C323E] px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 bg-white dark:bg-[#121419] text-[#121212] dark:text-white"
                         placeholder={`Factor / Criterion name`}
                         id={`crit-input-${idx}`}
                       />
                       <button
                         onClick={() => handleRemoveCriterion(idx)}
-                        className="md:hidden p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
+                        className="md:hidden p-2 text-gray-400 dark:text-[#9CA3AF] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
                         id={`crit-delete-mobile-${idx}`}
                         title="Remove factor"
                       >
@@ -380,21 +380,21 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                               handleCriterionChange(idx, "unit", "pts (1-10)");
                             }
                           }}
-                          className="w-full rounded-none border border-gray-200 dark:border-neutral-700 px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FBF9F7] focus:ring-0 bg-white dark:bg-[#121212] font-mono text-[#121212] dark:text-[#FBF9F7]"
+                          className="w-full rounded-none border border-gray-200 dark:border-[#2C323E] px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 bg-white dark:bg-[#121419] font-mono text-[#121212] dark:text-[#FFB900]"
                           placeholder={`Unit (e.g. pts (1-10), $, hrs)`}
                           id={`crit-unit-${idx}`}
                           title="Edit Unit of Measure (UoM)"
                         />
                       </div>
                       <div className="shrink-0">
-                        <div className="flex border border-gray-200 dark:border-neutral-700 rounded-none overflow-hidden" id={`crit-toggle-${idx}`}>
+                        <div className="flex border border-gray-200 dark:border-[#2C323E] rounded-none overflow-hidden" id={`crit-toggle-${idx}`}>
                           <button
                             type="button"
                             onClick={() => handleCriterionChange(idx, "type", "benefit")}
                             className={`px-2.5 py-2 text-xs font-mono transition cursor-pointer flex items-center gap-1 ${
                               crit.type === "benefit"
-                                ? "bg-[#121212] dark:bg-[#FBF9F7] text-white dark:text-[#121212] font-semibold"
-                                : "bg-white dark:bg-[#121212] text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800"
+                                ? "bg-[#121212] dark:bg-[#FE9A00] text-white dark:text-black font-semibold"
+                                : "bg-white dark:bg-[#121419] text-gray-400 dark:text-[#9CA3AF] hover:text-gray-700 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#1C2028]"
                             }`}
                             title="Benefit: Higher values are better"
                           >
@@ -403,10 +403,10 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                           <button
                             type="button"
                             onClick={() => handleCriterionChange(idx, "type", "cost")}
-                            className={`px-2.5 py-2 text-xs font-mono transition cursor-pointer flex items-center gap-1 border-l border-gray-200 dark:border-neutral-700 ${
+                            className={`px-2.5 py-2 text-xs font-mono transition cursor-pointer flex items-center gap-1 border-l border-gray-200 dark:border-[#2C323E] ${
                               crit.type === "cost"
-                                ? "bg-[#121212] dark:bg-[#FBF9F7] text-white dark:text-[#121212] font-semibold"
-                                : "bg-white dark:bg-[#121212] text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800"
+                                ? "bg-[#121212] dark:bg-[#FE9A00] text-white dark:text-black font-semibold"
+                                : "bg-white dark:bg-[#121419] text-gray-400 dark:text-[#9CA3AF] hover:text-gray-700 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#1C2028]"
                             }`}
                             title="Cost: Lower values are better"
                           >
@@ -416,7 +416,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                       </div>
                       <button
                         onClick={() => handleRemoveCriterion(idx)}
-                        className="hidden md:block p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
+                        className="hidden md:block p-2 text-gray-400 dark:text-[#9CA3AF] hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer shrink-0"
                         id={`crit-delete-desktop-${idx}`}
                         title="Remove factor"
                       >
@@ -430,7 +430,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           </div>
 
           {error && (
-            <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-rose-300 text-xs" id="nl-edit-error">
+            <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-[#FDA4AF] text-xs" id="nl-edit-error">
               <AlertCircle className="w-5 h-5 shrink-0 text-rose-500" />
               <div>{error}</div>
             </div>
@@ -449,7 +449,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
+              className="px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
               id="btn-confirm-matrix"
             >
               Confirm Setup & Start Comparisons <ArrowRight className="w-4 h-4" />
