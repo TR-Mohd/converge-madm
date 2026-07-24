@@ -75,7 +75,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
 
     try {
       const response = await generateContentWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-3.6-flash",
         contents: promptMessage,
         config: {
           tools: [{ googleSearch: {} }],
@@ -91,7 +91,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     if (!text) {
       try {
         const fallbackResponse = await generateContentWithRetry(ai, {
-          model: "gemini-1.5-flash",
+          model: "gemini-3.6-flash",
           contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
           config: {
             responseMimeType: "application/json",

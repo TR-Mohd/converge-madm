@@ -65,7 +65,7 @@ Please write a friendly, helpful, and highly insightful analytical summary of wh
     let summaryText = "";
     try {
       const response = await generateContentWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-3.6-flash",
         contents: promptMessage,
         config: {
           systemInstruction: "You are a professional decision advisor. Write a friendly, analytical, and concise evaluation of the MADM results. Focus on explaining trade-offs clearly without technical jargon."
