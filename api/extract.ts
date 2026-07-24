@@ -15,6 +15,29 @@ function getGeminiClient(): GoogleGenAI {
   });
 }
 
+async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 2): Promise<any> {
+  let attempt = 0;
+  while (true) {
+    try {
+      return await ai.models.generateContent(params);
+    } catch (err: any) {
+      const errMsg = String(err?.message || err || "");
+      const is429 = err?.status === 429 || err?.status === "RESOURCE_EXHAUSTED" || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED");
+      if (is429 && attempt < maxRetries) {
+        attempt++;
+        let delayMs = 6500;
+        const match = errMsg.match(/retry in\s*(\d+(?:\.\d+)?)s/i);
+        if (match) {
+          delayMs = Math.ceil(parseFloat(match[1]) * 1000) + 500;
+        }
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -46,7 +69,7 @@ export default async function handler(req: any, res: any) {
     let text: string | null = null;
     let lastAiError: string | null = null;
     try {
-      const response = await ai.models.generateContent({
+      const response = await generateContentWithRetry(ai, {
         model: "gemini-2.0-flash",
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
