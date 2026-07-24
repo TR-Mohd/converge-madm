@@ -53,3 +53,23 @@ body {
   color: var(--text-body);
   transition: background-color 0.25s ease, color 0.25s ease;
 }
+
+/* Dark mode custom scrollbar */
+.dark .scrollbar-dark::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.dark .scrollbar-dark::-webkit-scrollbar-track {
+  background: #1B1F27;
+  border-radius: 9999px;
+}
+
+.dark .scrollbar-dark::-webkit-scrollbar-thumb {
+  background: #FE9A00;
+  border-radius: 9999px;
+}
+
+.dark .scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: #FFB900;
+}

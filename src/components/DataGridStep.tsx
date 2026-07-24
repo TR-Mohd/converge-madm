@@ -194,7 +194,7 @@ export default function DataGridStep({
           <div className="space-y-1">
             <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Performance Inputs Reference</h3>
             <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
-              Now enter the raw, actual performance metrics for each alternative. You can write units (e.g., <strong className="text-black dark:text-white italic">"$1,200"</strong>, <strong className="text-black dark:text-white italic">"16GB"</strong>, <strong className="text-black dark:text-white italic">"12 hours"</strong>). Converge will automatically parse the numbers.
+              Now enter the raw, actual performance metrics for each alternative. You can write units (e.g., <strong className="text-black dark:text-[#FE9A00] italic">"$1,200"</strong>, <strong className="text-black dark:text-[#FE9A00] italic">"16GB"</strong>, <strong className="text-black dark:text-[#FE9A00] italic">"12 hours"</strong>). Converge will automatically parse the numbers.
             </p>
           </div>
         </div>
@@ -218,7 +218,7 @@ export default function DataGridStep({
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none" id="performance-table-container">
+      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none scrollbar-dark" id="performance-table-container">
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
