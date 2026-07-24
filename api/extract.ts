@@ -15,7 +15,7 @@ function getGeminiClient(): GoogleGenAI {
   });
 }
 
-async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 2): Promise<any> {
+async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries = 1): Promise<any> {
   let attempt = 0;
   while (true) {
     try {
@@ -25,12 +25,7 @@ async function generateContentWithRetry(ai: GoogleGenAI, params: any, maxRetries
       const is429 = err?.status === 429 || err?.status === "RESOURCE_EXHAUSTED" || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED");
       if (is429 && attempt < maxRetries) {
         attempt++;
-        let delayMs = 6500;
-        const match = errMsg.match(/retry in\s*(\d+(?:\.\d+)?)s/i);
-        if (match) {
-          delayMs = Math.ceil(parseFloat(match[1]) * 1000) + 500;
-        }
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         continue;
       }
       throw err;
@@ -70,7 +65,7 @@ export default async function handler(req: any, res: any) {
     let lastAiError: string | null = null;
     try {
       const response = await generateContentWithRetry(ai, {
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
           systemInstruction: systemPrompt,

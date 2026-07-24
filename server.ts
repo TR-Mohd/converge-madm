@@ -57,7 +57,7 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
     let text: string | null = null;
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         contents: `Analyze and extract the decision-making elements from the description below:\n\n"${description}"`,
         config: {
           systemInstruction: systemPrompt,
@@ -219,7 +219,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     // Attempt 1: Search-grounded generation
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         contents: promptMessage,
         config: {
           tools: [{ googleSearch: {} }],
@@ -236,7 +236,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     if (!text) {
       try {
         const fallbackResponse = await ai.models.generateContent({
-          model: "gemini-2.0-flash",
+          model: "gemini-1.5-flash",
           contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
           config: {
             responseMimeType: "application/json",
@@ -313,7 +313,7 @@ Please write a friendly, helpful, and highly insightful analytical summary of wh
     let summaryText = "";
     try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         contents: promptMessage,
         config: {
           systemInstruction: "You are a professional decision advisor. Write a friendly, analytical, and concise evaluation of the MADM results. Focus on explaining trade-offs clearly without technical jargon."
