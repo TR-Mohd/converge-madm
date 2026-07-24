@@ -66,7 +66,8 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           const raw = typeof errData.error === "string"
             ? errData.error
             : JSON.stringify(errData.error ?? "");
-          if (response.status === 429 || raw.includes("RESOURCE_EXHAUSTED") || raw.includes("quota")) {
+          const isQuota = response.status === 429 || raw.includes("RESOURCE_EXHAUSTED") || raw.includes("quota") || raw.includes("429") || raw.includes("limit");
+          if (isQuota) {
             friendlyMsg = "The AI service is temporarily unavailable due to high demand. Please wait a moment and try again.";
           } else if (response.status === 401 || response.status === 403) {
             friendlyMsg = "Access to the AI service was denied. Please check your API configuration.";

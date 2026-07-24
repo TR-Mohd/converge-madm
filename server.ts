@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import { Type } from "@google/genai";
 import dotenv from "dotenv";
-import { generateWithFallback, getGeminiClient } from "./api/_gemini";
+import { generateWithFallback, getGeminiClient, isQuotaError } from "./api/_gemini";
 
 dotenv.config();
 
@@ -11,11 +11,6 @@ const PORT = 3000;
 
 app.use(express.json());
 
-/** Returns true when an error looks like a Gemini quota exhaustion. */
-function isQuotaError(err: any): boolean {
-  const msg = String(err?.message || err || "").toLowerCase();
-  return err?.status === 429 || msg.includes("resource_exhausted") || msg.includes("quota");
-}
 
 // API endpoint to extract structured decision data from plain text
 app.post(["/api/extract", "/extract"], async (req: any, res: any) => {

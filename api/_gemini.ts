@@ -77,29 +77,48 @@ export function getGeminiClient(): GoogleGenAI {
   });
 }
 
+/** Returns true when an error represents any rate-limit or quota exhaustion. */
+export function isQuotaError(err: any): boolean {
+  if (!err) return false;
+  const msg = typeof err === "string" ? err : String(err.message || JSON.stringify(err) || "");
+  const lowerMsg = msg.toLowerCase();
+  return (
+    err.status === 429 ||
+    err.code === 429 ||
+    lowerMsg.includes("429") ||
+    lowerMsg.includes("resource_exhausted") ||
+    lowerMsg.includes("quota") ||
+    lowerMsg.includes("limit") ||
+    lowerMsg.includes("rate") ||
+    lowerMsg.includes("free_tier")
+  );
+}
+
 /**
  * Returns true when a caught error looks like a DAILY quota exhaustion.
  * Gemini daily-quota errors are 429 / RESOURCE_EXHAUSTED and carry a long
  * retryDelay (hours) or quota dimension that references "day".
  */
 function isDailyQuotaError(err: any): boolean {
-  const msg = String(err?.message || err || "").toLowerCase();
-  const isQuotaError =
-    err?.status === 429 ||
-    msg.includes("resource_exhausted") ||
-    msg.includes("quota");
+  if (!isQuotaError(err)) return false;
+  const msg = typeof err === "string" ? err : String(err.message || JSON.stringify(err) || "");
+  const lowerMsg = msg.toLowerCase();
 
-  if (!isQuotaError) return false;
-
-  // If the error message explicitly mentions "day" quota it is definitely daily.
-  if (msg.includes("per_day") || msg.includes("per day") || msg.includes("daily")) {
+  // If the error message explicitly mentions "day" quota or free_tier it is a daily quota hit.
+  if (
+    lowerMsg.includes("per_day") ||
+    lowerMsg.includes("per day") ||
+    lowerMsg.includes("daily") ||
+    lowerMsg.includes("free_tier") ||
+    lowerMsg.includes("generate_content_free_tier")
+  ) {
     return true;
   }
 
   // Gemini includes a retryDelay field in the error details.
   // A delay > 5 minutes strongly indicates a daily (not per-minute) quota hit.
   try {
-    const retryDelayMatch = msg.match(/"retrydelay"\s*:\s*"(\d+)s"/i);
+    const retryDelayMatch = lowerMsg.match(/"retrydelay"\s*:\s*"(\d+)s"/i);
     if (retryDelayMatch) {
       const seconds = parseInt(retryDelayMatch[1], 10);
       return seconds > 300; // > 5 minutes → treat as daily
@@ -108,13 +127,8 @@ function isDailyQuotaError(err: any): boolean {
     // ignore parse errors
   }
 
-  // If there is no retryDelay at all in the error and quota is mentioned,
-  // conservatively assume it is a daily exhaustion so we fall back.
-  if (msg.includes("free_tier") || msg.includes("generate_content_free_tier")) {
-    return true;
-  }
-
-  return false;
+  // Default: assume quota error on free tier is a daily quota exhaustion
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -152,8 +166,10 @@ export async function generateWithFallback(
 
       // --- Second attempt on fallback model ---
       try {
+        console.warn(`[gemini] Retrying request with fallback model ${secondModel}...`);
         return await ai.models.generateContent({ ...params, model: secondModel });
       } catch (fallbackErr: any) {
+        console.error(`[gemini] Fallback model ${secondModel} also failed:`, fallbackErr?.message || fallbackErr);
         // Both models failed — re-throw the fallback error.
         throw fallbackErr;
       }
@@ -163,3 +179,4 @@ export async function generateWithFallback(
     throw firstErr;
   }
 }
+
