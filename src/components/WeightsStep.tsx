@@ -25,7 +25,7 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
     <div className="space-y-8" id="weights-step-container">
       <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] rounded-none p-6 space-y-6" id="weights-visualizer-card">
         <div className="flex items-center gap-2" id="weights-header">
-          <BarChart3 className="w-5 h-5 text-[#121212] dark:text-white" />
+          <BarChart3 className="w-5 h-5 text-[#121212] dark:text-[#FE9A00]" />
           <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Logic Model (AHP Weights)</h3>
         </div>
 
@@ -49,15 +49,15 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
                       ({item.type})
                     </span>
                   </span>
-                  <span className="font-mono">{percentage}%</span>
+                  <span className="font-mono text-[#121212] dark:text-[#FFB900]">{percentage}%</span>
                 </div>
 
-                <div className="w-full bg-gray-100 dark:bg-[#2C323E] h-1.5 rounded-none overflow-hidden relative">
+                <div className="w-full bg-gray-100 dark:bg-[#2C323E] h-1.5 rounded-full overflow-hidden relative">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${item.weight * 100}%` }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="h-full bg-[#121212] dark:bg-[#FBBF24] rounded-none"
+                    className="h-full bg-[#121212] dark:bg-[#FE9A00] rounded-full"
                   />
                 </div>
               </div>
