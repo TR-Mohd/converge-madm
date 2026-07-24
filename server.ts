@@ -15,7 +15,7 @@ app.use(express.json());
 let aiClient: GoogleGenAI | null = null;
 
 function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY || "AQ.Ab8RN6K8rCoADLv9TedWWRKU04M3uhQ7ezTRkuu5jZ_p5GI-pA";
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY environment variable is required but missing.");
   }
@@ -346,7 +346,12 @@ Please write a friendly, helpful, and highly insightful analytical summary of wh
   }
 });
 
+export default app;
+
 async function startServer() {
+  // Do not listen on port when deployed as Vercel serverless functions
+  if (process.env.VERCEL === "1") return;
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
