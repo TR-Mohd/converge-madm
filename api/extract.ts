@@ -44,6 +44,7 @@ export default async function handler(req: any, res: any) {
       "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'.";
 
     let text: string | null = null;
+    let lastAiError: string | null = null;
     try {
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -101,25 +102,13 @@ export default async function handler(req: any, res: any) {
       });
       text = response.text || null;
     } catch (aiErr: any) {
-      console.warn("AI extraction call failed or quota exceeded:", aiErr?.message || aiErr);
+      console.warn("AI extraction call failed:", aiErr?.message || aiErr);
+      lastAiError = aiErr?.message || "Gemini API extraction request failed.";
     }
 
     if (!text) {
-      const hasDecisionKeywords = /\b(choose|choosing|versus|vs|option|between|select|selecting|buy|buying|pick|picking|hire|evaluating|compare|comparison)\b/i.test(trimmed);
-      if (!hasDecisionKeywords) {
-        return res.status(400).json({
-          error: "Your text does not appear to describe a decision problem. Please detail what options you are choosing between and at least two criteria that matter to you."
-        });
-      }
-
-      return res.json({
-        is_valid_decision: true,
-        decision_goal: description.slice(0, 40) + "...",
-        alternatives: ["Option A", "Option B"],
-        criteria: [
-          { name: "Cost / Price", type: "cost", unit: "$" },
-          { name: "Performance & Quality", type: "benefit", unit: "points" }
-        ]
+      return res.status(500).json({
+        error: lastAiError || "Gemini AI extraction service is currently unavailable. Please verify your GEMINI_API_KEY in Vercel settings."
       });
     }
 

@@ -112,27 +112,15 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
       });
       text = response.text || null;
     } catch (aiErr: any) {
-      console.warn("AI extraction call failed or quota exceeded:", aiErr?.message || aiErr);
+      console.warn("AI extraction call failed:", aiErr?.message || aiErr);
+      return res.status(500).json({
+        error: aiErr?.message || "Gemini AI extraction service is currently unavailable."
+      });
     }
 
     if (!text) {
-      // Check if text looks like a decision prompt before providing fallback
-      const hasDecisionKeywords = /\b(choose|choosing|versus|vs|option|between|select|selecting|buy|buying|pick|picking|hire|evaluating|compare|comparison)\b/i.test(trimmed);
-      if (!hasDecisionKeywords) {
-        return res.status(400).json({
-          error: "Your text does not appear to describe a decision problem. Please detail what options you are choosing between and at least two criteria that matter to you."
-        });
-      }
-
-      // Clean fallback ONLY for valid decision prompts when AI API is unavailable
-      return res.json({
-        is_valid_decision: true,
-        decision_goal: description.slice(0, 40) + "...",
-        alternatives: ["Option A", "Option B"],
-        criteria: [
-          { name: "Cost / Price", type: "cost", unit: "$" },
-          { name: "Performance & Quality", type: "benefit", unit: "points" }
-        ]
+      return res.status(500).json({
+        error: "Gemini AI returned empty response. Please try again."
       });
     }
 
