@@ -234,7 +234,7 @@ export default function DataGridStep({
                       <span className="text-[10px] font-mono text-[#121212] dark:text-[#FBBF24] font-semibold mt-0.5">
                         {((weights[idx] ?? 0) * 100).toFixed(1)}% weight
                       </span>
-                      <span className="text-[9px] font-mono font-normal text-gray-400 dark:text-[#4B5563] capitalize mt-0.5">
+                      <span className="text-[11px] font-mono font-normal text-gray-400 dark:text-[#CBD5E1] capitalize mt-0.5">
                         {crit.type === "benefit" ? "↑ benefit" : "↓ cost"}
                       </span>
                     </div>
