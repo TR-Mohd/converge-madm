@@ -2,27 +2,50 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #FBF9F7;
-  --bg-card: #FFFFFF;
-  --bg-subtle: #F5F2EC;
-  --text-primary: #121212;
+  /* Canvas & Surface Colors (Light Mode) */
+  --bg-app: #FBF9F7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F5F2EC;
+  --bg-input: #FFFFFF;
+
+  /* Structural Borders */
+  --border-subtle: #E5E1DA;
+  --border-medium: #D1CCC4;
+
+  /* Brand Accents */
+  --accent-primary: #121212;
+  --accent-hover: #2A2A2A;
+  --accent-text: #121212;
+
+  /* Typography */
+  --text-heading: #121212;
+  --text-body: #2B2B2B;
   --text-secondary: #666666;
   --text-muted: #999999;
-  --border-main: #E5E1DA;
-  --accent-dark: #121212;
-  --accent-dark-text: #FFFFFF;
 }
 
+:root.dark,
 .dark {
-  --bg-main: #121212;
-  --bg-card: #1C1C1C;
-  --bg-subtle: #262626;
-  --text-primary: #FBF9F7;
-  --text-secondary: #A3A3A3;
-  --text-muted: #737373;
-  --border-main: #333333;
-  --accent-dark: #FBF9F7;
-  --accent-dark-text: #121212;
+  /* Canvas & Surface Colors (Dark Mode) */
+  --bg-app: #0D0F12;
+  --bg-surface: #15181E;
+  --bg-surface-elevated: #1C2028;
+  --bg-input: #121419;
+
+  /* Structural Borders */
+  --border-subtle: #262A33;
+  --border-medium: #2C323E;
+
+  /* Brand Accents */
+  --accent-primary: #F59E0B;
+  --accent-hover: #FBBF24;
+  --accent-text: #FBBF24;
+
+  /* Typography */
+  --text-heading: #FFFFFF;
+  --text-body: #F3F4F6;
+  --text-secondary: #D1D5DB;
+  --text-muted: #9CA3AF;
 }
 
 @theme {
@@ -30,19 +53,26 @@
   --font-serif: "Lora", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-bg-main: var(--bg-main);
-  --color-bg-card: var(--bg-card);
-  --color-bg-subtle: var(--bg-subtle);
-  --color-text-primary: var(--text-primary);
+  --color-bg-app: var(--bg-app);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-surface-elevated: var(--bg-surface-elevated);
+  --color-bg-input: var(--bg-input);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-medium: var(--border-medium);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-text: var(--accent-text);
+
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
-  --color-border-main: var(--border-main);
-  --color-accent-dark: var(--accent-dark);
-  --color-accent-dark-text: var(--accent-dark-text);
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
+  background-color: var(--bg-app);
+  color: var(--text-body);
   transition: background-color 0.25s ease, color 0.25s ease;
 }

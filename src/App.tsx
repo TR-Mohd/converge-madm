@@ -164,24 +164,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF9F7] dark:bg-[#121212] text-[#121212] dark:text-[#FBF9F7] font-sans flex flex-col antialiased pb-12 transition-colors duration-200" id="app-root">
+    <div className="min-h-screen bg-[var(--bg-app)] text-[var(--text-body)] font-sans flex flex-col antialiased pb-12 transition-colors duration-200" id="app-root">
       {/* Premium Elegant Navigation Header */}
-      <header className="bg-white dark:bg-[#1C1C1C] border-b border-[#E5E1DA] dark:border-[#333333] sticky top-0 z-50 py-5 px-8 transition-colors duration-200" id="app-header">
+      <header className="bg-[var(--bg-surface)] border-b border-[var(--border-subtle)] sticky top-0 z-50 py-5 px-8 transition-colors duration-200" id="app-header">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={handleReset} id="logo-block">
-            <div className="w-10 h-10 rounded-sm bg-[#121212] dark:bg-[#FBF9F7] flex items-center justify-center text-white dark:text-[#121212] shadow-sm">
+            <div className="w-10 h-10 rounded-sm bg-[var(--accent-primary)] flex items-center justify-center text-[var(--bg-app)] shadow-sm">
               <BrainCircuit className="w-5.5 h-5.5" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-serif italic font-bold tracking-tight text-[#121212] dark:text-[#FBF9F7]">Converge</span>
-              <span className="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 dark:text-gray-500">Decision Support Engine</span>
+              <span className="text-2xl font-serif italic font-bold tracking-tight text-[var(--text-heading)]">Converge</span>
+              <span className="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--text-muted)]">Decision Support Engine</span>
             </div>
           </div>
           
           <div className="flex items-center gap-3" id="header-actions">
             <button
               onClick={toggleTheme}
-              className="p-2 text-[#121212] dark:text-[#FBF9F7] bg-white dark:bg-[#1C1C1C] hover:bg-gray-100 dark:hover:bg-neutral-800 border border-[#E5E1DA] dark:border-[#333333] rounded-none flex items-center justify-center transition cursor-pointer"
+              className="p-2 text-[var(--text-heading)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] rounded-none flex items-center justify-center transition cursor-pointer"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
               id="btn-toggle-theme"
             >
@@ -191,7 +191,7 @@ export default function App() {
             {(decisionData || userPrompt) && (
               <button
                 onClick={handleReset}
-                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-[#FBF9F7] bg-white dark:bg-[#1C1C1C] hover:bg-gray-50 dark:hover:bg-neutral-800 border border-[#121212] dark:border-[#FBF9F7] rounded-none flex items-center gap-1.5 transition cursor-pointer"
+                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold text-[var(--text-heading)] bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-elevated)] border border-[var(--border-medium)] rounded-none flex items-center gap-1.5 transition cursor-pointer"
                 id="btn-restart-app"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Restart
@@ -205,30 +205,30 @@ export default function App() {
       <main className="max-w-4xl mx-auto w-full px-4 pt-8 flex-grow flex flex-col space-y-8" id="app-main">
         {/* Dynamic Goal Badge if active */}
         {decisionData?.decision_goal && currentStep > 1 && (
-          <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in transition-colors duration-200" id="active-goal-banner">
+          <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in transition-colors duration-200" id="active-goal-banner">
             <div>
-              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 font-sans">Current Decision Target</span>
-              <h2 className="text-xl font-serif italic font-semibold text-[#121212] dark:text-[#FBF9F7] mt-1">{decisionData.decision_goal}</h2>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-[var(--text-muted)] font-sans">Current Decision Target</span>
+              <h2 className="text-xl font-serif italic font-semibold text-[var(--text-heading)] mt-1">{decisionData.decision_goal}</h2>
             </div>
-            <span className="text-xs uppercase tracking-wider font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-neutral-800 px-3 py-1.5 rounded-none self-start md:self-auto border border-gray-200 dark:border-neutral-700">
+            <span className="text-xs uppercase tracking-wider font-semibold text-[var(--text-secondary)] bg-[var(--bg-surface-elevated)] px-3 py-1.5 rounded-none self-start md:self-auto border border-[var(--border-subtle)]">
               {decisionData.alternatives.length} Options · {decisionData.criteria.length} Factors
             </span>
           </div>
         )}
 
         {/* Wizard Progress Bar */}
-        <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 shadow-2xs transition-colors duration-200" id="progress-bar-card">
+        <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-none p-5 shadow-2xs transition-colors duration-200" id="progress-bar-card">
           <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
         </div>
 
         {/* Dynamic Wizard Step Canvas */}
-        <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-6 md:p-10 shadow-xs grow transition-colors duration-200" id="wizard-step-canvas">
+        <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-none p-6 md:p-10 shadow-xs grow transition-colors duration-200" id="wizard-step-canvas">
           {renderStepContent()}
         </div>
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full text-center text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-12 px-4" id="app-footer">
+      <footer className="max-w-4xl mx-auto w-full text-center text-[9px] text-[var(--text-muted)] uppercase tracking-widest mt-12 px-4" id="app-footer">
         Converge MADM Engine · Analytic Hierarchy Process (AHP) & TOPSIS Multi-Criteria Normalization · Secure Server-Side Gemini Extraction
       </footer>
     </div>
