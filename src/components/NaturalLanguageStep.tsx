@@ -60,14 +60,29 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       });
 
       if (!response.ok) {
-        let errMsg = "Failed to extract decision elements.";
+        let friendlyMsg = "Something went wrong while analysing your input. Please try again.";
         try {
           const errData = await response.json();
-          errMsg = errData.error || errMsg;
+          const raw = typeof errData.error === "string"
+            ? errData.error
+            : JSON.stringify(errData.error ?? "");
+          if (response.status === 429 || raw.includes("RESOURCE_EXHAUSTED") || raw.includes("quota")) {
+            friendlyMsg = "The AI service is temporarily unavailable due to high demand. Please wait a moment and try again.";
+          } else if (response.status === 401 || response.status === 403) {
+            friendlyMsg = "Access to the AI service was denied. Please check your API configuration.";
+          } else if (response.status >= 500) {
+            friendlyMsg = "The server encountered an error. Please try again in a few seconds.";
+          } else if (raw.includes("invalid") || raw.includes("parse")) {
+            friendlyMsg = "Your input could not be understood. Try rephrasing your decision scenario.";
+          }
         } catch {
-          errMsg = `Server error (${response.status}): ${response.statusText || "Invalid server response"}`;
+          if (response.status === 429) {
+            friendlyMsg = "The AI service is temporarily unavailable due to high demand. Please wait a moment and try again.";
+          } else if (response.status >= 500) {
+            friendlyMsg = "The server encountered an error. Please try again in a few seconds.";
+          }
         }
-        throw new Error(errMsg);
+        throw new Error(friendlyMsg);
       }
 
       const data: DecisionData = await response.json();
