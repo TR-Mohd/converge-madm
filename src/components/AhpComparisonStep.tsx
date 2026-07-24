@@ -121,7 +121,7 @@ export default function AhpComparisonStep({
     } else {
       return (
         <span className="text-gray-600 dark:text-[#E5E7EB] font-medium">
-          Both <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critA}</strong> and <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">{critB}</strong> are <span className="font-bold text-[#121212] dark:text-white underline decoration-gray-300 dark:decoration-[#FE9A00]">equally important</span>. (Scale: 1)
+          Both are <span className="font-bold text-[#121212] dark:text-[#FFB900]">equally important</span>. (Scale: 1)
         </span>
       );
     }
