@@ -23,13 +23,13 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
 
   return (
     <div className="space-y-8" id="weights-step-container">
-      <div className="bg-white border border-[#E5E1DA] rounded-none p-6 space-y-6" id="weights-visualizer-card">
+      <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-6 space-y-6" id="weights-visualizer-card">
         <div className="flex items-center gap-2" id="weights-header">
-          <BarChart3 className="w-5 h-5 text-[#121212]" />
-          <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212]">Logic Model (AHP Weights)</h3>
+          <BarChart3 className="w-5 h-5 text-[#121212] dark:text-[#FBF9F7]" />
+          <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-[#FBF9F7]">Logic Model (AHP Weights)</h3>
         </div>
 
-        <p className="text-xs text-gray-500 leading-relaxed font-serif italic">
+        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-serif italic">
           Based on your pairwise judgments, the Analytic Hierarchy Process (AHP) has calculated the relative importance of each factor. These weights will configure the TOPSIS evaluation in the next stage.
         </p>
 
@@ -39,25 +39,25 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
             const percentage = (item.weight * 100).toFixed(1);
             return (
               <div key={idx} className="space-y-2" id={`priority-row-${idx}`}>
-                <div className="flex justify-between text-xs uppercase tracking-wider text-[#121212] font-semibold">
+                <div className="flex justify-between text-xs uppercase tracking-wider text-[#121212] dark:text-[#FBF9F7] font-semibold">
                   <span className="flex items-center gap-2">
-                    <span className="font-serif italic text-sm text-gray-400">
+                    <span className="font-serif italic text-sm text-gray-400 dark:text-gray-500">
                       0{idx + 1}
                     </span>
                     {item.name}
-                    <span className="font-mono text-[9px] font-normal text-gray-400 capitalize">
+                    <span className="font-mono text-[9px] font-normal text-gray-400 dark:text-gray-500 capitalize">
                       ({item.type})
                     </span>
                   </span>
                   <span className="font-mono">{percentage}%</span>
                 </div>
 
-                <div className="w-full bg-gray-100 h-1 rounded-none overflow-hidden relative">
+                <div className="w-full bg-gray-100 dark:bg-neutral-800 h-1.5 rounded-none overflow-hidden relative">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${item.weight * 100}%` }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="h-full bg-[#121212] rounded-none"
+                    className="h-full bg-[#121212] dark:bg-[#FBF9F7] rounded-none"
                   />
                 </div>
               </div>
@@ -68,52 +68,52 @@ export default function WeightsStep({ criteria, ahpResult, onNext, onBack }: Wei
 
       {/* AHP Engine Math Insights Card */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="math-insights-grid">
-        <div className="bg-[#FBF9F7] border border-[#E5E1DA] rounded-none p-5 space-y-1.5">
-          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Consistency Ratio (CR)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212]">{(cr * 100).toFixed(1)}%</p>
-          <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-none w-fit">
+        <div className="bg-[#FBF9F7] dark:bg-[#262626] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 space-y-1.5">
+          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Consistency Ratio (CR)</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FBF9F7]">{(cr * 100).toFixed(1)}%</p>
+          <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800 px-2 py-0.5 rounded-none w-fit">
             <ShieldCheck className="w-3 h-3" /> Valid Index
           </div>
         </div>
 
-        <div className="bg-[#FBF9F7] border border-[#E5E1DA] rounded-none p-5 space-y-1.5">
-          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Consistency Index (CI)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212]">{ci.toFixed(4)}</p>
-          <p className="text-[9px] text-gray-400 uppercase tracking-wider">Variance Score</p>
+        <div className="bg-[#FBF9F7] dark:bg-[#262626] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 space-y-1.5">
+          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Consistency Index (CI)</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FBF9F7]">{ci.toFixed(4)}</p>
+          <p className="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Variance Score</p>
         </div>
 
-        <div className="bg-[#FBF9F7] border border-[#E5E1DA] rounded-none p-5 space-y-1.5">
-          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Principal Eigenvalue (λ)</p>
-          <p className="text-2xl font-serif italic font-bold text-[#121212]">{lambdaMax.toFixed(3)}</p>
-          <p className="text-[9px] text-gray-400 uppercase tracking-wider">Factors: n = {criteria.length}</p>
+        <div className="bg-[#FBF9F7] dark:bg-[#262626] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 space-y-1.5">
+          <p className="text-[9px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">Principal Eigenvalue (λ)</p>
+          <p className="text-2xl font-serif italic font-bold text-[#121212] dark:text-[#FBF9F7]">{lambdaMax.toFixed(3)}</p>
+          <p className="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-wider">Factors: n = {criteria.length}</p>
         </div>
       </div>
 
       {/* Info card describing weights translation */}
-      <div className="bg-[#FBF9F7] border-l-4 border-[#121212] rounded-none p-6 flex gap-4 text-xs text-gray-700 leading-relaxed" id="weights-info-card">
-        <Info className="w-5 h-5 shrink-0 text-[#121212] mt-0.5" />
+      <div className="bg-[#FBF9F7] dark:bg-[#262626] border-l-4 border-[#121212] dark:border-[#FBF9F7] rounded-none p-6 flex gap-4 text-xs text-gray-700 dark:text-gray-300 leading-relaxed" id="weights-info-card">
+        <Info className="w-5 h-5 shrink-0 text-[#121212] dark:text-[#FBF9F7] mt-0.5" />
         <p className="font-serif italic">
-          The factor <strong className="text-[#121212] not-italic">{weightedCriteria[0]?.name}</strong> carries your highest priority of <strong className="text-[#121212] not-italic">{(weightedCriteria[0]?.weight * 100).toFixed(1)}%</strong>.
+          The factor <strong className="text-[#121212] dark:text-[#FBF9F7] not-italic">{weightedCriteria[0]?.name}</strong> carries your highest priority of <strong className="text-[#121212] dark:text-[#FBF9F7] not-italic">{(weightedCriteria[0]?.weight * 100).toFixed(1)}%</strong>.
           {weightedCriteria.length > 1 && (
             <span>
-              {" "}This is <strong className="text-[#121212] not-italic">{(weightedCriteria[0]?.weight / (weightedCriteria[weightedCriteria.length - 1]?.weight || 1)).toFixed(1)}x</strong> more important than your lowest-priority factor, <strong className="text-[#121212] not-italic">{weightedCriteria[weightedCriteria.length - 1]?.name}</strong>.
+              {" "}This is <strong className="text-[#121212] dark:text-[#FBF9F7] not-italic">{(weightedCriteria[0]?.weight / (weightedCriteria[weightedCriteria.length - 1]?.weight || 1)).toFixed(1)}x</strong> more important than your lowest-priority factor, <strong className="text-[#121212] dark:text-[#FBF9F7] not-italic">{weightedCriteria[weightedCriteria.length - 1]?.name}</strong>.
             </span>
           )}
         </p>
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100" id="weights-navigation">
+      <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-neutral-800" id="weights-navigation">
         <button
           onClick={onBack}
-          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 hover:text-[#121212] transition cursor-pointer"
+          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400 hover:text-[#121212] dark:hover:text-[#FBF9F7] transition cursor-pointer"
           id="btn-weights-back"
         >
           ← Adjust Comparisons
         </button>
         <button
           onClick={onNext}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white text-[11px] uppercase tracking-widest font-bold shadow-sm transition flex items-center gap-2 cursor-pointer"
+          className="px-8 py-3 bg-[#121212] dark:bg-[#FBF9F7] hover:bg-neutral-800 dark:hover:bg-white text-white dark:text-[#121212] text-[11px] uppercase tracking-widest font-bold shadow-sm transition flex items-center gap-2 cursor-pointer"
           id="btn-weights-next"
         >
           Enter Performance Data <ArrowRight className="w-4 h-4" />

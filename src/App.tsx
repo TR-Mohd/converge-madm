@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StepProgressBar from "./components/StepProgressBar";
 import NaturalLanguageStep from "./components/NaturalLanguageStep";
 import AhpComparisonStep from "./components/AhpComparisonStep";
@@ -7,11 +7,31 @@ import DataGridStep from "./components/DataGridStep";
 import ResultsStep from "./components/ResultsStep";
 import { DecisionData, PairwiseComparison, AHPResult, TopsisResult } from "./types";
 import { calculateTOPSIS } from "./utils/math";
-import { BrainCircuit, HelpCircle, RotateCcw } from "lucide-react";
+import { BrainCircuit, RotateCcw, Sun, Moon } from "lucide-react";
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userPrompt, setUserPrompt] = useState<string>("");
+  
+  // Theme State
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("converge_theme") : null;
+    return saved === "dark" ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("converge_theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("converge_theme", "light");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
   
   // Phase 1 State
   const [decisionData, setDecisionData] = useState<DecisionData | null>(null);
@@ -144,25 +164,34 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F7F4] text-[#121212] font-sans flex flex-col antialiased pb-12" id="app-root">
+    <div className="min-h-screen bg-[#FBF9F7] dark:bg-[#121212] text-[#121212] dark:text-[#FBF9F7] font-sans flex flex-col antialiased pb-12 transition-colors duration-200" id="app-root">
       {/* Premium Elegant Navigation Header */}
-      <header className="bg-white border-b border-[#E5E1DA] sticky top-0 z-50 py-5 px-8" id="app-header">
+      <header className="bg-white dark:bg-[#1C1C1C] border-b border-[#E5E1DA] dark:border-[#333333] sticky top-0 z-50 py-5 px-8 transition-colors duration-200" id="app-header">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={handleReset} id="logo-block">
-            <div className="w-10 h-10 rounded-sm bg-[#121212] flex items-center justify-center text-white shadow-sm">
+            <div className="w-10 h-10 rounded-sm bg-[#121212] dark:bg-[#FBF9F7] flex items-center justify-center text-white dark:text-[#121212] shadow-sm">
               <BrainCircuit className="w-5.5 h-5.5" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-serif italic font-bold tracking-tight text-[#121212]">Converge</span>
-              <span className="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400">Decision Support Engine</span>
+              <span className="text-2xl font-serif italic font-bold tracking-tight text-[#121212] dark:text-[#FBF9F7]">Converge</span>
+              <span className="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-400 dark:text-gray-500">Decision Support Engine</span>
             </div>
           </div>
           
           <div className="flex items-center gap-3" id="header-actions">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-[#121212] dark:text-[#FBF9F7] bg-white dark:bg-[#1C1C1C] hover:bg-gray-100 dark:hover:bg-neutral-800 border border-[#E5E1DA] dark:border-[#333333] rounded-none flex items-center justify-center transition cursor-pointer"
+              title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
+              id="btn-toggle-theme"
+            >
+              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
+            </button>
+
             {(decisionData || userPrompt) && (
               <button
                 onClick={handleReset}
-                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold text-[#121212] bg-white hover:bg-gray-50 border border-[#121212] rounded-none flex items-center gap-1.5 transition"
+                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-[#FBF9F7] bg-white dark:bg-[#1C1C1C] hover:bg-gray-50 dark:hover:bg-neutral-800 border border-[#121212] dark:border-[#FBF9F7] rounded-none flex items-center gap-1.5 transition cursor-pointer"
                 id="btn-restart-app"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Restart
@@ -176,30 +205,30 @@ export default function App() {
       <main className="max-w-4xl mx-auto w-full px-4 pt-8 flex-grow flex flex-col space-y-8" id="app-main">
         {/* Dynamic Goal Badge if active */}
         {decisionData?.decision_goal && currentStep > 1 && (
-          <div className="bg-white border border-[#E5E1DA] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in" id="active-goal-banner">
+          <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in transition-colors duration-200" id="active-goal-banner">
             <div>
-              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 font-sans">Current Decision Target</span>
-              <h2 className="text-xl font-serif italic font-semibold text-[#121212] mt-1">{decisionData.decision_goal}</h2>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 font-sans">Current Decision Target</span>
+              <h2 className="text-xl font-serif italic font-semibold text-[#121212] dark:text-[#FBF9F7] mt-1">{decisionData.decision_goal}</h2>
             </div>
-            <span className="text-xs uppercase tracking-wider font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-none self-start md:self-auto">
+            <span className="text-xs uppercase tracking-wider font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-neutral-800 px-3 py-1.5 rounded-none self-start md:self-auto border border-gray-200 dark:border-neutral-700">
               {decisionData.alternatives.length} Options · {decisionData.criteria.length} Factors
             </span>
           </div>
         )}
 
         {/* Wizard Progress Bar */}
-        <div className="bg-white border border-[#E5E1DA] rounded-none p-5 shadow-2xs" id="progress-bar-card">
+        <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-5 shadow-2xs transition-colors duration-200" id="progress-bar-card">
           <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
         </div>
 
         {/* Dynamic Wizard Step Canvas */}
-        <div className="bg-white border border-[#E5E1DA] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
+        <div className="bg-white dark:bg-[#1C1C1C] border border-[#E5E1DA] dark:border-[#333333] rounded-none p-6 md:p-10 shadow-xs grow transition-colors duration-200" id="wizard-step-canvas">
           {renderStepContent()}
         </div>
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full text-center text-[9px] text-gray-400 uppercase tracking-widest mt-12 px-4" id="app-footer">
+      <footer className="max-w-4xl mx-auto w-full text-center text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-12 px-4" id="app-footer">
         Converge MADM Engine · Analytic Hierarchy Process (AHP) & TOPSIS Multi-Criteria Normalization · Secure Server-Side Gemini Extraction
       </footer>
     </div>

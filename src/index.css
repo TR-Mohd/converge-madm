@@ -1,8 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+:root {
+  --bg-main: #FBF9F7;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F5F2EC;
+  --text-primary: #121212;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-main: #E5E1DA;
+  --accent-dark: #121212;
+  --accent-dark-text: #FFFFFF;
+}
+
+.dark {
+  --bg-main: #121212;
+  --bg-card: #1C1C1C;
+  --bg-subtle: #262626;
+  --text-primary: #FBF9F7;
+  --text-secondary: #A3A3A3;
+  --text-muted: #737373;
+  --border-main: #333333;
+  --accent-dark: #FBF9F7;
+  --accent-dark-text: #121212;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Lora", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg-main: var(--bg-main);
+  --color-bg-card: var(--bg-card);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-main: var(--border-main);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-dark-text: var(--accent-dark-text);
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
