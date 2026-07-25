@@ -4,7 +4,8 @@ import { Type } from "@google/genai";
 import dotenv from "dotenv";
 import { generateWithFallback, getGeminiClient, isQuotaError } from "./api/_gemini";
 
-dotenv.config();
+dotenv.config({ override: true }); // override: true ensures .env wins over any pre-existing shell/system env vars
+
 
 const app = express();
 const PORT = 3000;
