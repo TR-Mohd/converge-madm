@@ -157,6 +157,20 @@ export async function generateWithFallback(
   try {
     return await ai.models.generateContent({ ...params, model: firstModel });
   } catch (firstErr: any) {
+    // -------------------------------------------------------------------------
+    // DIAGNOSTIC LOGGING — logs the raw HTTP status, error code, and full error
+    // object so we can see exactly what Google returned instead of guessing.
+    // TODO: Remove this block once the root cause is confirmed.
+    // -------------------------------------------------------------------------
+    console.error(
+      `[gemini] ⚠ DIAGNOSTIC — ${firstModel} threw an error:`,
+      "\n  status     :", firstErr?.status ?? firstErr?.code ?? "(none)",
+      "\n  httpStatus :", firstErr?.httpStatusCode ?? firstErr?.statusCode ?? "(none)",
+      "\n  message    :", firstErr?.message ?? "(none)",
+      "\n  errorCode  :", firstErr?.errorCode ?? firstErr?.error?.code ?? "(none)",
+      "\n  fullError  :", JSON.stringify(firstErr, Object.getOwnPropertyNames(firstErr), 2)
+    );
+
     // If we started on the fallback already, re-throw — nothing more to try.
     if (startWithFallback) throw firstErr;
 
@@ -169,6 +183,18 @@ export async function generateWithFallback(
         console.warn(`[gemini] Retrying request with fallback model ${secondModel}...`);
         return await ai.models.generateContent({ ...params, model: secondModel });
       } catch (fallbackErr: any) {
+        // -----------------------------------------------------------------------
+        // DIAGNOSTIC LOGGING — same as above, for the fallback model.
+        // TODO: Remove this block once the root cause is confirmed.
+        // -----------------------------------------------------------------------
+        console.error(
+          `[gemini] ⚠ DIAGNOSTIC — ${secondModel} (fallback) also threw an error:`,
+          "\n  status     :", fallbackErr?.status ?? fallbackErr?.code ?? "(none)",
+          "\n  httpStatus :", fallbackErr?.httpStatusCode ?? fallbackErr?.statusCode ?? "(none)",
+          "\n  message    :", fallbackErr?.message ?? "(none)",
+          "\n  errorCode  :", fallbackErr?.errorCode ?? fallbackErr?.error?.code ?? "(none)",
+          "\n  fullError  :", JSON.stringify(fallbackErr, Object.getOwnPropertyNames(fallbackErr), 2)
+        );
         console.error(`[gemini] Fallback model ${secondModel} also failed:`, fallbackErr?.message || fallbackErr);
         // Both models failed — re-throw the fallback error.
         throw fallbackErr;
@@ -176,6 +202,7 @@ export async function generateWithFallback(
     }
 
     // Non-quota error (network, auth, etc.) — re-throw as-is.
+    // NOTE: The DIAGNOSTIC block above will have already printed the full error.
     throw firstErr;
   }
 }
