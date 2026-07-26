@@ -27,7 +27,8 @@ export default async function handler(req: any, res: any) {
       "If the text mentions only 1 criterion or fewer than 2 alternatives, set 'is_valid_decision' to FALSE and explain in 'validation_error' that multi-criteria decision making requires at least 2 options and at least 2 criteria to evaluate trade-offs. " +
       "Do NOT perform any math, calculation, or ranking. " +
       "CRITICAL MANDATE: EVERY SINGLE CRITERION MUST HAVE AN EXPLICIT UNIT OF MEASURE ('unit' field). NEVER leave 'unit' empty or null. " +
-      "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'.";
+      "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'. " +
+      "CURRENCY MANDATE: For ANY monetary or price/cost/salary/rent criterion (e.g. Price, Cost, Rent, Salary, Fee, Expenses), ALWAYS assign unit as 'Rp' (Indonesian Rupiah). NEVER use '$' or 'USD'.";
 
     let text: string | null = null;
     let lastAiError: string | null = null;
@@ -73,7 +74,7 @@ export default async function handler(req: any, res: any) {
                     },
                     unit: {
                       type: Type.STRING,
-                      description: "The preferred measurement unit for this criterion, e.g., '$', 'hrs', 'GB', '%', or 'points'. Default to 'points' if qualitative or unknown."
+                      description: "The preferred measurement unit for this criterion. Use 'Rp' for price/cost/salary/rent, 'hrs', 'GB', '%', or 'pts (1-10)'. Default to 'pts (1-10)' if qualitative or unknown."
                     }
                   },
                   required: ["name", "type", "unit"]
@@ -119,7 +120,7 @@ export default async function handler(req: any, res: any) {
     criteria.forEach((c: any) => {
       if (!c.unit || typeof c.unit !== "string" || !c.unit.trim()) {
         const nameLower = (c.name || "").toLowerCase();
-        if (nameLower.includes("price") || nameLower.includes("cost")) c.unit = "$";
+        if (nameLower.includes("price") || nameLower.includes("cost") || nameLower.includes("rent") || nameLower.includes("salary") || nameLower.includes("fee")) c.unit = "Rp";
         else if (nameLower.includes("battery") || nameLower.includes("life")) c.unit = "hrs";
         else if (nameLower.includes("storage") || nameLower.includes("ram")) c.unit = "GB";
         else c.unit = "pts (1-10)";
@@ -128,6 +129,8 @@ export default async function handler(req: any, res: any) {
         const uLower = u.toLowerCase();
         if (uLower === "points" || uLower === "pts" || uLower === "score") {
           c.unit = "pts (1-10)";
+        } else if (uLower === "$" || uLower === "usd" || uLower === "dollar" || uLower === "dollars") {
+          c.unit = "Rp";
         } else {
           c.unit = u;
         }

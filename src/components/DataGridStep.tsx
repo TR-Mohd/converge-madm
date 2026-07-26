@@ -24,7 +24,7 @@ function cleanAndExtractNumber(val: string): string {
 function getUnitType(unit: string | undefined): { prefix?: string; suffix?: string } {
   if (!unit) return {};
   const trimmed = unit.trim();
-  if (trimmed === "$" || trimmed === "€" || trimmed === "£") {
+  if (trimmed === "$" || trimmed === "€" || trimmed === "£" || trimmed.toLowerCase() === "rp" || trimmed.toLowerCase() === "idr") {
     return { prefix: trimmed };
   }
   return { suffix: trimmed };

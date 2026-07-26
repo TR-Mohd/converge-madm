@@ -37,7 +37,8 @@ app.post(["/api/extract", "/extract"], async (req: any, res: any) => {
       "If the text mentions only 1 criterion or fewer than 2 alternatives, set 'is_valid_decision' to FALSE and explain in 'validation_error' that multi-criteria decision making requires at least 2 options and at least 2 criteria to evaluate trade-offs. " +
       "Do NOT perform any math, calculation, or ranking. " +
       "CRITICAL MANDATE: EVERY SINGLE CRITERION MUST HAVE AN EXPLICIT UNIT OF MEASURE ('unit' field). NEVER leave 'unit' empty or null. " +
-      "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'.";
+      "For qualitative or score-based criteria (such as Camera Quality, Software Smoothness, Design, Comfort, Ease of Use, Quality), ALWAYS assign unit as 'pts (1-10)'. " +
+      "CURRENCY MANDATE: For ANY monetary or price/cost/salary/rent criterion (e.g. Price, Cost, Rent, Salary, Fee, Expenses), ALWAYS assign unit as 'Rp' (Indonesian Rupiah). NEVER use '$' or 'USD'.";
 
 /** Preserves HTTP status codes (403, 401, 429) from Gemini API errors. */
 function getAIErrorStatus(err: any): number {
@@ -99,7 +100,7 @@ function getAIErrorStatus(err: any): number {
                     },
                     unit: {
                       type: Type.STRING,
-                      description: "The preferred measurement unit for this criterion, e.g., '$', 'hrs', 'GB', '%', or 'points'. Default to 'points' if qualitative or unknown."
+                      description: "The preferred measurement unit for this criterion. Use 'Rp' for price/cost/salary/rent, 'hrs', 'GB', '%', or 'pts (1-10)'. Default to 'pts (1-10)' if qualitative or unknown."
                     }
                   },
                   required: ["name", "type", "unit"]
@@ -151,7 +152,7 @@ function getAIErrorStatus(err: any): number {
     criteria.forEach((c: any) => {
       if (!c.unit || typeof c.unit !== "string" || !c.unit.trim()) {
         const nameLower = (c.name || "").toLowerCase();
-        if (nameLower.includes("price") || nameLower.includes("cost")) c.unit = "$";
+        if (nameLower.includes("price") || nameLower.includes("cost") || nameLower.includes("rent") || nameLower.includes("salary") || nameLower.includes("fee")) c.unit = "Rp";
         else if (nameLower.includes("battery") || nameLower.includes("life")) c.unit = "hrs";
         else if (nameLower.includes("storage") || nameLower.includes("ram")) c.unit = "GB";
         else c.unit = "pts (1-10)";
@@ -160,6 +161,8 @@ function getAIErrorStatus(err: any): number {
         const uLower = u.toLowerCase();
         if (uLower === "points" || uLower === "pts" || uLower === "score") {
           c.unit = "pts (1-10)";
+        } else if (uLower === "$" || uLower === "usd" || uLower === "dollar" || uLower === "dollars") {
+          c.unit = "Rp";
         } else {
           c.unit = u;
         }
@@ -199,7 +202,15 @@ ${criteria.map((c: any) => `- ${c.name} (type: ${c.type}, preferred unit: ${c.un
 Return a 2D array of values where the outer array corresponds exactly to the alternatives in order, and the inner array corresponds exactly to the criteria in order.
 CRITICAL MANDATE FOR POINTS/QUALITATIVE CRITERIA:
 For any criterion whose preferred unit is 'pts (1-10)', 'points', 'pts', 'score', or qualitative factors (such as Camera Quality, Software Smoothness, Quality, Design, Comfort, Ease of Use), ALL values MUST be numeric ratings strictly on a 1.0 to 10.0 scale (e.g. '8.5', '9.2', '7.8'). NEVER output unscaled raw numbers like 150 or 800 for points/score criteria.
-Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they are standard concise units like '$', 'hrs', 'GB'.`;
+
+CRITICAL MANDATE FOR CURRENCY & DYNAMIC REALISTIC MARKET PRICING:
+For any monetary, price, cost, rent, or salary criterion:
+1. Inspect the criterion's SPECIFIC preferred unit ('unit' field, e.g. '$', 'Rp', '€', '£', 'SGD', etc.).
+2. You MUST generate prices and monetary figures that are realistic and accurate for the SPECIFIC currency unit requested:
+   - If the unit is '$' or 'USD': generate realistic market prices in US Dollars (e.g., '$1,999' for MacBook Pro 14, '$1,200/mo' for rent).
+   - If the unit is 'Rp' or 'IDR': generate realistic Indonesian market prices in Rupiah (e.g., '28.000.000 Rp' or 'Rp 28.000.000' for MacBook Pro 14, '5.000.000 Rp' for rent).
+   - If the unit is another currency (e.g., '€', '£', 'SGD'): generate realistic market prices in that specific currency.
+3. NEVER generate nonsensical figures (such as '35.0 Rp' or '35 Rp' for a laptop in Rupiah, or '$28,000,000' for a laptop in USD). Always match the numerical scale appropriately to the requested currency unit!`;
 
     const responseSchemaConfig = {
       type: Type.OBJECT,
@@ -237,7 +248,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     if (!text) {
       try {
         const fallbackResponse = await generateWithFallback(ai, {
-          contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
+          contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base matching each criterion's specified unit.",
           config: {
             responseMimeType: "application/json",
             responseSchema: responseSchemaConfig
@@ -261,8 +272,17 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
         const nameLower = (crit.name || "").toLowerCase();
         const unitLower = (crit.unit || "").toLowerCase();
         
-        if (nameLower.includes("price") || nameLower.includes("cost") || unitLower.includes("$")) {
-          return `$${(799 + rIdx * 200).toString()}`;
+        if (nameLower.includes("price") || nameLower.includes("cost") || nameLower.includes("rent") || nameLower.includes("salary") || unitLower.includes("$") || unitLower.includes("rp") || unitLower.includes("usd") || unitLower.includes("idr") || unitLower.includes("€") || unitLower.includes("£")) {
+          if (unitLower.includes("$") || unitLower.includes("usd")) {
+            return `$${(1299 + rIdx * 400).toLocaleString()}`;
+          } else if (unitLower.includes("€") || unitLower.includes("eur")) {
+            return `€${(1200 + rIdx * 350).toLocaleString()}`;
+          } else if (unitLower.includes("£") || unitLower.includes("gbp")) {
+            return `£${(1100 + rIdx * 300).toLocaleString()}`;
+          } else {
+            const basePrice = 18000000 + rIdx * 6000000;
+            return `${basePrice.toLocaleString("id-ID")} Rp`;
+          }
         }
         if (nameLower.includes("battery") || nameLower.includes("life") || unitLower.includes("hr")) {
           return `${(12 + rIdx * 3).toString()} hrs`;

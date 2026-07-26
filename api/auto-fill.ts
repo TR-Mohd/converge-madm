@@ -22,7 +22,15 @@ ${criteria.map((c: any) => `- ${c.name} (type: ${c.type}, preferred unit: ${c.un
 Return a 2D array of values where the outer array corresponds exactly to the alternatives in order, and the inner array corresponds exactly to the criteria in order.
 CRITICAL MANDATE FOR POINTS/QUALITATIVE CRITERIA:
 For any criterion whose preferred unit is 'pts (1-10)', 'points', 'pts', 'score', or qualitative factors (such as Camera Quality, Software Smoothness, Quality, Design, Comfort, Ease of Use), ALL values MUST be numeric ratings strictly on a 1.0 to 10.0 scale (e.g. '8.5', '9.2', '7.8'). NEVER output unscaled raw numbers like 150 or 800 for points/score criteria.
-Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they are standard concise units like '$', 'hrs', 'GB'.`;
+
+CRITICAL MANDATE FOR CURRENCY & DYNAMIC REALISTIC MARKET PRICING:
+For any monetary, price, cost, rent, or salary criterion:
+1. Inspect the criterion's SPECIFIC preferred unit ('unit' field, e.g. '$', 'Rp', '€', '£', 'SGD', etc.).
+2. You MUST generate prices and monetary figures that are realistic and accurate for the SPECIFIC currency unit requested:
+   - If the unit is '$' or 'USD': generate realistic market prices in US Dollars (e.g., '$1,999' for MacBook Pro 14, '$1,200/mo' for rent).
+   - If the unit is 'Rp' or 'IDR': generate realistic Indonesian market prices in Rupiah (e.g., '28.000.000 Rp' or 'Rp 28.000.000' for MacBook Pro 14, '5.000.000 Rp' for rent).
+   - If the unit is another currency (e.g., '€', '£', 'SGD'): generate realistic market prices in that specific currency.
+3. NEVER generate nonsensical figures (such as '35.0 Rp' or '35 Rp' for a laptop in Rupiah, or '$28,000,000' for a laptop in USD). Always match the numerical scale appropriately to the requested currency unit!`;
 
     const responseSchemaConfig = {
       type: Type.OBJECT,
@@ -58,7 +66,7 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
     if (!text) {
       try {
         const fallbackResponse = await generateWithFallback(ai, {
-          contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base.",
+          contents: promptMessage + "\nProvide realistic estimated market values and performance numbers based on your knowledge base matching each criterion's specified unit.",
           config: {
             responseMimeType: "application/json",
             responseSchema: responseSchemaConfig
@@ -80,8 +88,17 @@ Ensure that you DO NOT write letters/words like 'hours' or 'dollars' unless they
         const nameLower = (crit.name || "").toLowerCase();
         const unitLower = (crit.unit || "").toLowerCase();
         
-        if (nameLower.includes("price") || nameLower.includes("cost") || unitLower.includes("$")) {
-          return `$${(799 + rIdx * 200).toString()}`;
+        if (nameLower.includes("price") || nameLower.includes("cost") || nameLower.includes("rent") || nameLower.includes("salary") || unitLower.includes("$") || unitLower.includes("rp") || unitLower.includes("usd") || unitLower.includes("idr") || unitLower.includes("€") || unitLower.includes("£")) {
+          if (unitLower.includes("$") || unitLower.includes("usd")) {
+            return `$${(1299 + rIdx * 400).toLocaleString()}`;
+          } else if (unitLower.includes("€") || unitLower.includes("eur")) {
+            return `€${(1200 + rIdx * 350).toLocaleString()}`;
+          } else if (unitLower.includes("£") || unitLower.includes("gbp")) {
+            return `£${(1100 + rIdx * 300).toLocaleString()}`;
+          } else {
+            const basePrice = 18000000 + rIdx * 6000000;
+            return `${basePrice.toLocaleString("id-ID")} Rp`;
+          }
         }
         if (nameLower.includes("battery") || nameLower.includes("life") || unitLower.includes("hr")) {
           return `${(12 + rIdx * 3).toString()} hrs`;

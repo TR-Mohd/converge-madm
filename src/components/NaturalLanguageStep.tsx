@@ -396,7 +396,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                             }
                           }}
                           className="w-full rounded-none border border-gray-200 dark:border-[#2C323E] px-3 py-2 text-xs focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 bg-white dark:bg-[#121419] font-mono text-[#121212] dark:text-[#FFB900]"
-                          placeholder={`Unit (e.g. pts (1-10), $, hrs)`}
+                          placeholder={`Unit (e.g. pts (1-10), Rp, hrs)`}
                           id={`crit-unit-${idx}`}
                           title="Edit Unit of Measure (UoM)"
                         />
