@@ -1,5 +1,5 @@
 import { Type } from "@google/genai";
-import { getGeminiClient, generateWithFallback } from "./_gemini";
+import { getGeminiClient, generateWithFallback } from "./_gemini.js";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
