@@ -253,10 +253,12 @@ export default function DataGridStep({
                   const effectiveUnit = (crit.unit && crit.unit.trim()) ? crit.unit.trim() : "pts (1-10)";
                   const unitPrefix = getUnitPrefix(effectiveUnit);
                   const isInvalidCell = invalidCellKeys.has(`${rIdx}-${cIdx}`);
+                  const cellVal = gridData[rIdx]?.[cIdx] ?? "";
+                  const inputSize = Math.max(6, cellVal.length + 1);
 
                   return (
-                    <td key={cIdx} className="p-2.5 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[120px] sm:min-w-[140px]" id={`table-cell-${rIdx}-${cIdx}`}>
-                      <div className={`relative flex items-center border rounded-none overflow-hidden transition ${
+                    <td key={cIdx} className="p-2.5 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[120px] sm:min-w-[140px] w-auto" id={`table-cell-${rIdx}-${cIdx}`}>
+                      <div className={`relative flex items-center border rounded-none overflow-hidden transition w-max min-w-full ${
                         isInvalidCell
                           ? "border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40"
                           : "border-gray-200 dark:border-[#2C323E] focus-within:border-[#121212] dark:focus-within:border-[#FBBF24] bg-white dark:bg-[#121419]"
@@ -268,9 +270,11 @@ export default function DataGridStep({
                         )}
                         <input
                           type="text"
-                          value={gridData[rIdx]?.[cIdx] ?? ""}
+                          value={cellVal}
+                          size={inputSize}
                           onChange={(e) => handleCellChange(rIdx, cIdx, e.target.value)}
-                          className="grow min-w-0 w-full py-2 px-2.5 text-xs focus:outline-none border-0 bg-transparent font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563]"
+                          className="py-2 px-2.5 text-xs focus:outline-none border-0 bg-transparent font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563] shrink-0"
+                          style={{ minWidth: `${inputSize}ch` }}
                           placeholder="Value..."
                           id={`cell-input-${rIdx}-${cIdx}`}
                         />
