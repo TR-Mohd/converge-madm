@@ -136,7 +136,7 @@ export default function ResultsStep({
             return (
               <div
                 key={idx}
-                className={`p-5 border flex flex-col md:flex-row md:items-center justify-between gap-6 transition duration-200 rounded-none ${
+                className={`p-5 border flex flex-col md:flex-row md:items-center justify-between gap-6 rounded-none ${
                   isFirst
                     ? "border-[#121212] dark:border-[#F59E0B] bg-[#FBF9F7] dark:bg-[#1A1E27]"
                     : "border-[#E5E1DA] dark:border-[#262A33] bg-white dark:bg-[#15181E]"

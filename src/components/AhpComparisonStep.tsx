@@ -218,7 +218,7 @@ export default function AhpComparisonStep({
           return (
             <div
               key={idx}
-              className={`border p-6 transition-all duration-200 rounded-none ${
+              className={`border p-6 rounded-none ${
                 isMajorContradiction
                   ? "border-amber-400 dark:border-amber-500 bg-amber-50/10 dark:bg-amber-950/20 shadow-sm"
                   : isSelectedA || isSelectedB

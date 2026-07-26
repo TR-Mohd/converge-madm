@@ -53,11 +53,11 @@ export default function StepProgressBar({ currentStep, totalSteps }: StepProgres
           return (
             <div
               key={step.number}
-              className="flex flex-col items-center bg-white dark:bg-[#15181E] px-5 z-10 transition-colors duration-200"
+              className="flex flex-col items-center bg-white dark:bg-[#15181E] px-5 z-10"
               id={`step-marker-${step.number}`}
             >
               <div
-                className={`w-9 h-9 rounded-none flex items-center justify-center border text-xs font-mono font-bold transition-all duration-300 ${
+                className={`w-9 h-9 rounded-none flex items-center justify-center border text-xs font-mono font-bold ${
                   isCompleted
                     ? "bg-[#121212] border-[#121212] text-white dark:bg-[#FBBF24] dark:border-[#FBBF24] dark:text-black"
                     : isActive
@@ -68,7 +68,7 @@ export default function StepProgressBar({ currentStep, totalSteps }: StepProgres
                 {isCompleted ? "✓" : `0${step.number}`}
               </div>
               <span
-                className={`text-[10px] uppercase tracking-widest mt-2.5 transition-all duration-300 font-bold ${
+                className={`text-[10px] uppercase tracking-widest mt-2.5 font-bold ${
                   isActive ? "text-[#121212] dark:text-[#FBBF24]" : isCompleted ? "text-gray-500 dark:text-gray-400" : "text-gray-400 dark:text-gray-600"
                 }`}
               >

@@ -164,9 +164,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F7F4] dark:bg-[#0D0F12] text-[#121212] dark:text-[#F3F4F6] font-sans flex flex-col antialiased pb-12 transition-colors duration-200" id="app-root">
+    <div className="min-h-screen bg-[#F9F7F4] dark:bg-[#0D0F12] text-[#121212] dark:text-[#F3F4F6] font-sans flex flex-col antialiased pb-12" id="app-root">
       {/* Premium Elegant Navigation Header */}
-      <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 py-5 px-8 transition-colors duration-200" id="app-header">
+      <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 py-5 px-8" id="app-header">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={handleReset} id="logo-block">
             <div className="w-10 h-10 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
@@ -181,7 +181,7 @@ export default function App() {
           <div className="flex items-center gap-3" id="header-actions">
             <button
               onClick={toggleTheme}
-              className="px-3 py-2 text-[10px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center gap-1.5 transition cursor-pointer"
+              className="px-3 py-2 text-[10px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center gap-1.5 cursor-pointer"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
               id="btn-toggle-theme"
             >
@@ -199,7 +199,7 @@ export default function App() {
             {(decisionData || userPrompt) && (
               <button
                 onClick={handleReset}
-                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center gap-1.5 transition cursor-pointer"
+                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center gap-1.5 cursor-pointer"
                 id="btn-restart-app"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Restart
@@ -213,7 +213,7 @@ export default function App() {
       <main className="max-w-4xl mx-auto w-full px-4 pt-8 flex-grow flex flex-col space-y-8" id="app-main">
         {/* Dynamic Goal Badge if active */}
         {decisionData?.decision_goal && currentStep > 1 && (
-          <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in transition-colors duration-200" id="active-goal-banner">
+          <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in" id="active-goal-banner">
             <div>
               <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF] font-sans">Current Decision Target</span>
               <h2 className="text-xl font-serif italic font-semibold text-[#121212] dark:text-white mt-1">{decisionData.decision_goal}</h2>
@@ -225,12 +225,12 @@ export default function App() {
         )}
 
         {/* Wizard Progress Bar */}
-        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 shadow-2xs transition-colors duration-200" id="progress-bar-card">
+        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 shadow-2xs" id="progress-bar-card">
           <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
         </div>
 
         {/* Dynamic Wizard Step Canvas */}
-        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-6 md:p-10 shadow-xs grow transition-colors duration-200" id="wizard-step-canvas">
+        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
           {renderStepContent()}
         </div>
       </main>
