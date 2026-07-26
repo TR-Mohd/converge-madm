@@ -435,9 +435,19 @@ export function calculateTOPSIS(
   // Rank highest score first
   const sorted = [...results].sort((a, b) => b.score - a.score);
 
-  return sorted.map((item, index) => ({
-    alternative: item.alternative,
-    score: item.score,
-    rank: index + 1,
-  }));
+  const EPSILON = 1e-9;
+  let currentRank = 1;
+
+  return sorted.map((item, index) => {
+    if (index === 0) {
+      currentRank = 1;
+    } else if (Math.abs(item.score - sorted[index - 1].score) >= EPSILON) {
+      currentRank = index + 1;
+    }
+    return {
+      alternative: item.alternative,
+      score: item.score,
+      rank: currentRank,
+    };
+  });
 }
