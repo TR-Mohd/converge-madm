@@ -210,7 +210,7 @@ export default function App() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-4xl mx-auto w-full px-4 pt-8 flex-grow flex flex-col space-y-8" id="app-main">
+      <main className="max-w-4xl mx-auto w-full px-4 pt-6 flex-grow flex flex-col space-y-4 md:space-y-6" id="app-main">
         {/* Dynamic Goal Badge if active */}
         {decisionData?.decision_goal && currentStep > 1 && (
           <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in" id="active-goal-banner">
@@ -230,7 +230,7 @@ export default function App() {
         </div>
 
         {/* Dynamic Wizard Step Canvas */}
-        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
+        <div className="bg-white dark:bg-[#15181E] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
           {renderStepContent()}
         </div>
       </main>

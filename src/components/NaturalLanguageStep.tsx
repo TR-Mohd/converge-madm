@@ -222,7 +222,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 rows={6}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g. Choosing between three job offers based on salary, location, and growth..."
+                placeholder="Choosing between three job offers based on salary, location, and growth..."
                 className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] p-4 focus:border-[#121212] dark:focus:border-[#FBBF24] focus:ring-0 text-sm placeholder-gray-500 dark:placeholder-[#6B7280] bg-white dark:bg-[#121419] text-[#121212] dark:text-white font-serif italic resize-none min-h-[140px]"
               />
             </div>
