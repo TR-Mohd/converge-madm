@@ -1,3 +1,4 @@
+import { Type } from "@google/genai";
 import { getGeminiClient, generateWithFallback } from "./_gemini";
 
 export default async function handler(req: any, res: any) {

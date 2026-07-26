@@ -15,7 +15,7 @@
  * the user asking them to retry shortly.
  */
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, type GenerateContentParameters } from "@google/genai";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -148,7 +148,7 @@ function isDailyQuotaError(err: any): boolean {
  */
 export async function generateWithFallback(
   ai: GoogleGenAI,
-  params: Omit<any, "model">
+  params: Omit<GenerateContentParameters, "model">
 ): Promise<any> {
 
   // --- Decide which model to start with ---
