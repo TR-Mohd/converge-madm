@@ -21,8 +21,8 @@ import { GoogleGenAI, type GenerateContentParameters } from "@google/genai";
 // Constants
 // ---------------------------------------------------------------------------
 
-export const PRIMARY_MODEL = "gemini-2.5-flash";
-export const FALLBACK_MODEL = "gemini-2.5-flash";
+export const PRIMARY_MODEL = "gemini-3.6-flash";
+export const FALLBACK_MODEL = "gemini-3.5-flash";
 
 // ---------------------------------------------------------------------------
 // Circuit-breaker state  (module-level singleton — lives for the lifetime of
