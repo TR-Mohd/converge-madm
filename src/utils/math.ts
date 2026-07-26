@@ -257,38 +257,60 @@ export function parseCleanNumeric(val: string | number): number {
   if (typeof val === "number") return val;
   if (val === null || val === undefined) return NaN;
 
-  const str = String(val).trim();
+  let str = String(val).trim();
   if (!str) return NaN;
 
   // 1. Range detection: "10-12", "10 to 12", "10–12", "10—12" -> average
   //    Requires two distinct numeric tokens separated by a range delimiter.
   const rangeMatch = str.match(
-    /(-?\d+(?:\.\d+)?)\s*(?:-|–|—|to)\s*(-?\d+(?:\.\d+)?)/i
+    /(-?\d+(?:[\.,]\d+)?)\s*(?:-|–|—|to)\s*(-?\d+(?:[\.,]\d+)?)/i
   );
   if (rangeMatch) {
-    const a = parseFloat(rangeMatch[1]);
-    const b = parseFloat(rangeMatch[2]);
+    const a = parseFloat(rangeMatch[1].replace(",", "."));
+    const b = parseFloat(rangeMatch[2].replace(",", "."));
     if (!isNaN(a) && !isNaN(b)) {
       return (a + b) / 2;
     }
   }
 
-  // 2. Metric multiplier suffix: "2.5k", "1.2M", "3B" (case-insensitive,
-  //    optional space, optional trailing unit text like "2.5k users")
-  const multMatch = str.match(/(-?\d+(?:\.\d+)?)\s*([kKmMbB])(?:[a-zA-Z]*)?\b/);
+  // 2. Metric multiplier suffix: "2.5k", "1.2M", "3B", "25 jt" (Indonesian Juta)
+  const multMatch = str.match(/(-?\d+(?:[\.,]\d+)?)\s*([kKmMbB]|jt|juta)\b/i);
   if (multMatch) {
-    const num = parseFloat(multMatch[1]);
+    const num = parseFloat(multMatch[1].replace(",", "."));
     const suffix = multMatch[2].toLowerCase();
-    const multiplier = suffix === "k" ? 1e3 : suffix === "m" ? 1e6 : 1e9;
+    const multiplier = suffix === "k" ? 1e3 : (suffix === "m" || suffix === "jt" || suffix === "juta") ? 1e6 : 1e9;
     if (!isNaN(num)) {
       return num * multiplier;
     }
   }
 
-  // 3. Plain number with surrounding noise: "$799", "12 hrs", "45%"
-  //    Extract the first standalone numeric token rather than stripping
-  //    all non-numeric chars blindly (which can merge unrelated digits
-  //    together, e.g. "v2 - 3 stars" -> "2-3" -> misparsed as a range/23).
+  // 3. Thousands separators & locale formatting normalization:
+  // a) Multiple dots (e.g. "32.999.000" or "1.500.000,50") -> strip dots used as thousands separators
+  if ((str.match(/\./g) || []).length > 1) {
+    str = str.replace(/\./g, "");
+  }
+
+  // b) Multiple commas (e.g. "32,999,000" or "1,500,000.50") -> strip commas used as thousands separators
+  if ((str.match(/,/g) || []).length > 1) {
+    str = str.replace(/,/g, "");
+  }
+
+  // c) Indonesian / European dot-thousands + comma-decimal (e.g. "32.999.000,50" or "1.500,50")
+  if (/\d+\.\d{3}(?:,\d+)?/.test(str)) {
+    str = str.replace(/\./g, "").replace(",", ".");
+  } else if (/^\s*Rp?\s*\d{1,3}(?:\.\d{3})+\s*$/i.test(str)) {
+    // Exact Indonesian Rupiah formatted string (e.g. "Rp 32.999" or "32.999.000")
+    str = str.replace(/\./g, "");
+  } else if (/^\D*-?\d+,\d+\D*$/.test(str) && !str.includes(".")) {
+    // Single comma decimal without any dot (e.g. "2,5" or "€2,50" -> "2.50")
+    str = str.replace(",", ".");
+  } else if (/,\d{3}/.test(str)) {
+    // US thousands comma (e.g. "$1,999.99" or "32,999") -> strip commas
+    str = str.replace(/,/g, "");
+  }
+
+  // 4. Plain number with surrounding noise: "$799", "32999000", "12 hrs", "45%"
+  //    Extract the first standalone numeric token.
   const plainMatch = str.match(/-?\d+(?:\.\d+)?/);
   if (plainMatch) {
     const num = parseFloat(plainMatch[0]);

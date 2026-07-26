@@ -222,11 +222,11 @@ export default function DataGridStep({
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
-              <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans">Alternatives</th>
+              <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans min-w-[140px] sm:min-w-[160px]">Alternatives</th>
               {criteria.map((crit, idx) => {
                 const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "points";
                 return (
-                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E]" id={`header-col-${idx}`}>
+                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[170px] sm:min-w-[190px]" id={`header-col-${idx}`}>
                     <div className="text-xs font-bold text-[#121212] dark:text-white flex flex-col">
                       <span className="truncate uppercase tracking-wider">
                         {crit.name} <span className="font-mono text-gray-500 dark:text-[#9CA3AF] font-normal">({uom})</span>
@@ -247,7 +247,7 @@ export default function DataGridStep({
             {alternatives.map((alt, rIdx) => (
               <tr key={rIdx} className="border-b border-[#E5E1DA] dark:border-[#2C323E] hover:bg-gray-50/50 dark:hover:bg-[#1C2028]/50 transition" id={`table-row-${rIdx}`}>
                 {/* Alternative column */}
-                <td className="p-4 text-xs font-bold text-[#121212] dark:text-white bg-[#FBF9F7]/30 dark:bg-[#1A1E27]/30">
+                <td className="p-4 text-xs font-bold text-[#121212] dark:text-white bg-[#FBF9F7]/30 dark:bg-[#1A1E27]/30 min-w-[140px] sm:min-w-[160px]">
                   {alt}
                 </td>
 
@@ -260,10 +260,10 @@ export default function DataGridStep({
                   const isInvalidCell = invalidCellKeys.has(`${rIdx}-${cIdx}`);
 
                   return (
-                    <td key={cIdx} className="p-3 border-l border-[#E5E1DA] dark:border-[#2C323E]" id={`table-cell-${rIdx}-${cIdx}`}>
+                    <td key={cIdx} className="p-3 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[170px] sm:min-w-[190px]" id={`table-cell-${rIdx}-${cIdx}`}>
                       <div className="relative flex items-center">
                         {hasPrefix && (
-                          <span className="absolute left-3 text-xs font-mono text-gray-400 dark:text-[#9CA3AF] select-none">
+                          <span className="absolute left-3 text-xs font-mono text-gray-400 dark:text-[#9CA3AF] select-none font-semibold">
                             {unitInfo.prefix}
                           </span>
                         )}
@@ -276,7 +276,7 @@ export default function DataGridStep({
                               ? "border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40 focus:border-rose-600"
                               : "border border-gray-200 dark:border-[#2C323E] focus:border-[#121212] dark:focus:border-[#FBBF24] bg-white dark:bg-[#121419]"
                           } ${
-                            hasPrefix ? "pl-7" : "pl-3"
+                            hasPrefix ? (unitInfo.prefix!.length > 2 ? "pl-11" : "pl-9") : "pl-3"
                           } ${hasSuffix ? "pr-10" : "pr-3"}`}
                           placeholder="Value..."
                           id={`cell-input-${rIdx}-${cIdx}`}
