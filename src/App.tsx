@@ -225,7 +225,7 @@ export default function App() {
         )}
 
         {/* Wizard Progress Bar */}
-        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 shadow-2xs" id="progress-bar-card">
+        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none py-2.5 px-4 sm:py-3 sm:px-5 shadow-2xs" id="progress-bar-card">
           <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
         </div>
 
@@ -236,8 +236,8 @@ export default function App() {
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full text-center text-[9px] text-gray-400 dark:text-[#4B5563] uppercase tracking-widest mt-12 px-4" id="app-footer">
-        Converge MADM Engine · Analytic Hierarchy Process (AHP) & TOPSIS Multi-Criteria Normalization · Secure Server-Side Gemini Extraction
+      <footer className="max-w-4xl mx-auto w-full text-left text-[8.5px] text-gray-400 dark:text-[#4B5563] mt-12 px-4 leading-normal" id="app-footer">
+        Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
       </footer>
     </div>
   );

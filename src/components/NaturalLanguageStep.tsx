@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DecisionData, Criterion } from "../types";
-import { Wand2, Sparkles, Plus, Trash2, ArrowRight, AlertCircle, HelpCircle } from "lucide-react";
+import { Wand2, Sparkles, Plus, Trash2, ArrowRight, AlertCircle, HelpCircle, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 
 interface NaturalLanguageStepProps {
@@ -200,8 +200,9 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                   className="text-left p-4 bg-white dark:bg-[#15181E] hover:bg-[#FBF9F7] dark:hover:bg-[#1C2028] border border-[#E5E1DA] dark:border-[#2C323E] hover:border-[#121212] dark:hover:border-[#F59E0B] rounded-none transition duration-200 flex flex-col justify-between group cursor-pointer"
                   id={`preset-${idx}`}
                 >
-                  <span className="font-bold text-xs text-[#121212] dark:text-white group-hover:underline mb-2 block">
-                    {ex.title}
+                  <span className="font-bold text-xs text-[#121212] dark:text-white group-hover:underline mb-2 flex items-center justify-between">
+                    <span>{ex.title}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-[#121212] dark:group-hover:text-[#F59E0B] shrink-0 ml-1.5 transition-transform group-hover:translate-x-0.5" />
                   </span>
                   <span className="text-xs text-gray-500 dark:text-[#9CA3AF] line-clamp-2 leading-relaxed">
                     {ex.text}
@@ -215,17 +216,14 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]" htmlFor="decision-description">
               Describe your decision in plain English
             </label>
-            <p className="text-xs text-gray-500 dark:text-[#9CA3AF] leading-relaxed font-serif italic">
-              Detail what you are choosing between, what factors are important to you, and any constraints you might have.
-            </p>
             <div className="relative">
               <textarea
                 id="decision-description"
                 rows={6}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="I need to choose a laptop. I am comparing Apple MacBook, Dell XPS, and Lenovo ThinkPad. I care about battery life, RAM, weight, and low price..."
-                className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] p-4 focus:border-[#121212] dark:focus:border-[#FBBF24] focus:ring-0 text-sm placeholder-gray-400 dark:placeholder-[#4B5563] bg-white dark:bg-[#121419] text-[#121212] dark:text-white font-serif italic resize-none min-h-[140px]"
+                placeholder="e.g. Choosing between three job offers based on salary, location, and growth..."
+                className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] p-4 focus:border-[#121212] dark:focus:border-[#FBBF24] focus:ring-0 text-sm placeholder-gray-500 dark:placeholder-[#6B7280] bg-white dark:bg-[#121419] text-[#121212] dark:text-white font-serif italic resize-none min-h-[140px]"
               />
             </div>
           </div>
@@ -255,7 +253,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                 </>
               ) : (
                 <>
-                  <Wand2 className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" />
                   Extract Decision Elements
                 </>
               )}

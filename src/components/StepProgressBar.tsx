@@ -20,16 +20,16 @@ const steps: Step[] = [
 
 export default function StepProgressBar({ currentStep, totalSteps }: StepProgressBarProps) {
   return (
-    <div className="w-full py-2 px-1" id="step-progress-bar-container">
+    <div className="w-full py-1 px-1 sm:py-2" id="step-progress-bar-container">
       {/* Mobile view */}
       <div className="md:hidden text-center" id="mobile-step-indicator">
         <p className="text-[10px] font-mono text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
           Step {currentStep} of {totalSteps}
         </p>
-        <p className="text-sm font-bold text-[#121212] dark:text-white mt-1 font-serif italic">
+        <p className="text-sm font-bold text-[#121212] dark:text-white mt-0.5 font-serif italic">
           {steps[currentStep - 1]?.label}
         </p>
-        <div className="w-full bg-gray-200 dark:bg-[#262A33] h-[2px] mt-3 overflow-hidden">
+        <div className="w-full bg-gray-200 dark:bg-[#262A33] h-[2px] mt-2 overflow-hidden">
           <div
             className="bg-[#121212] dark:bg-[#FBBF24] h-full transition-all duration-500 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
