@@ -21,13 +21,10 @@ function cleanAndExtractNumber(val: string): string {
   return match ? match[0] : val;
 }
 
-function getUnitType(unit: string | undefined): { prefix?: string; suffix?: string } {
-  if (!unit) return {};
+function getUnitPrefix(unit: string | undefined): string | null {
+  if (!unit) return null;
   const trimmed = unit.trim();
-  if (trimmed === "$" || trimmed === "€" || trimmed === "£" || trimmed.toLowerCase() === "rp" || trimmed.toLowerCase() === "idr") {
-    return { prefix: trimmed };
-  }
-  return { suffix: trimmed };
+  return trimmed || null;
 }
 
 export default function DataGridStep({
@@ -188,15 +185,18 @@ export default function DataGridStep({
 
   return (
     <div className="space-y-8" id="datagrid-step-container">
-      <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-6 flex flex-col md:flex-row gap-4 items-start justify-between" id="datagrid-intro-card">
-        <div className="flex gap-3.5 items-start">
-          <Table2 className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Performance Inputs Reference</h3>
-            <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
-              Now enter the raw, actual performance metrics for each alternative. You can write units (e.g., <strong className="text-black dark:text-[#FE9A00] italic">"$1,200"</strong>, <strong className="text-black dark:text-[#FE9A00] italic">"16GB"</strong>, <strong className="text-black dark:text-[#FE9A00] italic">"12 hours"</strong>). Converge will automatically parse the numbers.
-            </p>
-          </div>
+      {/* Header and Controls */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4" id="datagrid-header-controls">
+        <div>
+          <h2 className="text-xs uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF]">
+            Step 4 of 5 · Raw Performance Matrix
+          </h2>
+          <h1 className="text-2xl font-serif italic font-semibold text-[#121212] dark:text-white mt-1">
+            Input Option Scores & Data
+          </h1>
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mt-1 font-serif italic">
+            Enter numerical data or ratings for each alternative under each factor. Use 'Auto-Fill' to pull estimated web benchmarks.
+          </p>
         </div>
         <button
           onClick={handleAutoFillWithAI}
@@ -222,11 +222,11 @@ export default function DataGridStep({
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
-              <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans min-w-[140px] sm:min-w-[160px]">Alternatives</th>
+              <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans min-w-[120px] sm:min-w-[140px]">Alternatives</th>
               {criteria.map((crit, idx) => {
-                const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "points";
+                const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "pts (1-10)";
                 return (
-                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[170px] sm:min-w-[190px]" id={`header-col-${idx}`}>
+                  <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[120px] sm:min-w-[140px]" id={`header-col-${idx}`}>
                     <div className="text-xs font-bold text-[#121212] dark:text-white flex flex-col">
                       <span className="truncate uppercase tracking-wider">
                         {crit.name} <span className="font-mono text-gray-500 dark:text-[#9CA3AF] font-normal">({uom})</span>
@@ -246,46 +246,35 @@ export default function DataGridStep({
           <tbody>
             {alternatives.map((alt, rIdx) => (
               <tr key={rIdx} className="border-b border-[#E5E1DA] dark:border-[#2C323E] hover:bg-gray-50/50 dark:hover:bg-[#1C2028]/50 transition" id={`table-row-${rIdx}`}>
-                {/* Alternative column */}
-                <td className="p-4 text-xs font-bold text-[#121212] dark:text-white bg-[#FBF9F7]/30 dark:bg-[#1A1E27]/30 min-w-[140px] sm:min-w-[160px]">
+                <td className="p-4 text-xs font-bold text-[#121212] dark:text-white bg-[#FBF9F7]/30 dark:bg-[#1A1E27]/30 min-w-[120px] sm:min-w-[140px]">
                   {alt}
                 </td>
 
-                {/* Score columns */}
                 {criteria.map((crit, cIdx) => {
-                  const effectiveUnit = (crit.unit && crit.unit.trim()) ? crit.unit.trim() : "points";
-                  const unitInfo = getUnitType(effectiveUnit);
-                  const hasPrefix = !!unitInfo.prefix;
-                  const hasSuffix = !!unitInfo.suffix;
+                  const effectiveUnit = (crit.unit && crit.unit.trim()) ? crit.unit.trim() : "pts (1-10)";
+                  const unitPrefix = getUnitPrefix(effectiveUnit);
                   const isInvalidCell = invalidCellKeys.has(`${rIdx}-${cIdx}`);
 
                   return (
-                    <td key={cIdx} className="p-3 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[170px] sm:min-w-[190px]" id={`table-cell-${rIdx}-${cIdx}`}>
-                      <div className="relative flex items-center">
-                        {hasPrefix && (
-                          <span className="absolute left-3 text-xs font-mono text-gray-400 dark:text-[#9CA3AF] select-none font-semibold">
-                            {unitInfo.prefix}
+                    <td key={cIdx} className="p-2.5 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[120px] sm:min-w-[140px]" id={`table-cell-${rIdx}-${cIdx}`}>
+                      <div className={`relative flex items-center border rounded-none overflow-hidden transition ${
+                        isInvalidCell
+                          ? "border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40"
+                          : "border-gray-200 dark:border-[#2C323E] focus-within:border-[#121212] dark:focus-within:border-[#FBBF24] bg-white dark:bg-[#121419]"
+                      }`}>
+                        {unitPrefix && (
+                          <span className="px-2 py-2 text-[11px] font-mono text-gray-400 dark:text-[#9CA3AF] select-none font-semibold bg-gray-50 dark:bg-[#1A1E27] border-r border-gray-200 dark:border-[#2C323E] shrink-0 whitespace-nowrap">
+                            {unitPrefix}
                           </span>
                         )}
                         <input
                           type="text"
                           value={gridData[rIdx]?.[cIdx] ?? ""}
                           onChange={(e) => handleCellChange(rIdx, cIdx, e.target.value)}
-                          className={`w-full rounded-none py-2 text-xs focus:ring-0 font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563] ${
-                            isInvalidCell
-                              ? "border-2 border-rose-500 bg-rose-50/50 dark:bg-rose-950/40 focus:border-rose-600"
-                              : "border border-gray-200 dark:border-[#2C323E] focus:border-[#121212] dark:focus:border-[#FBBF24] bg-white dark:bg-[#121419]"
-                          } ${
-                            hasPrefix ? (unitInfo.prefix!.length > 2 ? "pl-11" : "pl-9") : "pl-3"
-                          } ${hasSuffix ? "pr-10" : "pr-3"}`}
+                          className="grow min-w-0 w-full py-2 px-2.5 text-xs focus:outline-none border-0 bg-transparent font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563]"
                           placeholder="Value..."
                           id={`cell-input-${rIdx}-${cIdx}`}
                         />
-                        {hasSuffix && (
-                          <span className="absolute right-3 text-[10px] font-mono text-gray-400 dark:text-[#9CA3AF] select-none">
-                            {unitInfo.suffix}
-                          </span>
-                        )}
                       </div>
                     </td>
                   );
