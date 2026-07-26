@@ -224,12 +224,11 @@ export default function DataGridStep({
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
               <th className="p-4 text-xs font-bold text-gray-400 dark:text-[#9CA3AF] uppercase tracking-widest font-sans min-w-[120px] sm:min-w-[140px]">Alternatives</th>
               {criteria.map((crit, idx) => {
-                const uom = crit.unit && crit.unit.trim() ? crit.unit.trim() : "pts (1-10)";
                 return (
                   <th key={idx} className="p-4 border-l border-[#E5E1DA] dark:border-[#2C323E] min-w-[120px] sm:min-w-[140px]" id={`header-col-${idx}`}>
                     <div className="text-xs font-bold text-[#121212] dark:text-white flex flex-col">
                       <span className="truncate uppercase tracking-wider">
-                        {crit.name} <span className="font-mono text-gray-500 dark:text-[#9CA3AF] font-normal">({uom})</span>
+                        {crit.name}
                       </span>
                       <span className="text-[10px] font-mono text-[#121212] dark:text-[#FBBF24] font-semibold mt-0.5">
                         {((weights[idx] ?? 0) * 100).toFixed(1)}% weight
