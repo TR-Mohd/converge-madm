@@ -8,6 +8,9 @@ import ResultsStep from "./components/ResultsStep";
 import { DecisionData, PairwiseComparison, AHPResult, TopsisResult } from "./types";
 import { calculateTOPSIS } from "./utils/math";
 import { BrainCircuit, RotateCcw, Sun, Moon } from "lucide-react";
+import { useSessionPersistence, WizardSession } from "./hooks/useSessionPersistence";
+import ResumeSessionBanner from "./components/ResumeSessionBanner";
+
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -45,6 +48,65 @@ export default function App() {
 
   // Phase 5 State
   const [rankings, setRankings] = useState<TopsisResult[] | null>(null);
+
+  // Phase 1 Session Persistence State
+  const { loadSession, saveSession, clearSession } = useSessionPersistence();
+  const [savedSession, setSavedSession] = useState<WizardSession | null>(() =>
+    loadSession()
+  );
+  const [showResumeBanner, setShowResumeBanner] = useState<boolean>(() => {
+    const session = loadSession();
+    return Boolean(session && session.currentStep > 1);
+  });
+
+  useEffect(() => {
+    if (showResumeBanner) {
+      return;
+    }
+    if (currentStep > 1 && currentStep < 5) {
+      saveSession({
+        currentStep,
+        userPrompt,
+        decisionData,
+        comparisons,
+        ahpResult,
+        rawData,
+        rankings,
+      });
+    } else if (currentStep === 1 || currentStep === 5) {
+      clearSession();
+    }
+  }, [
+    currentStep,
+    userPrompt,
+    decisionData,
+    comparisons,
+    ahpResult,
+    rawData,
+    rankings,
+    showResumeBanner,
+    saveSession,
+    clearSession,
+  ]);
+
+  const handleResumeSession = () => {
+    if (savedSession) {
+      setCurrentStep(savedSession.currentStep || 1);
+      setUserPrompt(savedSession.userPrompt || "");
+      setDecisionData(savedSession.decisionData || null);
+      setComparisons(savedSession.comparisons || null);
+      setAhpResult(savedSession.ahpResult || null);
+      setRawData(savedSession.rawData || null);
+      setRankings(savedSession.rankings || null);
+    }
+    setShowResumeBanner(false);
+  };
+
+  const handleDiscardSession = () => {
+    clearSession();
+    setSavedSession(null);
+    setShowResumeBanner(false);
+  };
 
   const totalSteps = 5;
 
@@ -85,6 +147,7 @@ export default function App() {
         );
         setRankings(topsisRankings);
         setCurrentStep(5);
+        clearSession();
       } catch (err) {
         // Re-throw so DataGridStep catches it, remains on Step 4, and highlights invalid cells
         throw err;
@@ -93,6 +156,7 @@ export default function App() {
   };
 
   const handleReset = () => {
+    clearSession();
     setCurrentStep(1);
     setUserPrompt("");
     setDecisionData(null);
@@ -165,6 +229,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F9F7F4] dark:bg-[#0D0F12] text-[#121212] dark:text-[#F3F4F6] font-sans flex flex-col antialiased pb-12" id="app-root">
+      {showResumeBanner && savedSession && (
+        <ResumeSessionBanner
+          session={savedSession}
+          onResume={handleResumeSession}
+          onDiscard={handleDiscardSession}
+        />
+      )}
+
       {/* Premium Elegant Navigation Header */}
       <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 py-5 px-8" id="app-header">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
