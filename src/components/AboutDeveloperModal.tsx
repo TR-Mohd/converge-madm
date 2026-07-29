@@ -61,9 +61,8 @@ export default function AboutDeveloperModal({
           </h2>
         </div>
 
-        {/* PLACEHOLDER BIO TEXT: Edit bio content as needed for your background */}
         <p className="text-xs text-gray-600 dark:text-[#9CA3AF] leading-relaxed font-sans max-w-sm mx-auto">
-          A developer passionate about building practical tools that make decisions clearer. Converge combines classic decision science (AHP + TOPSIS) with modern AI to help people reason through complex choices.
+          A software developer with a strong focus on building impactful educational and data-tracking tools. Whether developing comprehensive web-based learning platforms or structuring backend systems with JavaScript and SQL, I aim to create seamless, functional applications backed by solid engineering.
         </p>
 
         {/* Social Links / Contact Badges */}
