@@ -10,11 +10,13 @@ import { calculateTOPSIS } from "./utils/math";
 import { BrainCircuit, RotateCcw, Sun, Moon, Github, Linkedin } from "lucide-react";
 import { useSessionPersistence, WizardSession } from "./hooks/useSessionPersistence";
 import ResumeSessionBanner from "./components/ResumeSessionBanner";
+import AboutDeveloperModal from "./components/AboutDeveloperModal";
 
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userPrompt, setUserPrompt] = useState<string>("");
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState<boolean>(false);
   
   // Theme State
   const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -291,6 +293,11 @@ export default function App() {
         />
       )}
 
+      <AboutDeveloperModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+      />
+
       {/* Premium Elegant Navigation Header */}
       <header
         className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 max-[499px]:py-3.5 max-[499px]:px-4 min-[500px]:py-5 min-[500px]:px-8"
@@ -379,7 +386,12 @@ export default function App() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
               Built and developed by{" "}
-              <span className="font-serif italic font-bold bg-[#FE9A00]/25 dark:bg-[#FE9A00] text-black px-2 py-0.5 rounded-xs">
+              <span
+                onClick={() => setIsAboutModalOpen(true)}
+                className="font-serif italic font-bold bg-[#FE9A00]/25 dark:bg-[#FE9A00] text-black px-2 py-0.5 rounded-xs cursor-pointer hover:opacity-90 hover:underline transition-all"
+                title="Click to learn more about the developer"
+                id="footer-author-name"
+              >
                 Mohammed Aatef
               </span>
             </span>
