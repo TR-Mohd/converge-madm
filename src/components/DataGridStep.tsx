@@ -304,20 +304,20 @@ export default function DataGridStep({
         </p>
       </div>
 
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]" id="datagrid-navigation">
+      <div className="flex max-[639px]:flex-col-reverse min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center max-[639px]:gap-3 pt-4 border-t border-gray-100 dark:border-[#262A33]" id="datagrid-navigation">
         <button
           onClick={onBack}
-          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+          className="max-[639px]:w-full min-[640px]:w-auto px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
           id="btn-datagrid-back"
         >
           ← Adjust Weights
         </button>
         <button
           onClick={handleSubmit}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer"
+          className="max-[639px]:w-full min-[640px]:w-auto px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
           id="btn-datagrid-next"
         >
-          Calculate Final Ranking <ArrowRight className="w-4 h-4" />
+          Calculate Final Ranking <ArrowRight className="w-4 h-4 shrink-0" />
         </button>
       </div>
     </div>

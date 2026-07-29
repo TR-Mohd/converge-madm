@@ -253,19 +253,19 @@ export default function App() {
           <div className="flex items-center gap-2 min-[500px]:gap-3 shrink-0" id="header-actions">
             <button
               onClick={toggleTheme}
-              className="h-9 max-[619px]:w-9 max-[619px]:px-0 min-[620px]:px-3.5 text-[11px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+              className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
               id="btn-toggle-theme"
             >
               {theme === "light" ? (
                 <>
                   <Moon className="w-4 h-4 text-[#121212]" />
-                  <span className="max-[619px]:hidden min-[620px]:inline">DARK</span>
+                  <span className="max-[639px]:hidden min-[640px]:inline">DARK</span>
                 </>
               ) : (
                 <>
                   <Sun className="w-4 h-4 text-[#F59E0B]" />
-                  <span className="max-[619px]:hidden min-[620px]:inline">LIGHT</span>
+                  <span className="max-[639px]:hidden min-[640px]:inline">LIGHT</span>
                 </>
               )}
             </button>
@@ -273,12 +273,12 @@ export default function App() {
             {(decisionData || userPrompt) && (
               <button
                 onClick={handleReset}
-                className="h-9 max-[619px]:w-9 max-[619px]:px-0 min-[620px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                 title="Restart Application"
                 id="btn-restart-app"
               >
                 <RotateCcw className="w-4 h-4" />
-                <span className="max-[619px]:hidden min-[620px]:inline">Restart</span>
+                <span className="max-[639px]:hidden min-[640px]:inline">Restart</span>
               </button>
             )}
           </div>

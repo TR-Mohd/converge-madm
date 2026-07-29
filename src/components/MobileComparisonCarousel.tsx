@@ -482,14 +482,14 @@ export default function MobileComparisonCarousel({
 
             {/* Card Navigation Controls (Previous / Next) */}
             <div
-              className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-[#262A33]"
+              className="flex max-[379px]:flex-col-reverse min-[380px]:flex-row min-[380px]:justify-between min-[380px]:items-center max-[379px]:gap-2 pt-3 border-t border-gray-100 dark:border-[#262A33]"
               id={`mobile-card-nav-${safeIndex}`}
             >
               <button
                 type="button"
                 onClick={handlePrev}
                 disabled={safeIndex === 0}
-                className={`px-4 py-2 text-xs uppercase tracking-wider font-semibold transition flex items-center gap-1.5 ${
+                className={`max-[379px]:w-full min-[380px]:w-auto px-4 py-2 text-xs uppercase tracking-wider font-semibold transition flex items-center justify-center gap-1.5 ${
                   safeIndex === 0
                     ? "text-gray-300 dark:text-gray-700 cursor-not-allowed"
                     : "text-gray-600 dark:text-[#E5E7EB] hover:text-[#121212] dark:hover:text-white cursor-pointer"
@@ -502,7 +502,7 @@ export default function MobileComparisonCarousel({
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-2 bg-gray-900 hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black text-xs uppercase tracking-wider font-semibold shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+                className="max-[379px]:w-full min-[380px]:w-auto px-4 py-2 bg-gray-900 hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black text-xs uppercase tracking-wider font-semibold shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
                 id="btn-mobile-next"
               >
                 {safeIndex === comparisons.length - 1 ? (
@@ -642,18 +642,18 @@ export default function MobileComparisonCarousel({
               Calculate Weights <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="flex gap-2">
+            <div className="flex max-[639px]:flex-col min-[640px]:flex-row gap-2">
               <button
                 type="button"
                 onClick={() => setViewMode("carousel")}
-                className="w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#E5E7EB] bg-gray-100 dark:bg-[#1F232D] hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer"
+                className="max-[639px]:w-full min-[640px]:w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#E5E7EB] bg-gray-100 dark:bg-[#1F232D] hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer text-center"
               >
                 ← Back to Carousel
               </button>
               <button
                 type="button"
                 onClick={onBack}
-                className="w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+                className="max-[639px]:w-full min-[640px]:w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
               >
                 ← Back to Define
               </button>

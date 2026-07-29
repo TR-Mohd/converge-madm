@@ -230,10 +230,10 @@ export default function ResultsStep({
       <div className="flex justify-center pt-4" id="results-navigation">
         <button
           onClick={onReset}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
+          className="max-[639px]:w-full min-[640px]:w-auto px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer rounded-none"
           id="btn-results-reset"
         >
-          <RefreshCw className="w-4 h-4" /> Start New Evaluation
+          <RefreshCw className="w-4 h-4 shrink-0" /> Start New Evaluation
         </button>
       </div>
     </div>

@@ -338,21 +338,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
 
             {/* Criteria / Factors (Min 2) */}
             <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] rounded-none p-4 sm:p-6 space-y-4" id="edit-criteria-card">
-              <div className="flex justify-between items-center border-b border-gray-100 dark:border-[#262A33] pb-3">
-                <div>
+              <div className="border-b border-gray-100 dark:border-[#262A33] pb-3 space-y-1.5">
+                <div className="flex justify-between items-center">
                   <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Factors</h3>
-                  <p className="text-[10px] text-gray-400 dark:text-[#9CA3AF] mt-0.5">Criteria used to compare (Min 2, Max 10)</p>
-                  <p className="text-[10px] text-gray-500 dark:text-[#9CA3AF] mt-1 font-mono">
+                  <button
+                    onClick={handleAddCriterion}
+                    className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-black bg-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] border border-[#121212] dark:border-[#FE9A00] rounded-none flex items-center gap-1 transition cursor-pointer shrink-0"
+                    id="btn-add-criterion"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add
+                  </button>
+                </div>
+                <div className="max-w-[60%] space-y-1">
+                  <p className="text-[10px] text-gray-400 dark:text-[#9CA3AF]">Criteria used to compare (Min 2, Max 10)</p>
+                  <p className="text-[10px] text-gray-500 dark:text-[#9CA3AF] font-mono leading-relaxed">
                     Qualitative factors default to a 1–10 scale (<span className="text-black dark:text-[#FFB900] font-semibold">pts (1-10)</span>). You can edit the Unit (UoM) for any factor.
                   </p>
                 </div>
-                <button
-                  onClick={handleAddCriterion}
-                  className="px-3 py-1 text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-black bg-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] border border-[#121212] dark:border-[#FE9A00] rounded-none flex items-center gap-1 transition cursor-pointer"
-                  id="btn-add-criterion"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Add
-                </button>
               </div>
 
               <div className="space-y-3" id="criteria-inputs">
@@ -451,23 +453,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200 dark:border-[#262A33]" id="edit-section-footer">
+          <div className="flex max-[639px]:flex-col-reverse min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center max-[639px]:gap-3 pt-6 border-t border-gray-200 dark:border-[#262A33]" id="edit-section-footer">
             <button
               onClick={() => {
                 setExtractedData(null);
                 setError(null);
               }}
-              className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+              className="max-[639px]:w-full min-[640px]:w-auto px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
               id="btn-re-edit"
             >
               ← Edit Prompt
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
+              className="max-[639px]:w-full min-[640px]:w-auto max-[669px]:px-4 min-[670px]:px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer rounded-none"
               id="btn-confirm-matrix"
             >
-              Confirm Setup & Start Comparisons <ArrowRight className="w-4 h-4" />
+              Confirm Setup & Start Comparisons <ArrowRight className="w-4 h-4 shrink-0" />
             </button>
           </div>
         </motion.div>
