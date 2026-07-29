@@ -208,3 +208,10 @@ export async function generateWithFallback(
   }
 }
 
+/** FOR TESTING ONLY — resets circuit breaker state between test cases. */
+export function resetCircuitBreakerForTesting(): void {
+  primaryBlocked = false;
+  fallbackUntil = null;
+}
+
+
