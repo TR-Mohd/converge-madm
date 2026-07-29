@@ -378,7 +378,10 @@ export default function App() {
         <div className="border-t border-[#E5E1DA] dark:border-[#262A33] pt-6 text-center space-y-3">
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
-              Built and developed by Mohammed Aatef
+              Built and developed by{" "}
+              <span className="font-serif italic font-bold text-[#121212] dark:text-[#F59E0B]">
+                Mohammed Aatef
+              </span>
             </span>
             <div className="flex items-center gap-2">
               <a
