@@ -12,6 +12,7 @@ import {
   Eye,
   Edit3,
   Check,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -94,6 +95,22 @@ export default function MobileComparisonCarousel({
   const critA = criteria[currentComp.criterionAIndex];
   const critB = criteria[currentComp.criterionBIndex];
 
+  const isExactMatch = AHP_BUTTONS.some((b) => b.value === currentComp.value);
+  let nearestButtonValue: number | null = null;
+  if (!isExactMatch) {
+    let minDiff = Infinity;
+    AHP_BUTTONS.forEach((b) => {
+      const sameSign =
+        (currentComp.value < 0 && b.value < 0) ||
+        (currentComp.value > 0 && b.value > 0);
+      const diff = Math.abs(b.value - currentComp.value) - (sameSign ? 0.1 : 0);
+      if (diff < minDiff) {
+        minDiff = diff;
+        nearestButtonValue = b.value;
+      }
+    });
+  }
+
   const sliderInconsistency = inconsistencyInfo.find((item) => item.index === safeIndex);
   const isMajorContradiction =
     sliderInconsistency &&
@@ -169,7 +186,7 @@ export default function MobileComparisonCarousel({
           <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">
             {nameB}
           </strong>
-          . (Scale: {getSaatyValue(val)})
+          .
         </span>
       );
     } else if (val > 0) {
@@ -186,59 +203,57 @@ export default function MobileComparisonCarousel({
           <strong className="text-[#121212] dark:text-[#FFB900] font-serif italic font-bold">
             {nameA}
           </strong>
-          . (Scale: {getSaatyValue(val)})
+          .
         </span>
       );
     } else {
       return (
         <span className="text-gray-700 dark:text-[#E5E7EB] font-medium text-xs">
-          Both are{" "}
+          Both criteria are{" "}
           <span className="font-bold text-[#121212] dark:text-[#FFB900]">
             equally important
           </span>
-          . (Scale: 1)
+          .
         </span>
       );
     }
   };
 
   return (
-    <div className="block md:hidden space-y-6" id="mobile-ahp-carousel-container">
+    <div className="block md:hidden space-y-4" id="mobile-ahp-carousel-container">
       {/* Top Bar / Progress Header */}
-      <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] p-4 space-y-3">
+      <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] p-3 space-y-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">
-              {viewMode === "carousel"
-                ? `Comparison ${safeIndex + 1} of ${comparisons.length}`
-                : "Comparison Review"}
-            </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 bg-gray-100 dark:bg-[#1F232D] text-gray-600 dark:text-[#9CA3AF] rounded-none font-semibold">
-              {Math.round(((safeIndex + 1) / comparisons.length) * 100)}%
-            </span>
-          </div>
+          <span className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">
+            {viewMode === "carousel"
+              ? `Comparison ${safeIndex + 1} of ${comparisons.length}`
+              : "Comparison Review"}
+          </span>
 
           <button
             onClick={() =>
               setViewMode((prev) => (prev === "carousel" ? "summary" : "carousel"))
             }
-            className="text-[11px] uppercase tracking-wider font-bold text-[#121212] dark:text-[#F59E0B] hover:opacity-80 transition flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 bg-white dark:bg-[#1A1E27] border border-[#D1CCC4] dark:border-[#374151] hover:border-[#121212] dark:hover:border-[#F59E0B] rounded-full shadow-2xs text-[11px] font-bold uppercase tracking-wider text-[#121212] dark:text-[#F59E0B] flex items-center gap-1 transition-all cursor-pointer active:scale-95"
             id="btn-mobile-toggle-view"
           >
             {viewMode === "carousel" ? (
               <>
-                <ListFilter className="w-3.5 h-3.5" /> Review ({comparisons.length})
+                <ListFilter className="w-3.5 h-3.5 text-[#121212] dark:text-[#F59E0B]" />
+                <span>Review ({comparisons.length})</span>
+                <ChevronRight className="w-3 h-3 text-gray-400 dark:text-gray-500" />
               </>
             ) : (
               <>
-                <Eye className="w-3.5 h-3.5" /> Carousel View
+                <Eye className="w-3.5 h-3.5" />
+                <span>Carousel View</span>
               </>
             )}
           </button>
         </div>
 
         {/* Animated Progress Bar */}
-        <div className="w-full h-1.5 bg-gray-100 dark:bg-[#262A33] overflow-hidden">
+        <div className="w-full h-1 bg-gray-100 dark:bg-[#262A33] overflow-hidden">
           <motion.div
             className="h-full bg-[#121212] dark:bg-[#F59E0B]"
             initial={{ width: 0 }}
@@ -271,7 +286,7 @@ export default function MobileComparisonCarousel({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: slideDirection === "right" ? -30 : 30 }}
             transition={{ duration: 0.18 }}
-            className={`border bg-white dark:bg-[#15181E] p-5 space-y-6 touch-pan-y ${
+            className={`border bg-white dark:bg-[#15181E] p-4 space-y-4 touch-pan-y ${
               isMajorContradiction
                 ? "border-amber-400 dark:border-amber-500 bg-amber-50/10 dark:bg-amber-950/20"
                 : "border-[#E5E1DA] dark:border-[#262A33]"
@@ -282,9 +297,9 @@ export default function MobileComparisonCarousel({
             <div className="grid grid-cols-11 gap-2 items-center">
               {/* Criterion A Box */}
               <div
-                className={`col-span-5 p-3.5 border transition-all ${
+                className={`col-span-5 p-3 border transition-all ${
                   currentComp.value < 0
-                    ? "border-[#121212] dark:border-[#F59E0B] bg-[#FBF9F7] dark:bg-[#1A1E27] shadow-xs"
+                    ? "border-amber-500 dark:border-amber-400 bg-amber-50/40 dark:bg-amber-950/30 shadow-2xs"
                     : "border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15181E]"
                 }`}
               >
@@ -307,9 +322,9 @@ export default function MobileComparisonCarousel({
 
               {/* Criterion B Box */}
               <div
-                className={`col-span-5 p-3.5 border transition-all ${
+                className={`col-span-5 p-3 border transition-all ${
                   currentComp.value > 0
-                    ? "border-[#121212] dark:border-[#F59E0B] bg-[#FBF9F7] dark:bg-[#1A1E27] shadow-xs"
+                    ? "border-sky-500 dark:border-sky-400 bg-sky-50/40 dark:bg-sky-950/30 shadow-2xs"
                     : "border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15181E]"
                 }`}
               >
@@ -325,63 +340,114 @@ export default function MobileComparisonCarousel({
             </div>
 
             {/* Current choice textual description */}
-            <div className="text-center bg-[#F9F7F4] dark:bg-[#1A1E27] py-3 px-4 border border-gray-100 dark:border-gray-800">
+            <div className="text-center bg-[#F9F7F4] dark:bg-[#1A1E27] py-2 px-3 border border-gray-100 dark:border-gray-800">
               {getComparisonLabel(currentComp.value, critA.name, critB.name)}
             </div>
 
-            {/* Direct Selection Scale (AHP numeric scale tap targets) */}
-            <div className="space-y-3" id={`mobile-scale-container-${safeIndex}`}>
-              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#9CA3AF] px-1">
-                <span>← Favor {critA.name}</span>
-                <span className="text-gray-400">Equal</span>
-                <span>Favor {critB.name} →</span>
-              </div>
-
-              {/* 9 tap target buttons */}
-              <div className="grid grid-cols-9 gap-1.5">
+            {/* Direct Selection Scale (Visually dominant AHP numeric scale) */}
+            <div
+              className="bg-[#FBF9F7] dark:bg-[#1C2029] border border-[#D1CCC4] dark:border-[#374151] p-3 shadow-sm"
+              id={`mobile-scale-container-${safeIndex}`}
+            >
+              {/* 9 tap target buttons with visual separation (dividers & left/right color-coding) */}
+              <div className="flex items-center justify-start sm:justify-center overflow-x-auto py-1 px-0.5 gap-1.5 no-scrollbar">
                 {AHP_BUTTONS.map((btn) => {
                   const isSelected = currentComp.value === btn.value;
+                  const isApproxSelected =
+                    !isExactMatch && nearestButtonValue === btn.value;
                   const isJustSelected = justSelectedValue === btn.value;
 
+                  let sideStyles = "";
+                  if (isSelected) {
+                    if (btn.side === "A") {
+                      sideStyles =
+                        "bg-[#121212] dark:bg-[#F59E0B] text-white dark:text-black border-2 border-[#121212] dark:border-[#F59E0B] shadow-md scale-105 z-10";
+                    } else if (btn.side === "B") {
+                      sideStyles =
+                        "bg-[#121212] dark:bg-[#38BDF8] text-white dark:text-black border-2 border-[#121212] dark:border-[#38BDF8] shadow-md scale-105 z-10";
+                    } else {
+                      sideStyles =
+                        "bg-emerald-600 dark:bg-emerald-500 text-white dark:text-black border-2 border-emerald-600 dark:border-emerald-500 shadow-md scale-105 z-10";
+                    }
+                  } else if (isApproxSelected) {
+                    if (btn.side === "A") {
+                      sideStyles =
+                        "bg-amber-100/90 dark:bg-amber-900/60 text-amber-950 dark:text-amber-100 border-2 border-dashed border-amber-600 dark:border-amber-400 shadow-sm scale-105 z-10";
+                    } else if (btn.side === "B") {
+                      sideStyles =
+                        "bg-sky-100/90 dark:bg-sky-900/60 text-sky-950 dark:text-sky-100 border-2 border-dashed border-sky-600 dark:border-sky-400 shadow-sm scale-105 z-10";
+                    } else {
+                      sideStyles =
+                        "bg-emerald-100/90 dark:bg-emerald-900/60 text-emerald-950 dark:text-emerald-100 border-2 border-dashed border-emerald-600 dark:border-emerald-400 shadow-sm scale-105 z-10";
+                    }
+                  } else {
+                    if (btn.side === "A") {
+                      sideStyles =
+                        "bg-amber-50/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 border-amber-300 dark:border-amber-800 hover:border-amber-500";
+                    } else if (btn.side === "B") {
+                      sideStyles =
+                        "bg-sky-50/70 dark:bg-sky-950/40 text-sky-950 dark:text-sky-200 border-sky-300 dark:border-sky-800 hover:border-sky-500";
+                    } else {
+                      sideStyles =
+                        "bg-white dark:bg-[#262A33] text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600 hover:border-gray-400";
+                    }
+                  }
+
+                  const renderDividerBefore = btn.side === "EQUAL";
+                  const renderDividerAfter = btn.side === "EQUAL";
+
                   return (
-                    <button
-                      key={`${btn.side}-${btn.label}-${btn.value}`}
-                      type="button"
-                      onClick={() => handleButtonTap(btn.value)}
-                      className={`h-12 flex flex-col items-center justify-center border text-xs font-bold font-mono transition-all cursor-pointer relative select-none ${
-                        isSelected
-                          ? "bg-[#121212] dark:bg-[#F59E0B] text-white dark:text-black border-[#121212] dark:border-[#F59E0B] shadow-sm scale-105 z-10"
-                          : "bg-white dark:bg-[#1A1E27] text-gray-700 dark:text-[#E5E7EB] border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500"
-                      }`}
-                      title={btn.title}
-                    >
-                      <span className="text-sm">{btn.label}</span>
-                      {btn.subLabel && (
-                        <span className="text-[7px] tracking-tighter uppercase font-sans -mt-0.5 opacity-80">
-                          {btn.subLabel}
-                        </span>
+                    <React.Fragment key={`${btn.side}-${btn.label}-${btn.value}`}>
+                      {renderDividerBefore && (
+                        <div className="w-[1.5px] h-8 bg-gray-300 dark:bg-gray-600 mx-0.5 shrink-0 rounded-full" />
                       )}
 
-                      {/* Confirmation Check Badge on Tap */}
-                      {isJustSelected && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5"
-                        >
-                          <Check className="w-2.5 h-2.5" />
-                        </motion.span>
+                      <button
+                        type="button"
+                        onClick={() => handleButtonTap(btn.value)}
+                        className={`w-11 h-11 shrink-0 flex flex-col items-center justify-center border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
+                        title={btn.title}
+                      >
+                        <span>{isApproxSelected ? `~${btn.label}` : btn.label}</span>
+                        {btn.subLabel && (
+                          <span className="text-[7px] tracking-tighter uppercase font-sans -mt-1 opacity-80">
+                            {btn.subLabel}
+                          </span>
+                        )}
+
+                        {/* Confirmation Check Badge on Tap */}
+                        {isJustSelected && (
+                          <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full p-0.5 z-20"
+                          >
+                            <Check className="w-2.5 h-2.5" />
+                          </motion.span>
+                        )}
+                      </button>
+
+                      {renderDividerAfter && (
+                        <div className="w-[1.5px] h-8 bg-gray-300 dark:bg-gray-600 mx-0.5 shrink-0 rounded-full" />
                       )}
-                    </button>
+                    </React.Fragment>
                   );
                 })}
               </div>
+
+              {!isExactMatch && (
+                <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-center gap-1.5 text-[11px] text-amber-700 dark:text-amber-300 font-medium italic">
+                  <span>
+                    Fine-tuned value set on desktop (~{getSaatyValue(currentComp.value)})
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Contradiction Spotlight on Mobile */}
             {isMajorContradiction && sliderInconsistency && (
               <div
-                className="p-4 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 space-y-2.5"
+                className="p-3.5 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 space-y-2"
                 id={`mobile-contradiction-${safeIndex}`}
               >
                 <div className="flex items-center gap-2">
@@ -408,14 +474,14 @@ export default function MobileComparisonCarousel({
 
             {/* Card Navigation Controls (Previous / Next) */}
             <div
-              className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]"
+              className="flex justify-between items-center pt-3 border-t border-gray-100 dark:border-[#262A33]"
               id={`mobile-card-nav-${safeIndex}`}
             >
               <button
                 type="button"
                 onClick={handlePrev}
                 disabled={safeIndex === 0}
-                className={`px-4 py-2.5 text-xs uppercase tracking-wider font-bold transition flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs uppercase tracking-wider font-semibold transition flex items-center gap-1.5 ${
                   safeIndex === 0
                     ? "text-gray-300 dark:text-gray-700 cursor-not-allowed"
                     : "text-gray-600 dark:text-[#E5E7EB] hover:text-[#121212] dark:hover:text-white cursor-pointer"
@@ -428,7 +494,7 @@ export default function MobileComparisonCarousel({
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-5 py-2.5 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black text-xs uppercase tracking-wider font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 bg-gray-900 hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black text-xs uppercase tracking-wider font-semibold shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
                 id="btn-mobile-next"
               >
                 {safeIndex === comparisons.length - 1 ? (
