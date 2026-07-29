@@ -108,16 +108,10 @@ export default function MobileComparisonCarousel({
 
     onSelect(safeIndex, btnValue);
     setJustSelectedValue(btnValue);
-    setSlideDirection("right");
 
     autoAdvanceTimeoutRef.current = setTimeout(() => {
       setJustSelectedValue(null);
-      if (safeIndex < comparisons.length - 1) {
-        setCurrentIndex((prev) => prev + 1);
-      } else {
-        setViewMode("summary");
-      }
-    }, 180);
+    }, 400);
   };
 
   const handlePrev = () => {
@@ -261,11 +255,23 @@ export default function MobileComparisonCarousel({
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={safeIndex}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.15}
+            onDragEnd={(_e, { offset, velocity }) => {
+              const swipeThreshold = 50;
+              const velocityThreshold = 250;
+              if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
+                handleNext();
+              } else if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
+                handlePrev();
+              }
+            }}
             initial={{ opacity: 0, x: slideDirection === "right" ? 30 : -30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: slideDirection === "right" ? -30 : 30 }}
             transition={{ duration: 0.18 }}
-            className={`border bg-white dark:bg-[#15181E] p-5 space-y-6 ${
+            className={`border bg-white dark:bg-[#15181E] p-5 space-y-6 touch-pan-y ${
               isMajorContradiction
                 ? "border-amber-400 dark:border-amber-500 bg-amber-50/10 dark:bg-amber-950/20"
                 : "border-[#E5E1DA] dark:border-[#262A33]"
