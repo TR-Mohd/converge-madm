@@ -379,7 +379,7 @@ export default function App() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
               Built and developed by{" "}
-              <span className="font-serif italic font-bold text-[#121212] dark:text-[#F59E0B]">
+              <span className="font-serif italic font-bold bg-[#FE9A00]/25 dark:bg-[#FE9A00] text-black px-2 py-0.5 rounded-xs">
                 Mohammed Aatef
               </span>
             </span>
