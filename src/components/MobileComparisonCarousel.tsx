@@ -294,10 +294,10 @@ export default function MobileComparisonCarousel({
             id={`mobile-comparison-card-${safeIndex}`}
           >
             {/* Prominent Criteria Comparison Cards ([ Criteria A ] vs [ Criteria B ]) */}
-            <div className="grid grid-cols-11 gap-2 items-center">
+            <div className="grid grid-cols-11 gap-2 items-stretch">
               {/* Criterion A Box */}
               <div
-                className={`col-span-5 p-3 border transition-all ${
+                className={`col-span-5 p-3 border transition-all h-full flex flex-col justify-center min-w-0 ${
                   currentComp.value < 0
                     ? "border-amber-500 dark:border-amber-400 bg-amber-50/40 dark:bg-amber-950/30 shadow-2xs"
                     : "border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15181E]"
@@ -314,7 +314,7 @@ export default function MobileComparisonCarousel({
               </div>
 
               {/* VS Badge */}
-              <div className="col-span-1 flex justify-center">
+              <div className="col-span-1 flex items-center justify-center">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6B7280]">
                   VS
                 </span>
@@ -322,7 +322,7 @@ export default function MobileComparisonCarousel({
 
               {/* Criterion B Box */}
               <div
-                className={`col-span-5 p-3 border transition-all ${
+                className={`col-span-5 p-3 border transition-all h-full flex flex-col justify-center min-w-0 ${
                   currentComp.value > 0
                     ? "border-sky-500 dark:border-sky-400 bg-sky-50/40 dark:bg-sky-950/30 shadow-2xs"
                     : "border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15181E]"
@@ -405,11 +405,11 @@ export default function MobileComparisonCarousel({
                       <button
                         type="button"
                         onClick={() => handleButtonTap(btn.value)}
-                        className={`max-[619px]:w-full min-[620px]:w-11 h-11 shrink-0 flex max-[619px]:flex-row min-[620px]:flex-col items-center justify-center max-[619px]:gap-2 border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
+                        className={`max-[619px]:w-full max-[619px]:min-h-11 max-[619px]:h-auto max-[619px]:py-2 max-[619px]:px-3 min-[620px]:w-11 min-[620px]:h-11 shrink-0 flex max-[619px]:flex-row min-[620px]:flex-col items-center justify-center max-[619px]:gap-2 border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
                         title={btn.title}
                       >
-                        <span>{isApproxSelected ? `~${btn.label}` : btn.label}</span>
-                        <span className="text-xs font-sans font-normal opacity-90 max-[619px]:inline min-[620px]:hidden">
+                        <span className="self-center shrink-0">{isApproxSelected ? `~${btn.label}` : btn.label}</span>
+                        <span className="text-xs font-sans font-normal opacity-90 max-[619px]:inline min-[620px]:hidden text-left self-center">
                           —{" "}
                           {btn.side === "A"
                             ? btn.title.replace(" A", ` ${critA.name}`)
@@ -632,28 +632,28 @@ export default function MobileComparisonCarousel({
           </div>
 
           {/* Footer Actions in Summary */}
-          <div className="pt-4 border-t border-gray-100 dark:border-[#262A33] flex flex-col sm:flex-row gap-3">
+          <div className="pt-4 border-t border-gray-100 dark:border-[#262A33] flex max-[639px]:flex-col min-[640px]:flex-row min-[640px]:items-center min-[640px]:justify-between gap-2 sm:gap-3">
             <button
               type="button"
               onClick={onSubmit}
-              className="w-full py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-xs uppercase tracking-widest shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+              className="max-[639px]:w-full min-[640px]:flex-1 min-w-0 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-xs uppercase tracking-widest shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
               id="btn-mobile-submit"
             >
               Calculate Weights <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="flex max-[639px]:flex-col min-[640px]:flex-row gap-2">
+            <div className="flex max-[639px]:flex-col min-[640px]:flex-row gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => setViewMode("carousel")}
-                className="max-[639px]:w-full min-[640px]:w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#E5E7EB] bg-gray-100 dark:bg-[#1F232D] hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer text-center"
+                className="max-[639px]:w-full min-[640px]:w-auto px-3 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-700 dark:text-[#E5E7EB] bg-gray-100 dark:bg-[#1F232D] hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer text-center shrink-0"
               >
                 ← Back to Carousel
               </button>
               <button
                 type="button"
                 onClick={onBack}
-                className="max-[639px]:w-full min-[640px]:w-1/2 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
+                className="max-[639px]:w-full min-[640px]:w-auto px-3 py-2.5 text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center shrink-0"
               >
                 ← Back to Define
               </button>

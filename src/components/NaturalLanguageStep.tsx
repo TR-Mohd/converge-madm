@@ -349,7 +349,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
                     <Plus className="w-3.5 h-3.5" /> Add
                   </button>
                 </div>
-                <div className="max-w-[60%] space-y-1">
+                <div className="max-[699px]:max-w-full min-[700px]:max-w-[60%] space-y-1">
                   <p className="text-[10px] text-gray-400 dark:text-[#9CA3AF]">Criteria used to compare (Min 2, Max 10)</p>
                   <p className="text-[10px] text-gray-500 dark:text-[#9CA3AF] font-mono leading-relaxed">
                     Qualitative factors default to a 1–10 scale (<span className="text-black dark:text-[#FFB900] font-semibold">pts (1-10)</span>). You can edit the Unit (UoM) for any factor.

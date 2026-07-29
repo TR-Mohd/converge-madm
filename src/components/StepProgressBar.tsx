@@ -38,11 +38,11 @@ export default function StepProgressBar({ currentStep, totalSteps }: StepProgres
       </div>
 
       {/* Desktop view */}
-      <div className="hidden md:flex items-center justify-between relative" id="desktop-step-indicator">
+      <div className="hidden md:flex items-start justify-between relative" id="desktop-step-indicator">
         {/* Line behind steps */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-gray-200 dark:bg-[#262A33] -z-10" />
+        <div className="absolute left-0 right-0 top-[18px] h-[1px] bg-gray-200 dark:bg-[#262A33] -z-10" />
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#121212] dark:bg-[#FBBF24] -z-10 transition-all duration-500 ease-out"
+          className="absolute left-0 top-[18px] h-[1px] bg-[#121212] dark:bg-[#FBBF24] -z-10 transition-all duration-500 ease-out"
           style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
         />
 
@@ -53,7 +53,7 @@ export default function StepProgressBar({ currentStep, totalSteps }: StepProgres
           return (
             <div
               key={step.number}
-              className="flex flex-col items-center bg-white dark:bg-[#15181E] px-5 z-10"
+              className="flex flex-col items-center bg-white dark:bg-[#15181E] px-2 md:px-3 lg:px-5 z-10 text-center"
               id={`step-marker-${step.number}`}
             >
               <div
