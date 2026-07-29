@@ -7,7 +7,7 @@ import DataGridStep from "./components/DataGridStep";
 import ResultsStep from "./components/ResultsStep";
 import { DecisionData, PairwiseComparison, AHPResult, TopsisResult } from "./types";
 import { calculateTOPSIS } from "./utils/math";
-import { BrainCircuit, RotateCcw, Sun, Moon } from "lucide-react";
+import { BrainCircuit, RotateCcw, Sun, Moon, Github, Linkedin } from "lucide-react";
 import { useSessionPersistence, WizardSession } from "./hooks/useSessionPersistence";
 import ResumeSessionBanner from "./components/ResumeSessionBanner";
 
@@ -374,8 +374,31 @@ export default function App() {
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full text-left text-[8.5px] text-gray-400 dark:text-[#4B5563] mt-12 px-4 leading-normal" id="app-footer">
-        Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
+      <footer className="max-w-4xl mx-auto w-full text-left text-[8.5px] text-gray-400 dark:text-[#4B5563] mt-12 px-4 leading-normal space-y-1.5" id="app-footer">
+        <div>
+          Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
+        </div>
+        <div className="flex items-center gap-2">
+          <span>Built and developed by Mohammed Aatef</span>
+          <a
+            href="https://github.com/TR-Mohd"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub Profile"
+            className="text-gray-400 dark:text-[#4B5563] hover:text-gray-600 dark:hover:text-gray-300 hover:opacity-80 transition-all inline-flex items-center"
+          >
+            <Github size={14} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/mohammed-aatef-3769062a7/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn Profile"
+            className="text-gray-400 dark:text-[#4B5563] hover:text-gray-600 dark:hover:text-gray-300 hover:opacity-80 transition-all inline-flex items-center"
+          >
+            <Linkedin size={14} />
+          </a>
+        </div>
       </footer>
     </div>
   );
