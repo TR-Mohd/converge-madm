@@ -35,6 +35,13 @@ export default function App() {
   const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
   };
+
+  // Ensure every step transition starts at the top of the page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [currentStep]);
   
   // Phase 1 State
   const [decisionData, setDecisionData] = useState<DecisionData | null>(null);
