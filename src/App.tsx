@@ -282,7 +282,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F7F4] dark:bg-[#0D0F12] text-[#121212] dark:text-[#F3F4F6] font-sans flex flex-col antialiased pb-12" id="app-root">
+    <div className="min-h-screen bg-[#F9F7F4] dark:bg-[#0D0F12] text-[#121212] dark:text-[#F3F4F6] font-sans flex flex-col antialiased" id="app-root">
       {showResumeBanner && savedSession && (
         <ResumeSessionBanner
           session={savedSession}
@@ -374,8 +374,8 @@ export default function App() {
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full px-4 mt-12 pb-10" id="app-footer">
-        <div className="border-t border-[#E5E1DA] dark:border-[#262A33] pt-8 text-center space-y-3.5">
+      <footer className="max-w-4xl mx-auto w-full px-4 mt-8 pb-6" id="app-footer">
+        <div className="border-t border-[#E5E1DA] dark:border-[#262A33] pt-6 text-center space-y-3">
           <div className="flex flex-wrap items-center justify-center gap-3">
             <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
               Built and developed by Mohammed Aatef
