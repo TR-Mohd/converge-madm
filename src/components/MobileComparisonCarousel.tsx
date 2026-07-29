@@ -350,7 +350,7 @@ export default function MobileComparisonCarousel({
               id={`mobile-scale-container-${safeIndex}`}
             >
               {/* 9 tap target buttons with visual separation (dividers & left/right color-coding) */}
-              <div className="flex items-center justify-start sm:justify-center overflow-x-auto py-1 px-0.5 gap-1.5 no-scrollbar">
+              <div className="flex max-[619px]:flex-col max-[619px]:w-full min-[620px]:items-center min-[620px]:justify-start sm:min-[620px]:justify-center min-[620px]:overflow-x-auto min-[620px]:py-1 min-[620px]:px-0.5 gap-1.5 min-[620px]:no-scrollbar">
                 {AHP_BUTTONS.map((btn) => {
                   const isSelected = currentComp.value === btn.value;
                   const isApproxSelected =
@@ -399,18 +399,26 @@ export default function MobileComparisonCarousel({
                   return (
                     <React.Fragment key={`${btn.side}-${btn.label}-${btn.value}`}>
                       {renderDividerBefore && (
-                        <div className="w-[1.5px] h-8 bg-gray-300 dark:bg-gray-600 mx-0.5 shrink-0 rounded-full" />
+                        <div className="max-[619px]:w-full max-[619px]:h-[1.5px] max-[619px]:my-1 max-[619px]:mx-0 min-[620px]:w-[1.5px] min-[620px]:h-8 min-[620px]:mx-0.5 min-[620px]:my-0 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full" />
                       )}
 
                       <button
                         type="button"
                         onClick={() => handleButtonTap(btn.value)}
-                        className={`w-11 h-11 shrink-0 flex flex-col items-center justify-center border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
+                        className={`max-[619px]:w-full min-[620px]:w-11 h-11 shrink-0 flex max-[619px]:flex-row min-[620px]:flex-col items-center justify-center max-[619px]:gap-2 border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
                         title={btn.title}
                       >
                         <span>{isApproxSelected ? `~${btn.label}` : btn.label}</span>
+                        <span className="text-xs font-sans font-normal opacity-90 max-[619px]:inline min-[620px]:hidden">
+                          —{" "}
+                          {btn.side === "A"
+                            ? btn.title.replace(" A", ` ${critA.name}`)
+                            : btn.side === "B"
+                            ? btn.title.replace(" B", ` ${critB.name}`)
+                            : "Equal importance"}
+                        </span>
                         {btn.subLabel && (
-                          <span className="text-[7px] tracking-tighter uppercase font-sans -mt-1 opacity-80">
+                          <span className="text-[7px] tracking-tighter uppercase font-sans -mt-1 opacity-80 max-[619px]:hidden min-[620px]:inline">
                             {btn.subLabel}
                           </span>
                         )}
@@ -428,7 +436,7 @@ export default function MobileComparisonCarousel({
                       </button>
 
                       {renderDividerAfter && (
-                        <div className="w-[1.5px] h-8 bg-gray-300 dark:bg-gray-600 mx-0.5 shrink-0 rounded-full" />
+                        <div className="max-[619px]:w-full max-[619px]:h-[1.5px] max-[619px]:my-1 max-[619px]:mx-0 min-[620px]:w-[1.5px] min-[620px]:h-8 min-[620px]:mx-0.5 min-[620px]:my-0 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full" />
                       )}
                     </React.Fragment>
                   );
