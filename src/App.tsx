@@ -374,29 +374,32 @@ export default function App() {
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer className="max-w-4xl mx-auto w-full text-left text-[8.5px] text-gray-400 dark:text-[#4B5563] mt-12 px-4 leading-normal space-y-1.5" id="app-footer">
+      <footer
+        className="max-w-4xl mx-auto w-full text-center text-[9.5px] text-gray-400 dark:text-[#4B5563] mt-12 pt-8 pb-10 px-4 leading-relaxed border-t border-[#E5E1DA] dark:border-[#262A33] space-y-3"
+        id="app-footer"
+      >
         <div>
           Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2.5">
           <span>Built and developed by Mohammed Aatef</span>
           <a
             href="https://github.com/TR-Mohd"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub Profile"
-            className="text-gray-400 dark:text-[#4B5563] hover:text-gray-600 dark:hover:text-gray-300 hover:opacity-80 transition-all inline-flex items-center"
+            className="text-gray-500 dark:text-[#6B7280] hover:text-gray-900 dark:hover:text-white hover:scale-110 transition-all duration-200 inline-flex items-center"
           >
-            <Github size={14} />
+            <Github size={16} />
           </a>
           <a
-            href="https://www.linkedin.com/in/mohammed-aatef-3769062a7/"
+            href="https://www.linkedin.com/in/mohammed-aatef-saleh/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn Profile"
-            className="text-gray-400 dark:text-[#4B5563] hover:text-gray-600 dark:hover:text-gray-300 hover:opacity-80 transition-all inline-flex items-center"
+            className="text-gray-500 dark:text-[#6B7280] hover:text-gray-900 dark:hover:text-white hover:scale-110 transition-all duration-200 inline-flex items-center"
           >
-            <Linkedin size={14} />
+            <Linkedin size={16} />
           </a>
         </div>
       </footer>
