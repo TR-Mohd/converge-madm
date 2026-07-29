@@ -48,18 +48,6 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-*, *::before, *::after {
-  transition-property: background-color, border-color, color, box-shadow, fill, stroke;
-  transition-duration: 175ms;
-  transition-timing-function: ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition: none !important;
-  }
-}
-
 body {
   background-color: var(--bg-app);
   color: var(--text-body);
