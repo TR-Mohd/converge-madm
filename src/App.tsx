@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import StepProgressBar from "./components/StepProgressBar";
 import NaturalLanguageStep from "./components/NaturalLanguageStep";
 import AhpComparisonStep from "./components/AhpComparisonStep";
@@ -36,12 +36,59 @@ export default function App() {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
   };
 
+  // Auto-hide header on mobile scroll (< 768px) — declared before the
+  // currentStep effect so setHeaderHidden is in scope there.
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const scrollTicking = useRef(false);
+
   // Ensure every step transition starts at the top of the page
   useEffect(() => {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    // Always show header when navigating to a new step
+    setHeaderHidden(false);
   }, [currentStep]);
+
+  useEffect(() => {
+    const SCROLL_THRESHOLD = 10; // px from top where header is always visible
+
+    const handleScroll = () => {
+      if (scrollTicking.current) return;
+      scrollTicking.current = true;
+
+      requestAnimationFrame(() => {
+        // Only apply auto-hide behaviour on mobile (< 768px)
+        if (window.innerWidth >= 768) {
+          setHeaderHidden(false);
+          lastScrollY.current = window.scrollY;
+          scrollTicking.current = false;
+          return;
+        }
+
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY.current;
+
+        if (currentY <= SCROLL_THRESHOLD) {
+          // At or very near the top — always show
+          setHeaderHidden(false);
+        } else if (delta > 0) {
+          // Scrolling down — hide
+          setHeaderHidden(true);
+        } else if (delta < 0) {
+          // Scrolling up — show immediately
+          setHeaderHidden(false);
+        }
+
+        lastScrollY.current = currentY;
+        scrollTicking.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   
   // Phase 1 State
   const [decisionData, setDecisionData] = useState<DecisionData | null>(null);
@@ -245,7 +292,15 @@ export default function App() {
       )}
 
       {/* Premium Elegant Navigation Header */}
-      <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 max-[499px]:py-3.5 max-[499px]:px-4 min-[500px]:py-5 min-[500px]:px-8" id="app-header">
+      <header
+        className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 max-[499px]:py-3.5 max-[499px]:px-4 min-[500px]:py-5 min-[500px]:px-8"
+        id="app-header"
+        style={{
+          // Only apply translate on mobile; md+ always stays visible via no-op
+          transform: headerHidden ? "translateY(-100%)" : "translateY(0)",
+          transition: "transform 220ms cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-[500px]:gap-3 cursor-pointer shrink-0" onClick={handleReset} id="logo-block">
             <div className="w-9 h-9 min-[500px]:w-10 min-[500px]:h-10 shrink-0 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
