@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import ScrollableTableWrapper from "./ScrollableTableWrapper";
 
 interface MobileComparisonCarouselProps {
   criteria: Criterion[];
@@ -405,12 +406,13 @@ export default function MobileComparisonCarousel({
                       <button
                         type="button"
                         onClick={() => handleButtonTap(btn.value)}
-                        className={`max-[619px]:w-full max-[619px]:min-h-11 max-[619px]:h-auto max-[619px]:py-2 max-[619px]:px-3 min-[620px]:w-11 min-[620px]:h-11 shrink-0 flex max-[619px]:flex-row min-[620px]:flex-col items-center justify-center max-[619px]:gap-2 border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
+                        className={`max-[619px]:w-full max-[619px]:min-h-11 max-[619px]:h-auto max-[619px]:py-2.5 max-[619px]:px-3 min-[620px]:w-11 min-[620px]:h-11 shrink-0 flex max-[619px]:flex-row min-[620px]:flex-col items-center justify-center max-[619px]:gap-3 border text-base font-bold font-mono transition-all cursor-pointer relative select-none ${sideStyles}`}
                         title={btn.title}
                       >
-                        <span className="self-center shrink-0">{isApproxSelected ? `~${btn.label}` : btn.label}</span>
-                        <span className="text-xs font-sans font-normal opacity-90 max-[619px]:inline min-[620px]:hidden text-left self-center">
-                          —{" "}
+                        <span className="max-[619px]:w-9 max-[619px]:shrink-0 max-[619px]:flex max-[619px]:items-center max-[619px]:justify-center min-[620px]:self-center min-[620px]:shrink-0">
+                          {isApproxSelected ? `~${btn.label}` : btn.label}
+                        </span>
+                        <span className="max-[619px]:flex-1 max-[619px]:text-left max-[619px]:text-xs max-[619px]:font-sans max-[619px]:font-normal max-[619px]:leading-snug max-[619px]:opacity-90 max-[619px]:inline min-[620px]:hidden">
                           {btn.side === "A"
                             ? btn.title.replace(" A", ` ${critA.name}`)
                             : btn.side === "B"
@@ -584,7 +586,11 @@ export default function MobileComparisonCarousel({
           )}
 
           {/* List of all comparisons with tap-to-edit */}
-          <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+          <ScrollableTableWrapper
+            mode="vertical"
+            className="space-y-2.5 max-h-80 pr-1"
+            id="mobile-review-list"
+          >
             {comparisons.map((comp, idx) => {
               const nameA = criteria[comp.criterionAIndex]?.name;
               const nameB = criteria[comp.criterionBIndex]?.name;
@@ -629,7 +635,7 @@ export default function MobileComparisonCarousel({
                 </div>
               );
             })}
-          </div>
+          </ScrollableTableWrapper>
 
           {/* Footer Actions in Summary */}
           <div className="pt-4 border-t border-gray-100 dark:border-[#262A33] flex max-[639px]:flex-col min-[640px]:flex-row min-[640px]:items-center min-[640px]:justify-between gap-2 sm:gap-3">

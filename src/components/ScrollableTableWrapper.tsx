@@ -4,29 +4,38 @@ interface ScrollableTableWrapperProps {
   children: React.ReactNode;
   className?: string;
   id?: string;
+  mode?: "horizontal" | "vertical";
+  bgVar?: string;
 }
 
 export default function ScrollableTableWrapper({
   children,
   className = "",
   id,
+  mode = "horizontal",
+  bgVar = "var(--bg-surface)",
 }: ScrollableTableWrapperProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showRightHint, setShowRightHint] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const checkScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
-    // 2px tolerance for subpixel / border rendering
-    const hasMoreRight = el.scrollWidth - el.scrollLeft - el.clientWidth > 2;
-    setShowRightHint(hasMoreRight);
+    if (mode === "horizontal") {
+      // 2px tolerance for subpixel / border rendering
+      const hasMoreRight = el.scrollWidth - el.scrollLeft - el.clientWidth > 2;
+      setShowHint(hasMoreRight);
+    } else {
+      const hasMoreBottom = el.scrollHeight - el.scrollTop - el.clientHeight > 2;
+      setShowHint(hasMoreBottom);
+    }
   };
 
   useEffect(() => {
     checkScroll();
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -39,25 +48,34 @@ export default function ScrollableTableWrapper({
       observer.observe(el.firstElementChild);
     }
     return () => observer.disconnect();
-  }, [children]);
+  }, [children, mode]);
+
+  const isHorizontal = mode === "horizontal";
 
   return (
     <div className="relative overflow-hidden w-full" id={id}>
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className={`overflow-x-auto ${className}`}
+        className={`${isHorizontal ? "overflow-x-auto" : "overflow-y-auto"} ${className}`}
       >
         {children}
       </div>
 
-      {/* Persistent soft right-edge gradient/shadow hint when content overflows */}
+      {/* Persistent soft right-edge or bottom-edge gradient fade hint when content overflows */}
       <div
-        className={`absolute top-0 right-0 bottom-0 w-8 sm:w-12 pointer-events-none z-10 transition-opacity duration-300 bg-gradient-to-l from-neutral-400/80 sm:from-neutral-300/70 via-neutral-200/40 to-transparent dark:from-black/90 sm:dark:from-black/80 dark:via-black/40 dark:to-transparent ${
-          showRightHint ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute pointer-events-none z-10 transition-opacity duration-300 ${
+          isHorizontal
+            ? "top-0 right-0 bottom-0 w-14 sm:w-16"
+            : "left-0 right-0 bottom-0 h-14 sm:h-16"
+        } ${showHint ? "opacity-100" : "opacity-0"}`}
+        style={{
+          background: isHorizontal
+            ? `linear-gradient(to left, color-mix(in srgb, ${bgVar} 85%, transparent) 0%, color-mix(in srgb, ${bgVar} 45%, transparent) 45%, transparent 100%)`
+            : `linear-gradient(to top, color-mix(in srgb, ${bgVar} 85%, transparent) 0%, color-mix(in srgb, ${bgVar} 45%, transparent) 45%, transparent 100%)`,
+        }}
         aria-hidden="true"
-        id={`${id || "table"}-scroll-hint`}
+        id={`${id || "scroll"}-hint`}
       />
     </div>
   );
