@@ -3,6 +3,7 @@ import { Criterion, TopsisResult } from "../types";
 import { Award, RefreshCw, Trophy, Sparkles, AlertCircle, FileText, BarChart2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion } from "motion/react";
+import ScrollableTableWrapper from "./ScrollableTableWrapper";
 
 interface ResultsStepProps {
   decision_goal: string;
@@ -198,7 +199,7 @@ export default function ResultsStep({
           <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Performance Matrix Reference</h3>
         </div>
 
-        <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#262A33] rounded-none" id="summary-table-container">
+        <ScrollableTableWrapper className="border border-[#E5E1DA] dark:border-[#262A33] rounded-none" id="summary-table-container">
           <table className="w-full text-left text-xs border-collapse" id="performance-summary-table">
             <thead>
               <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]">
@@ -223,17 +224,17 @@ export default function ResultsStep({
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollableTableWrapper>
       </div>
 
       {/* Reset button */}
       <div className="flex justify-center pt-4" id="results-navigation">
         <button
           onClick={onReset}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer rounded-none"
+          className="max-[639px]:w-full min-[640px]:w-auto px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer rounded-none"
           id="btn-results-reset"
         >
-          <RefreshCw className="w-4 h-4" /> Start New Evaluation
+          <RefreshCw className="w-4 h-4 shrink-0" /> Start New Evaluation
         </button>
       </div>
     </div>

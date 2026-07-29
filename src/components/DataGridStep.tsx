@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Criterion } from "../types";
 import { ArrowRight, Table2, Info, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
+import ScrollableTableWrapper from "./ScrollableTableWrapper";
 
 interface DataGridStepProps {
   decision_goal: string;
@@ -218,7 +219,10 @@ export default function DataGridStep({
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none" id="performance-table-container">
+      <ScrollableTableWrapper
+        className="border border-[#E5E1DA] dark:border-[#2C323E] rounded-none bg-white dark:bg-[#15181E] shadow-none"
+        id="performance-table-container"
+      >
         <table className="w-full text-left border-collapse" id="performance-scores-table">
           <thead>
             <tr className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-b border-[#E5E1DA] dark:border-[#2C323E]" id="table-headers-row">
@@ -270,13 +274,32 @@ export default function DataGridStep({
                         )}
                         <input
                           type="text"
-                          value={cellVal}
+                          inputMode="decimal"
                           size={inputSize}
+                          className={`w-full py-2 px-2.5 text-xs font-mono bg-transparent text-[#121212] dark:text-white outline-none text-right font-semibold transition ${
+                            isInvalidCell ? "placeholder:text-rose-400" : "placeholder:text-gray-400 dark:placeholder:text-[#6B7280]"
+                          }`}
+                          value={cellVal}
                           onChange={(e) => handleCellChange(rIdx, cIdx, e.target.value)}
-                          className="py-2 px-2.5 text-xs focus:outline-none border-0 bg-transparent font-mono text-[#121212] dark:text-gray-100 placeholder-gray-300 dark:placeholder-[#4B5563] shrink-0"
-                          style={{ minWidth: `${inputSize}ch` }}
-                          placeholder="Value..."
-                          id={`cell-input-${rIdx}-${cIdx}`}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === "ArrowDown") {
+                              e.preventDefault();
+                              const nextRow = rIdx + 1;
+                              if (nextRow < alternatives.length) {
+                                const nextInput = document.querySelector(`#table-cell-${nextRow}-${cIdx} input`) as HTMLInputElement;
+                                nextInput?.focus();
+                              }
+                            } else if (e.key === "ArrowUp") {
+                              e.preventDefault();
+                              const prevRow = rIdx - 1;
+                              if (prevRow >= 0) {
+                                const prevInput = document.querySelector(`#table-cell-${prevRow}-${cIdx} input`) as HTMLInputElement;
+                                prevInput?.focus();
+                              }
+                            }
+                          }}
+                          placeholder={isInvalidCell ? "Req." : effectiveUnit === "USD" ? "0.00" : "0"}
+                          id={`input-cell-${rIdx}-${cIdx}`}
                         />
                       </div>
                     </td>
@@ -286,7 +309,7 @@ export default function DataGridStep({
             ))}
           </tbody>
         </table>
-      </div>
+      </ScrollableTableWrapper>
 
       {error && (
         <div className="bg-rose-50 dark:bg-rose-950/40 border-l-4 border-rose-500 rounded-none p-4 flex gap-3 text-rose-700 dark:text-[#FDA4AF] text-xs" id="grid-error">
@@ -304,20 +327,20 @@ export default function DataGridStep({
         </p>
       </div>
 
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]" id="datagrid-navigation">
+      <div className="flex max-[639px]:flex-col-reverse min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center max-[639px]:gap-3 pt-4 border-t border-gray-100 dark:border-[#262A33]" id="datagrid-navigation">
         <button
           onClick={onBack}
-          className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"
+          className="max-[639px]:w-full min-[640px]:w-auto px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
           id="btn-datagrid-back"
         >
           ← Adjust Weights
         </button>
         <button
           onClick={handleSubmit}
-          className="px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center gap-2 cursor-pointer"
+          className="max-[639px]:w-full min-[640px]:w-auto px-8 py-3 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#F59E0B] dark:hover:bg-[#FBBF24] dark:text-black font-bold text-[11px] uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
           id="btn-datagrid-next"
         >
-          Calculate Final Ranking <ArrowRight className="w-4 h-4" />
+          Calculate Final Ranking <ArrowRight className="w-4 h-4 shrink-0" />
         </button>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { Criterion, PairwiseComparison, AHPResult } from "../types";
 import { calculateAHP, getSaatyValue, analyzeComparisonsInconsistency, smartAdjustComparisons } from "../utils/math";
 import { AlertTriangle, CheckCircle2, RefreshCw, ArrowRight, HelpCircle } from "lucide-react";
 import { motion } from "motion/react";
+import MobileComparisonCarousel from "./MobileComparisonCarousel";
 
 interface AhpComparisonStepProps {
   criteria: Criterion[];
@@ -204,8 +205,23 @@ export default function AhpComparisonStep({
         </div>
       )}
 
-      {/* Comparison Sliders List */}
-      <div className="space-y-6" id="comparisons-list-container">
+      {/* Mobile Single-Card Carousel (<768px) */}
+      <MobileComparisonCarousel
+        criteria={criteria}
+        comparisons={comparisons}
+        onSelect={handleSliderChange}
+        inconsistencyInfo={inconsistencyInfo}
+        thresholdDeviation={thresholdDeviation}
+        ahpResult={ahpResult}
+        onReset={handleReset}
+        onSmartAdjust={handleSmartAdjust}
+        onSubmit={handleSubmit}
+        onBack={onBack}
+        triedSubmit={triedSubmit}
+      />
+
+      {/* Comparison Sliders List (Desktop / >=768px) */}
+      <div className="hidden md:block space-y-6" id="comparisons-list-container">
         {comparisons.map((comp, idx) => {
           const critA = criteria[comp.criterionAIndex];
           const critB = criteria[comp.criterionBIndex];
@@ -306,8 +322,8 @@ export default function AhpComparisonStep({
         })}
       </div>
 
-      {/* Footer Navigation */}
-      <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]" id="ahp-navigation">
+      {/* Footer Navigation (Desktop / >=768px) */}
+      <div className="hidden md:flex justify-between items-center pt-4 border-t border-gray-100 dark:border-[#262A33]" id="ahp-navigation">
         <button
           onClick={onBack}
           className="px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer"

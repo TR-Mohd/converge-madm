@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import StepProgressBar from "./components/StepProgressBar";
 import NaturalLanguageStep from "./components/NaturalLanguageStep";
 import AhpComparisonStep from "./components/AhpComparisonStep";
@@ -35,6 +35,60 @@ export default function App() {
   const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
   };
+
+  // Auto-hide header on mobile scroll (< 768px) — declared before the
+  // currentStep effect so setHeaderHidden is in scope there.
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const scrollTicking = useRef(false);
+
+  // Ensure every step transition starts at the top of the page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    // Always show header when navigating to a new step
+    setHeaderHidden(false);
+  }, [currentStep]);
+
+  useEffect(() => {
+    const SCROLL_THRESHOLD = 10; // px from top where header is always visible
+
+    const handleScroll = () => {
+      if (scrollTicking.current) return;
+      scrollTicking.current = true;
+
+      requestAnimationFrame(() => {
+        // Only apply auto-hide behaviour on mobile (< 768px)
+        if (window.innerWidth >= 768) {
+          setHeaderHidden(false);
+          lastScrollY.current = window.scrollY;
+          scrollTicking.current = false;
+          return;
+        }
+
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY.current;
+
+        if (currentY <= SCROLL_THRESHOLD) {
+          // At or very near the top — always show
+          setHeaderHidden(false);
+        } else if (delta > 0) {
+          // Scrolling down — hide
+          setHeaderHidden(true);
+        } else if (delta < 0) {
+          // Scrolling up — show immediately
+          setHeaderHidden(false);
+        }
+
+        lastScrollY.current = currentY;
+        scrollTicking.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   
   // Phase 1 State
   const [decisionData, setDecisionData] = useState<DecisionData | null>(null);
@@ -238,32 +292,42 @@ export default function App() {
       )}
 
       {/* Premium Elegant Navigation Header */}
-      <header className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 py-5 px-8" id="app-header">
+      <header
+        className="bg-white border-b border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] sticky top-0 z-50 max-[499px]:py-3.5 max-[499px]:px-4 min-[500px]:py-5 min-[500px]:px-8"
+        id="app-header"
+        style={{
+          // Only apply translate on mobile; md+ always stays visible via no-op
+          transform: headerHidden ? "translateY(-100%)" : "translateY(0)",
+          transition: "transform 220ms cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={handleReset} id="logo-block">
-            <div className="w-10 h-10 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
-              <BrainCircuit className="w-5.5 h-5.5" />
+          <div className="flex items-center gap-2.5 min-[500px]:gap-3 cursor-pointer shrink-0" onClick={handleReset} id="logo-block">
+            <div className="w-9 h-9 min-[500px]:w-10 min-[500px]:h-10 shrink-0 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
+              <BrainCircuit className="w-5 h-5 min-[500px]:w-5.5 min-[500px]:h-5.5" />
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-serif italic font-bold tracking-tight text-[#121212] dark:text-white">Converge</span>
+            <div className="flex items-baseline gap-2 shrink-0">
+              <span className="text-[20px] min-[500px]:text-2xl min-w-[95px] min-[500px]:min-w-0 shrink-0 font-serif italic font-bold tracking-tight text-[#121212] dark:text-white">Converge</span>
               <span className="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-semibold text-gray-500 dark:text-[#9CA3AF]">Decision Support Engine</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-3" id="header-actions">
+          <div className="flex items-center gap-2 min-[500px]:gap-3 shrink-0" id="header-actions">
             <button
               onClick={toggleTheme}
-              className="px-3 py-2 text-[10px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center gap-1.5 cursor-pointer"
+              className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase font-mono font-bold tracking-wider bg-gray-100 text-[#121212] border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-gray-200 dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
               title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
               id="btn-toggle-theme"
             >
               {theme === "light" ? (
                 <>
-                  <Moon className="w-3.5 h-3.5 text-[#121212]" /> DARK
+                  <Moon className="w-4 h-4 text-[#121212]" />
+                  <span className="max-[639px]:hidden min-[640px]:inline">DARK</span>
                 </>
               ) : (
                 <>
-                  <Sun className="w-3.5 h-3.5 text-[#F59E0B]" /> LIGHT
+                  <Sun className="w-4 h-4 text-[#F59E0B]" />
+                  <span className="max-[639px]:hidden min-[640px]:inline">LIGHT</span>
                 </>
               )}
             </button>
@@ -271,10 +335,12 @@ export default function App() {
             {(decisionData || userPrompt) && (
               <button
                 onClick={handleReset}
-                className="px-4 py-2 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center gap-1.5 cursor-pointer"
+                className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                title="Restart Application"
                 id="btn-restart-app"
               >
-                <RotateCcw className="w-3.5 h-3.5" /> Restart
+                <RotateCcw className="w-4 h-4" />
+                <span className="max-[639px]:hidden min-[640px]:inline">Restart</span>
               </button>
             )}
           </div>
