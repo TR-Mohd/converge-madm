@@ -374,33 +374,36 @@ export default function App() {
       </main>
 
       {/* Technical Methodology Footer */}
-      <footer
-        className="max-w-4xl mx-auto w-full text-center text-[9.5px] text-gray-400 dark:text-[#4B5563] mt-12 pt-8 pb-10 px-4 leading-relaxed border-t border-[#E5E1DA] dark:border-[#262A33] space-y-3"
-        id="app-footer"
-      >
-        <div>
-          Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
-        </div>
-        <div className="flex items-center justify-center gap-2.5">
-          <span>Built and developed by Mohammed Aatef</span>
-          <a
-            href="https://github.com/TR-Mohd"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub Profile"
-            className="text-gray-500 dark:text-[#6B7280] hover:text-gray-900 dark:hover:text-white hover:scale-110 transition-all duration-200 inline-flex items-center"
-          >
-            <Github size={16} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/mohammed-aatef-saleh/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn Profile"
-            className="text-gray-500 dark:text-[#6B7280] hover:text-gray-900 dark:hover:text-white hover:scale-110 transition-all duration-200 inline-flex items-center"
-          >
-            <Linkedin size={16} />
-          </a>
+      <footer className="max-w-4xl mx-auto w-full px-4 mt-12 pb-10" id="app-footer">
+        <div className="border-t border-[#E5E1DA] dark:border-[#262A33] pt-8 text-center space-y-3.5">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
+              Built and developed by Mohammed Aatef
+            </span>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://github.com/TR-Mohd"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-gray-100 text-gray-900 dark:bg-white/10 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 hover:scale-105 transition-all duration-200 shadow-2xs"
+              >
+                <Github size={20} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/mohammed-aatef-saleh/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-[#0A66C2]/10 text-[#0A66C2] dark:bg-[#0A66C2]/20 dark:text-[#38BDF8] hover:bg-[#0A66C2]/20 dark:hover:bg-[#0A66C2]/35 hover:scale-105 transition-all duration-200 shadow-2xs"
+              >
+                <Linkedin size={20} />
+              </a>
+            </div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-[#6B7280] leading-relaxed">
+            Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
+          </div>
         </div>
       </footer>
     </div>
