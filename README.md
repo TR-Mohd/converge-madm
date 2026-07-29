@@ -15,7 +15,7 @@ Turn a messy real-world decision into a clear, mathematically-ranked answer — 
 
 <br>
 
-### [**🚀 Try the Live Demo →**](https://your-vercel-url-here.vercel.app)
+### [**🚀 Try the Live Demo →**](https://converge-madm.vercel.app/)
 
 </div>
 
@@ -140,6 +140,12 @@ converge-madm/
 - [ ] Sensitivity analysis (drag a weight, watch rankings shift live)
 - [ ] Full decision history (save/load named past decisions via database)
 - [ ] PDF / CSV export of results
+
+<br>
+
+## ⚠️ Limitations
+
+This project is built on established decision-science methods that carry some known theoretical properties worth understanding. See [LIMITATIONS.md](./LIMITATIONS.md) for full details.
 
 <br>
 
