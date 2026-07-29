@@ -32,7 +32,7 @@ export default function AboutDeveloperModal({
       id="about-developer-modal-overlay"
     >
       <div
-        className="bg-white dark:bg-[#15181E] border border-[#121212] dark:border-[#2C323E] rounded-none max-w-md w-full p-6 md:p-8 shadow-2xl relative space-y-5 text-center"
+        className="bg-white dark:bg-[#15181E] border border-[#121212] dark:border-[#2C323E] rounded-none max-w-md w-full pt-6 px-6 pb-5 md:pt-8 md:px-8 md:pb-6 shadow-2xl relative space-y-5 text-center"
         onClick={(e) => e.stopPropagation()}
         id="about-developer-modal-card"
       >
@@ -67,7 +67,7 @@ export default function AboutDeveloperModal({
         </p>
 
         {/* Social Links / Contact Badges */}
-        <div className="pt-3 border-t border-[#E5E1DA] dark:border-[#262A33] flex items-center justify-center gap-3">
+        <div className="pt-5 md:pt-6 border-t border-[#E5E1DA] dark:border-[#262A33] flex items-center justify-center gap-3">
           <a
             href="https://github.com/TR-Mohd"
             target="_blank"
