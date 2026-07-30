@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DecisionData, Criterion } from "../types";
-import { Wand2, Sparkles, Plus, Trash2, ArrowRight, AlertCircle, HelpCircle, ChevronRight } from "lucide-react";
+import { Wand2, Sparkles, Plus, Trash2, ArrowRight, AlertCircle, HelpCircle, ChevronRight, FileText } from "lucide-react";
 import { motion } from "motion/react";
 
 interface NaturalLanguageStepProps {
@@ -29,11 +29,18 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  const [mode, setMode] = useState<"ai" | "manual">(() => {
+    if (initialData && initialUserPrompt === "Manual Entry") {
+      return "manual";
+    }
+    return "ai";
+  });
+
   // Extracted but uncommitted state
   const [extractedData, setExtractedData] = useState<DecisionData | null>(initialData);
-  const [goal, setGoal] = useState("");
-  const [alternatives, setAlternatives] = useState<string[]>([]);
-  const [criteria, setCriteria] = useState<Criterion[]>([]);
+  const [goal, setGoal] = useState(initialData?.decision_goal || "");
+  const [alternatives, setAlternatives] = useState<string[]>(initialData?.alternatives || []);
+  const [criteria, setCriteria] = useState<Criterion[]>(initialData?.criteria || []);
 
   const handlePresetClick = (text: string) => {
     setDescription(text);
@@ -180,13 +187,61 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       decision_goal: cleanedGoal,
       alternatives: cleanedAlts,
       criteria: cleanedCrit
-    }, description);
+    }, mode === "manual" ? "Manual Entry" : description);
   };
 
   return (
     <div className="space-y-8" id="nl-step-container">
+      {/* Mode Switcher Tabs */}
+      <div className="flex border border-[#E5E1DA] dark:border-[#2C323E] bg-[#FBF9F7] dark:bg-[#1A1E27] p-1.5 rounded-none" id="step1-mode-toggle">
+        <button
+          type="button"
+          onClick={() => {
+            if (mode !== "ai") {
+              setMode("ai");
+              setExtractedData(null);
+              setError(null);
+            }
+          }}
+          className={`flex-1 py-3 px-4 text-xs font-bold uppercase tracking-widest transition duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+            mode === "ai"
+              ? "bg-[#121212] dark:bg-[#F59E0B] text-white dark:text-black shadow-2xs"
+              : "text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white hover:bg-white/60 dark:hover:bg-[#1C2028]"
+          }`}
+          id="tab-ai-assisted"
+        >
+          <Sparkles className="w-4 h-4 shrink-0" />
+          <span>AI-Assisted</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (mode !== "manual") {
+              setMode("manual");
+              setExtractedData(null);
+              setGoal("");
+              setAlternatives(["Alternative 1", "Alternative 2"]);
+              setCriteria([
+                { name: "Criterion 1", type: "benefit", unit: "pts (1-10)" },
+                { name: "Criterion 2", type: "benefit", unit: "pts (1-10)" }
+              ]);
+              setError(null);
+            }
+          }}
+          className={`flex-1 py-3 px-4 text-xs font-bold uppercase tracking-widest transition duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+            mode === "manual"
+              ? "bg-[#121212] dark:bg-[#F59E0B] text-white dark:text-black shadow-2xs"
+              : "text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white hover:bg-white/60 dark:hover:bg-[#1C2028]"
+          }`}
+          id="tab-manual-entry"
+        >
+          <FileText className="w-4 h-4 shrink-0" />
+          <span>Manual Entry</span>
+        </button>
+      </div>
+
       {/* Description Inputs Section */}
-      {!extractedData ? (
+      {mode === "ai" && !extractedData ? (
         <div className="space-y-8" id="input-prompt-section">
           <div className="bg-[#FBF9F7] dark:bg-[#1B1F27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-6" id="presets-card">
             <h3 className="text-xs uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF] flex items-center gap-1.5 mb-4">
@@ -269,15 +324,27 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           className="space-y-8"
           id="editable-extracted-section"
         >
-          <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-l-4 border-[#121212] dark:border-[#F59E0B] rounded-none p-6 flex gap-4 items-start" id="nlp-success-banner">
-            <Sparkles className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="font-bold text-xs uppercase tracking-widest text-[#121212] dark:text-white">Gemini AI Extraction Complete</h4>
-              <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
-                The decision matrix elements have been parsed below. Please review, edit, or adjust alternatives and factors to match your exact intentions before advancing.
-              </p>
+          {mode === "ai" ? (
+            <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-l-4 border-[#121212] dark:border-[#F59E0B] rounded-none p-6 flex gap-4 items-start" id="nlp-success-banner">
+              <Sparkles className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="font-bold text-xs uppercase tracking-widest text-[#121212] dark:text-white">Gemini AI Extraction Complete</h4>
+                <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
+                  The decision matrix elements have been parsed below. Please review, edit, or adjust alternatives and factors to match your exact intentions before advancing.
+                </p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-[#FBF9F7] dark:bg-[#1A1E27] border-l-4 border-[#121212] dark:border-[#F59E0B] rounded-none p-6 flex gap-4 items-start" id="manual-mode-banner">
+              <FileText className="w-5 h-5 text-[#121212] dark:text-[#F59E0B] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="font-bold text-xs uppercase tracking-widest text-[#121212] dark:text-white">Manual Decision Setup</h4>
+                <p className="text-xs text-gray-600 dark:text-[#F3F4F6] leading-relaxed font-serif italic">
+                  Define your decision title, add the options you are evaluating, and specify the criteria/factors you will use to compare them.
+                </p>
+              </div>
+            </div>
+          )}
           
           <div className="space-y-3" id="edit-goal-section">
             <label className="block text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-[#9CA3AF]" htmlFor="decision-goal">
@@ -289,7 +356,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
               className="w-full rounded-none border border-[#E5E1DA] dark:border-[#2C323E] px-4 py-3 focus:border-[#121212] dark:focus:border-[#FFB900] focus:ring-0 text-sm font-semibold bg-white dark:bg-[#121419] text-[#121212] dark:text-white"
-              placeholder="e.g., Selecting a Programming Laptop"
+              placeholder={mode === "manual" ? "e.g., Choosing a Laptop for Development" : "e.g., Selecting a Programming Laptop"}
             />
           </div>
 
@@ -454,19 +521,23 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
           )}
 
           <div className="flex max-[639px]:flex-col-reverse min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center max-[639px]:gap-3 pt-6 border-t border-gray-200 dark:border-[#262A33]" id="edit-section-footer">
-            <button
-              onClick={() => {
-                setExtractedData(null);
-                setError(null);
-              }}
-              className="max-[639px]:w-full min-[640px]:w-auto px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
-              id="btn-re-edit"
-            >
-              ← Edit Prompt
-            </button>
+            {mode === "ai" ? (
+              <button
+                onClick={() => {
+                  setExtractedData(null);
+                  setError(null);
+                }}
+                className="max-[639px]:w-full min-[640px]:w-auto px-5 py-3 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-[#9CA3AF] hover:text-[#121212] dark:hover:text-white transition cursor-pointer text-center"
+                id="btn-re-edit"
+              >
+                ← Edit Prompt
+              </button>
+            ) : (
+              <div />
+            )}
             <button
               onClick={handleSubmit}
-              className="max-[639px]:w-full min-[640px]:w-auto max-[669px]:px-4 min-[670px]:px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer rounded-none"
+              className="max-[639px]:w-full min-[640px]:w-auto max-[669px]:px-4 min-[670px]:px-8 py-4 bg-[#121212] hover:bg-neutral-800 text-white dark:bg-[#FE9A00] dark:hover:bg-[#FFB900] dark:text-black font-bold text-xs uppercase tracking-widest shadow-sm transition flex items-center justify-center gap-2 cursor-pointer rounded-none ml-auto"
               id="btn-confirm-matrix"
             >
               Confirm Setup & Start Comparisons <ArrowRight className="w-4 h-4 shrink-0" />
