@@ -245,6 +245,7 @@ export default function App() {
             criteria={decisionData?.criteria ?? []}
             onNext={handleStep2Submit}
             onBack={() => setCurrentStep(1)}
+            onComparisonsChange={(updated) => setComparisons(updated)}
             initialComparisons={comparisons}
           />
         );
@@ -268,6 +269,7 @@ export default function App() {
             weights={ahpResult.weights}
             onNext={handleStep4Submit}
             onBack={() => setCurrentStep(3)}
+            onGridDataChange={(updated) => setRawData(updated)}
             initialRawData={rawData}
           />
         );

@@ -10,6 +10,7 @@ interface DataGridStepProps {
   weights: number[];
   onNext: (rawData: string[][]) => void;
   onBack: () => void;
+  onGridDataChange?: (gridData: string[][]) => void;
   initialRawData: string[][] | null;
 }
 
@@ -35,6 +36,7 @@ export default function DataGridStep({
   weights,
   onNext,
   onBack,
+  onGridDataChange,
   initialRawData,
 }: DataGridStepProps) {
   const [gridData, setGridData] = useState<string[][]>([]);
@@ -44,13 +46,14 @@ export default function DataGridStep({
 
   // Initialize raw grid data matrix
   useEffect(() => {
-    if (initialRawData && initialRawData.length === alternatives.length) {
+    if (initialRawData && initialRawData.length === alternatives.length && initialRawData.every((row) => row.length === criteria.length)) {
       setGridData(initialRawData);
     } else {
       const matrix: string[][] = Array.from({ length: alternatives.length }, () =>
         Array(criteria.length).fill("")
       );
       setGridData(matrix);
+      onGridDataChange?.(matrix);
     }
   }, [alternatives, criteria, initialRawData]);
 
@@ -59,6 +62,7 @@ export default function DataGridStep({
       row.map((cell, cIdx) => (rIdx === rowIndex && cIdx === colIndex ? val : cell))
     );
     setGridData(updated);
+    onGridDataChange?.(updated);
     setError(null);
     if (invalidCellKeys.has(`${rowIndex}-${colIndex}`)) {
       const nextKeys = new Set(invalidCellKeys);
@@ -98,6 +102,7 @@ export default function DataGridStep({
           row.map((val: string) => cleanAndExtractNumber(val))
         );
         setGridData(cleanedMatrix);
+        onGridDataChange?.(cleanedMatrix);
       } else {
         throw new Error("Invalid format received from AI.");
       }
@@ -126,6 +131,7 @@ export default function DataGridStep({
         })
       );
       setGridData(fallbackMatrix);
+      onGridDataChange?.(fallbackMatrix);
       setError("AI search encountered a transient error; filled with highly relevant offline smart presets.");
     } finally {
       setIsAutoFilling(false);

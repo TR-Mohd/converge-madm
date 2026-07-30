@@ -9,6 +9,7 @@ interface AhpComparisonStepProps {
   criteria: Criterion[];
   onNext: (ahpResult: AHPResult, comparisons: PairwiseComparison[]) => void;
   onBack: () => void;
+  onComparisonsChange?: (comparisons: PairwiseComparison[]) => void;
   initialComparisons: PairwiseComparison[] | null;
 }
 
@@ -28,6 +29,7 @@ export default function AhpComparisonStep({
   criteria,
   onNext,
   onBack,
+  onComparisonsChange,
   initialComparisons,
 }: AhpComparisonStepProps) {
   const [comparisons, setComparisons] = useState<PairwiseComparison[]>([]);
@@ -51,6 +53,7 @@ export default function AhpComparisonStep({
         }
       }
       setComparisons(list);
+      onComparisonsChange?.(list);
     }
   }, [criteria, initialComparisons]);
 
@@ -58,6 +61,7 @@ export default function AhpComparisonStep({
     const updated = [...comparisons];
     updated[index] = { ...updated[index], value: val };
     setComparisons(updated);
+    onComparisonsChange?.(updated);
     setTriedSubmit(false); // Clear the submitted state & spotlight highlights while actively sliding
     
     // Automatically recalculate AHP in background to show real-time feedback!
@@ -76,12 +80,14 @@ export default function AhpComparisonStep({
   const handleReset = () => {
     const reset = comparisons.map((c) => ({ ...c, value: 0 }));
     setComparisons(reset);
+    onComparisonsChange?.(reset);
     setTriedSubmit(false);
   };
 
   const handleSmartAdjust = () => {
     const adjusted = smartAdjustComparisons(criteria.length, comparisons);
     setComparisons(adjusted);
+    onComparisonsChange?.(adjusted);
     const result = calculateAHP(criteria.length, adjusted);
     setAhpResult(result);
   };
