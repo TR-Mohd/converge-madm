@@ -4,9 +4,10 @@ import { Wand2, Sparkles, Plus, Trash2, ArrowRight, AlertCircle, HelpCircle, Che
 import { motion } from "motion/react";
 
 interface NaturalLanguageStepProps {
-  onNext: (data: DecisionData, userPrompt: string) => void;
+  onNext: (data: DecisionData, userPrompt: string, isManualEntry?: boolean) => void;
   initialData: DecisionData | null;
   initialUserPrompt: string;
+  initialIsManualEntry?: boolean;
 }
 
 const PRESET_EXAMPLES = [
@@ -24,13 +25,13 @@ const PRESET_EXAMPLES = [
   }
 ];
 
-export default function NaturalLanguageStep({ onNext, initialData, initialUserPrompt }: NaturalLanguageStepProps) {
+export default function NaturalLanguageStep({ onNext, initialData, initialUserPrompt, initialIsManualEntry }: NaturalLanguageStepProps) {
   const [description, setDescription] = useState(initialUserPrompt);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const [mode, setMode] = useState<"ai" | "manual">(() => {
-    if (initialData && initialUserPrompt === "Manual Entry") {
+    if (initialIsManualEntry) {
       return "manual";
     }
     return "ai";
@@ -187,7 +188,7 @@ export default function NaturalLanguageStep({ onNext, initialData, initialUserPr
       decision_goal: cleanedGoal,
       alternatives: cleanedAlts,
       criteria: cleanedCrit
-    }, mode === "manual" ? "Manual Entry" : description);
+    }, mode === "manual" ? "(Manually entered — no original description)" : description, mode === "manual");
   };
 
   return (

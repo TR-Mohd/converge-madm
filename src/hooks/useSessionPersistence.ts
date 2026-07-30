@@ -1,13 +1,14 @@
 import { DecisionData, PairwiseComparison, AHPResult, TopsisResult } from "../types";
 
-export const SESSION_KEY = "converge_session_v1";
-export const SESSION_VERSION = 1;
+export const SESSION_KEY = "converge_session_v2";
+export const SESSION_VERSION = 2;
 
 export interface WizardSession {
   version: number;
   savedAt: string;
   currentStep: number;
   userPrompt: string;
+  isManualEntry?: boolean;
   decisionData: DecisionData | null;
   comparisons: PairwiseComparison[] | null;
   ahpResult: AHPResult | null;

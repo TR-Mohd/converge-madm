@@ -16,6 +16,7 @@ import AboutDeveloperModal from "./components/AboutDeveloperModal";
 export default function App() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userPrompt, setUserPrompt] = useState<string>("");
+  const [isManualEntry, setIsManualEntry] = useState<boolean>(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState<boolean>(false);
   
   // Theme State
@@ -123,6 +124,7 @@ export default function App() {
       saveSession({
         currentStep,
         userPrompt,
+        isManualEntry,
         decisionData,
         comparisons,
         ahpResult,
@@ -135,6 +137,7 @@ export default function App() {
   }, [
     currentStep,
     userPrompt,
+    isManualEntry,
     decisionData,
     comparisons,
     ahpResult,
@@ -149,6 +152,7 @@ export default function App() {
     if (savedSession) {
       setCurrentStep(savedSession.currentStep || 1);
       setUserPrompt(savedSession.userPrompt || "");
+      setIsManualEntry(Boolean(savedSession.isManualEntry));
       setDecisionData(savedSession.decisionData || null);
       setComparisons(savedSession.comparisons || null);
       setAhpResult(savedSession.ahpResult || null);
@@ -166,9 +170,10 @@ export default function App() {
 
   const totalSteps = 5;
 
-  const handleStep1Submit = (extracted: DecisionData, prompt: string) => {
+  const handleStep1Submit = (extracted: DecisionData, prompt: string, manualFlag?: boolean) => {
     setDecisionData(extracted);
     setUserPrompt(prompt);
+    setIsManualEntry(Boolean(manualFlag));
     
     // Clear out comparisons if the number of criteria has changed
     if (comparisons && comparisons.length !== (extracted.criteria.length * (extracted.criteria.length - 1)) / 2) {
@@ -215,6 +220,7 @@ export default function App() {
     clearSession();
     setCurrentStep(1);
     setUserPrompt("");
+    setIsManualEntry(false);
     setDecisionData(null);
     setComparisons(null);
     setAhpResult(null);
@@ -230,6 +236,7 @@ export default function App() {
             onNext={handleStep1Submit}
             initialData={decisionData}
             initialUserPrompt={userPrompt}
+            initialIsManualEntry={isManualEntry}
           />
         );
       case 2:
