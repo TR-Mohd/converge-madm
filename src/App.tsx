@@ -23,6 +23,8 @@ export default function App() {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
+    // Always show the header when the route changes
+    setHeaderHidden(false);
   }, [location.pathname]);
 
   const handleLogoClick = () => {
@@ -73,6 +75,15 @@ export default function App() {
     setHeaderHidden(false);
   }, [currentStep]);
 
+  // Track whether we're on a doc route so the scroll handler can read it
+  // without needing to be re-registered on every navigation.
+  const isDocRouteRef = useRef(location.pathname !== "/");
+  useEffect(() => {
+    isDocRouteRef.current = location.pathname !== "/";
+    // Ensure header is visible when entering a doc page
+    if (isDocRouteRef.current) setHeaderHidden(false);
+  }, [location.pathname]);
+
   useEffect(() => {
     const SCROLL_THRESHOLD = 10; // px from top where header is always visible
 
@@ -81,8 +92,11 @@ export default function App() {
       scrollTicking.current = true;
 
       requestAnimationFrame(() => {
-        // Only apply auto-hide behaviour on mobile (< 768px)
-        if (window.innerWidth >= 768) {
+        // Never auto-hide on desktop, and never auto-hide on doc pages:
+        // the doc sticky sub-header uses position:fixed with top=header.offsetHeight,
+        // so hiding the main header would leave the sub-header floating at the
+        // wrong vertical position.
+        if (window.innerWidth >= 768 || isDocRouteRef.current) {
           setHeaderHidden(false);
           lastScrollY.current = window.scrollY;
           scrollTicking.current = false;
