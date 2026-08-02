@@ -49,7 +49,7 @@ export default function AboutDeveloperModal({
         <img
           src="/Bio-Pic-1.jpeg"
           alt="Mohammed Aatef"
-          className="w-20 h-20 rounded-full object-cover border border-[#E5E1DA] dark:border-[#2C323E] mx-auto shadow-sm"
+          className="w-32 h-32 rounded-full object-cover border border-[#E5E1DA] dark:border-[#2C323E] mx-auto shadow-sm"
         />
 
         {/* Name Header */}
