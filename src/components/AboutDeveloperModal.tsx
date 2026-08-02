@@ -32,7 +32,7 @@ export default function AboutDeveloperModal({
       id="about-developer-modal-overlay"
     >
       <div
-        className="bg-white dark:bg-[#15181E] border border-[#121212] dark:border-[#2C323E] rounded-none max-w-md w-full pt-6 px-6 pb-5 md:pt-8 md:px-8 md:pb-6 shadow-2xl relative space-y-5 text-center"
+        className="bg-white dark:bg-[#15181E] border border-[#374151] dark:border-[#2C323E] rounded-none max-w-md w-full pt-6 px-6 pb-5 md:pt-8 md:px-8 md:pb-6 shadow-2xl relative space-y-5 text-center"
         onClick={(e) => e.stopPropagation()}
         id="about-developer-modal-card"
       >
@@ -49,7 +49,7 @@ export default function AboutDeveloperModal({
         <img
           src="/Bio-Pic-1.jpeg"
           alt="Mohammed Aatef"
-          className="w-32 h-32 rounded-full object-cover border border-[#121212] dark:border-[#2C323E] mx-auto shadow-sm"
+          className="w-32 h-32 rounded-full object-cover border border-[#374151] dark:border-[#2C323E] mx-auto shadow-sm"
         />
 
         {/* Name Header */}
