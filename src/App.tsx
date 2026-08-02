@@ -11,9 +11,30 @@ import { BrainCircuit, RotateCcw, Sun, Moon, Github, Linkedin } from "lucide-rea
 import { useSessionPersistence, WizardSession } from "./hooks/useSessionPersistence";
 import ResumeSessionBanner from "./components/ResumeSessionBanner";
 import AboutDeveloperModal from "./components/AboutDeveloperModal";
-
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import LimitationsPage from "./components/LimitationsPage";
+import MethodologyPage from "./components/MethodologyPage";
 
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    // Always show the header when the route changes
+    setHeaderHidden(false);
+  }, [location.pathname]);
+
+  const handleLogoClick = () => {
+    if (location.pathname !== "/") {
+      navigate("/");
+    } else {
+      handleReset();
+    }
+  };
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userPrompt, setUserPrompt] = useState<string>("");
   const [isManualEntry, setIsManualEntry] = useState<boolean>(false);
@@ -54,6 +75,15 @@ export default function App() {
     setHeaderHidden(false);
   }, [currentStep]);
 
+  // Track whether we're on a doc route so the scroll handler can read it
+  // without needing to be re-registered on every navigation.
+  const isDocRouteRef = useRef(location.pathname !== "/");
+  useEffect(() => {
+    isDocRouteRef.current = location.pathname !== "/";
+    // Ensure header is visible when entering a doc page
+    if (isDocRouteRef.current) setHeaderHidden(false);
+  }, [location.pathname]);
+
   useEffect(() => {
     const SCROLL_THRESHOLD = 10; // px from top where header is always visible
 
@@ -62,8 +92,11 @@ export default function App() {
       scrollTicking.current = true;
 
       requestAnimationFrame(() => {
-        // Only apply auto-hide behaviour on mobile (< 768px)
-        if (window.innerWidth >= 768) {
+        // Never auto-hide on desktop, and never auto-hide on doc pages:
+        // the doc sticky sub-header uses position:fixed with top=header.offsetHeight,
+        // so hiding the main header would leave the sub-header floating at the
+        // wrong vertical position.
+        if (window.innerWidth >= 768 || isDocRouteRef.current) {
           setHeaderHidden(false);
           lastScrollY.current = window.scrollY;
           scrollTicking.current = false;
@@ -318,7 +351,7 @@ export default function App() {
         }}
       >
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5 min-[500px]:gap-3 cursor-pointer shrink-0" onClick={handleReset} id="logo-block">
+          <div className="flex items-center gap-2.5 min-[500px]:gap-3 cursor-pointer shrink-0" onClick={handleLogoClick} id="logo-block">
             <div className="w-9 h-9 min-[500px]:w-10 min-[500px]:h-10 shrink-0 rounded-sm bg-[#121212] text-white dark:bg-[#FE9A00] dark:text-black flex items-center justify-center shadow-sm">
               <BrainCircuit className="w-5 h-5 min-[500px]:w-5.5 min-[500px]:h-5.5" />
             </div>
@@ -348,16 +381,28 @@ export default function App() {
               )}
             </button>
 
-            {(decisionData || userPrompt) && (
-              <button
-                onClick={handleReset}
-                className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
-                title="Restart Application"
-                id="btn-restart-app"
+            {location.pathname === "/" ? (
+              (decisionData || userPrompt) && (
+                <button
+                  onClick={handleReset}
+                  className="h-9 max-[639px]:w-9 max-[639px]:px-0 min-[640px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                  title="Restart Application"
+                  id="btn-restart-app"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span className="max-[639px]:hidden min-[640px]:inline">Restart</span>
+                </button>
+              )
+            ) : (
+              <Link
+                to="/"
+                className="h-9 max-[639px]:px-2.5 min-[640px]:px-3.5 text-[11px] uppercase tracking-wider font-bold bg-white text-[#121212] border border-[#121212] dark:bg-[#15181E] dark:text-[#F59E0B] dark:border-[#F59E0B] hover:bg-gray-50 dark:hover:bg-[#1A1E27] rounded-none flex items-center justify-center gap-1.5 cursor-pointer shrink-0 transition-colors"
+                title="Return to Decision Application"
+                id="btn-back-to-app"
               >
-                <RotateCcw className="w-4 h-4" />
-                <span className="max-[639px]:hidden min-[640px]:inline">Restart</span>
-              </button>
+                <span>←</span>
+                <span>Back to App</span>
+              </Link>
             )}
           </div>
         </div>
@@ -365,28 +410,39 @@ export default function App() {
 
       {/* Main Container */}
       <main className="max-w-4xl mx-auto w-full px-4 pt-6 flex-grow flex flex-col space-y-4 md:space-y-6" id="app-main">
-        {/* Dynamic Goal Badge if active */}
-        {decisionData?.decision_goal && currentStep > 1 && (
-          <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in" id="active-goal-banner">
-            <div>
-              <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF] font-sans">Current Decision Target</span>
-              <h2 className="text-xl font-serif italic font-semibold text-[#121212] dark:text-white mt-1">{decisionData.decision_goal}</h2>
-            </div>
-            <span className="text-xs uppercase tracking-wider font-semibold text-gray-600 dark:text-[#D1D5DB] bg-[#FBF9F7] dark:bg-[#1C2028] px-3 py-1.5 rounded-none self-start md:self-auto border border-[#E5E1DA] dark:border-[#2C323E]">
-              {decisionData.alternatives.length} Options · {decisionData.criteria.length} Factors
-            </span>
-          </div>
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                {/* Dynamic Goal Badge if active */}
+                {decisionData?.decision_goal && currentStep > 1 && (
+                  <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none p-5 flex flex-col md:flex-row justify-between md:items-center gap-4 animate-fade-in" id="active-goal-banner">
+                    <div>
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-[#9CA3AF] font-sans">Current Decision Target</span>
+                      <h2 className="text-xl font-serif italic font-semibold text-[#121212] dark:text-white mt-1">{decisionData.decision_goal}</h2>
+                    </div>
+                    <span className="text-xs uppercase tracking-wider font-semibold text-gray-600 dark:text-[#D1D5DB] bg-[#FBF9F7] dark:bg-[#1C2028] px-3 py-1.5 rounded-none self-start md:self-auto border border-[#E5E1DA] dark:border-[#2C323E]">
+                      {decisionData.alternatives.length} Options · {decisionData.criteria.length} Factors
+                    </span>
+                  </div>
+                )}
 
-        {/* Wizard Progress Bar */}
-        <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none py-2.5 px-4 sm:py-3 sm:px-5 shadow-2xs" id="progress-bar-card">
-          <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-        </div>
+                {/* Wizard Progress Bar */}
+                <div className="bg-white border border-[#E5E1DA] dark:bg-[#15181E] dark:border-[#262A33] rounded-none py-2.5 px-4 sm:py-3 sm:px-5 shadow-2xs" id="progress-bar-card">
+                  <StepProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+                </div>
 
-        {/* Dynamic Wizard Step Canvas */}
-        <div className="bg-white dark:bg-[#15181E] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
-          {renderStepContent()}
-        </div>
+                {/* Dynamic Wizard Step Canvas */}
+                <div className="bg-white dark:bg-[#15181E] rounded-none p-6 md:p-10 shadow-xs grow" id="wizard-step-canvas">
+                  {renderStepContent()}
+                </div>
+              </>
+            }
+          />
+          <Route path="/limitations" element={<LimitationsPage />} />
+          <Route path="/methodology" element={<MethodologyPage />} />
+        </Routes>
       </main>
 
       {/* Technical Methodology Footer */}
@@ -424,6 +480,23 @@ export default function App() {
                 <Linkedin className="max-[619px]:w-4 max-[619px]:h-4 min-[620px]:w-5 min-[620px]:h-5" />
               </a>
             </div>
+          </div>
+          <div className="flex items-center justify-center gap-4 text-[11px] min-[620px]:text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-[#6B7280]">
+            <Link
+              to="/methodology"
+              className="hover:text-[#121212] dark:hover:text-[#D1D5DB] hover:underline transition-colors duration-150"
+              id="footer-link-methodology"
+            >
+              Methodology
+            </Link>
+            <span>·</span>
+            <Link
+              to="/limitations"
+              className="hover:text-[#121212] dark:hover:text-[#D1D5DB] hover:underline transition-colors duration-150"
+              id="footer-link-limitations"
+            >
+              Limitations
+            </Link>
           </div>
           <div className="max-[619px]:text-[11px] min-[620px]:text-xs max-[619px]:tracking-tight min-[620px]:tracking-normal text-gray-500 dark:text-[#6B7280] max-[619px]:leading-normal min-[620px]:leading-relaxed max-[619px]:px-1 min-[620px]:px-0">
             Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
