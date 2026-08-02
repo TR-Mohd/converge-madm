@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { X, User, Github, Linkedin } from "lucide-react";
+import { X, Github, Linkedin } from "lucide-react";
 
 interface AboutDeveloperModalProps {
   isOpen: boolean;
@@ -46,10 +46,11 @@ export default function AboutDeveloperModal({
           <X className="w-5 h-5" />
         </button>
 
-        {/* AVATAR PLACEHOLDER: Replace this div with <img src="/path/to/photo.jpg" alt="Mohammed Aatef" className="w-20 h-20 rounded-full object-cover border border-[#E5E1DA] dark:border-[#2C323E] mx-auto" /> when a photo is available */}
-        <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-[#1E222A] border border-[#E5E1DA] dark:border-[#2C323E] flex items-center justify-center mx-auto text-gray-400 dark:text-[#6B7280]">
-          <User className="w-10 h-10" />
-        </div>
+        <img
+          src="/Bio-Pic-1.jpeg"
+          alt="Mohammed Aatef"
+          className="w-20 h-20 rounded-full object-cover border border-[#E5E1DA] dark:border-[#2C323E] mx-auto shadow-sm"
+        />
 
         {/* Name Header */}
         <div className="space-y-1">
