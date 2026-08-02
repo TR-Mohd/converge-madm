@@ -4,6 +4,7 @@ import { Award, RefreshCw, Trophy, Sparkles, AlertCircle, FileText, BarChart2 } 
 import ReactMarkdown from "react-markdown";
 import { motion } from "motion/react";
 import ScrollableTableWrapper from "./ScrollableTableWrapper";
+import { Link } from "react-router-dom";
 
 interface ResultsStepProps {
   decision_goal: string;
@@ -120,9 +121,20 @@ export default function ResultsStep({
 
       {/* TOPSIS Ranked List Card */}
       <div className="bg-white dark:bg-[#15181E] border border-[#E5E1DA] dark:border-[#262A33] rounded-none p-6 md:p-8 space-y-6 shadow-none" id="topsis-rankings-card">
-        <div className="flex items-center gap-2" id="topsis-header">
-          <BarChart2 className="w-5 h-5 text-[#121212] dark:text-[#F59E0B]" />
-          <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Ranking Matrix (TOPSIS Closeness)</h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2" id="topsis-header-row">
+          <div className="flex items-center gap-2" id="topsis-header">
+            <BarChart2 className="w-5 h-5 text-[#121212] dark:text-[#F59E0B]" />
+            <h3 className="text-xs uppercase tracking-widest font-bold text-[#121212] dark:text-white">Ranking Matrix (TOPSIS Closeness)</h3>
+          </div>
+          <Link
+            to="/limitations"
+            className="inline-flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-[#6B7280] hover:text-[#121212] dark:hover:text-[#D1D5DB] transition-colors duration-150 font-sans"
+            title="Learn about this ranking's mathematical limitations"
+            id="link-ranking-limitations"
+          >
+            <span>ⓘ</span>
+            <span className="underline decoration-gray-300 dark:decoration-gray-700">About this ranking&apos;s limitations</span>
+          </Link>
         </div>
 
         <p className="text-xs text-gray-500 dark:text-[#9CA3AF] leading-relaxed font-serif italic">
