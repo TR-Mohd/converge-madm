@@ -391,41 +391,41 @@ export default function App() {
 
       {/* Technical Methodology Footer */}
       <footer className="max-w-4xl mx-auto w-full px-4 mt-8 pb-6" id="app-footer">
-        <div className="border-t border-[#E5E1DA] dark:border-[#262A33] pt-6 text-center space-y-3">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
+        <div className="border-t border-[#E5E1DA] dark:border-[#262A33] max-[619px]:pt-4.5 min-[620px]:pt-6 text-center max-[619px]:space-y-2 min-[620px]:space-y-3">
+          <div className="flex flex-wrap items-center justify-center max-[619px]:gap-1.5 min-[620px]:gap-3">
+            <span className="max-[619px]:text-xs min-[620px]:text-sm font-medium text-gray-700 dark:text-[#D1D5DB]">
               Built and developed by{" "}
               <span
                 onClick={() => setIsAboutModalOpen(true)}
-                className="font-serif italic font-bold bg-[#FE9A00]/25 dark:bg-[#FE9A00] text-black px-2 py-0.5 rounded-xs cursor-pointer hover:opacity-90 hover:underline transition-all"
+                className="font-serif italic font-bold bg-[#FE9A00]/25 dark:bg-[#FE9A00] text-black max-[619px]:px-1.5 min-[620px]:px-2 py-0.5 rounded-xs cursor-pointer hover:opacity-90 hover:underline transition-all"
                 title="Click to learn more about the developer"
                 id="footer-author-name"
               >
                 Mohammed Aatef
               </span>
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center max-[619px]:gap-1.5 min-[620px]:gap-2">
               <a
                 href="https://github.com/TR-Mohd"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub Profile"
-                className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-gray-100 text-gray-900 dark:bg-white/10 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors duration-200 shadow-2xs"
+                className="max-[619px]:w-7 max-[619px]:h-7 min-[620px]:w-9 min-[620px]:h-9 rounded-full inline-flex items-center justify-center bg-gray-100 text-gray-900 dark:bg-white/10 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors duration-200 shadow-2xs"
               >
-                <Github size={20} />
+                <Github className="max-[619px]:w-4 max-[619px]:h-4 min-[620px]:w-5 min-[620px]:h-5" />
               </a>
               <a
                 href="https://www.linkedin.com/in/mohammed-aatef-saleh/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn Profile"
-                className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-[#0A66C2]/10 text-[#0A66C2] dark:bg-[#0A66C2]/20 dark:text-[#38BDF8] hover:bg-[#0A66C2]/20 dark:hover:bg-[#0A66C2]/35 transition-colors duration-200 shadow-2xs"
+                className="max-[619px]:w-7 max-[619px]:h-7 min-[620px]:w-9 min-[620px]:h-9 rounded-full inline-flex items-center justify-center bg-[#0A66C2]/10 text-[#0A66C2] dark:bg-[#0A66C2]/20 dark:text-[#38BDF8] hover:bg-[#0A66C2]/20 dark:hover:bg-[#0A66C2]/35 transition-colors duration-200 shadow-2xs"
               >
-                <Linkedin size={20} />
+                <Linkedin className="max-[619px]:w-4 max-[619px]:h-4 min-[620px]:w-5 min-[620px]:h-5" />
               </a>
             </div>
           </div>
-          <div className="text-xs text-gray-500 dark:text-[#6B7280] leading-relaxed">
+          <div className="max-[619px]:text-[11px] min-[620px]:text-xs max-[619px]:tracking-tight min-[620px]:tracking-normal text-gray-500 dark:text-[#6B7280] max-[619px]:leading-normal min-[620px]:leading-relaxed max-[619px]:px-1 min-[620px]:px-0">
             Converge MADM engine · Analytic Hierarchy Process (AHP) & TOPSIS multi-criteria normalization · Secure server-side Gemini extraction
           </div>
         </div>
