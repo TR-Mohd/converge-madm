@@ -22,7 +22,13 @@ export default function DocPageLayout({
   useEffect(() => {
     const measure = () => {
       const header = document.getElementById("app-header");
-      if (header) setHeaderHeight(header.offsetHeight);
+      if (header) {
+        // getBoundingClientRect().bottom gives the exact sub-pixel position of
+        // the header's bottom edge in the viewport. offsetHeight rounds to an
+        // integer, which causes a hairline gap on mobile HiDPI screens
+        // (e.g. devicePixelRatio=3: 80.333px header → offsetHeight=80 → 0.333px gap).
+        setHeaderHeight(header.getBoundingClientRect().bottom);
+      }
     };
     measure();
     const ro = new ResizeObserver(measure);
