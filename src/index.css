@@ -51,6 +51,7 @@
 body {
   background-color: var(--bg-app);
   color: var(--text-body);
+  overflow-x: hidden;
 }
 
 :root {

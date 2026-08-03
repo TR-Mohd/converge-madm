@@ -75,11 +75,12 @@ export default function App() {
     setHeaderHidden(false);
   }, [currentStep]);
 
-  // Track whether we're on a doc route so the scroll handler can read it
-  // without needing to be re-registered on every navigation.
-  const isDocRouteRef = useRef(location.pathname !== "/");
+  // Explicitly check for doc routes so root path variations never false-trigger
+  const isDocRoute = (pathname: string) =>
+    pathname.startsWith("/methodology") || pathname.startsWith("/limitations");
+  const isDocRouteRef = useRef(isDocRoute(location.pathname));
   useEffect(() => {
-    isDocRouteRef.current = location.pathname !== "/";
+    isDocRouteRef.current = isDocRoute(location.pathname);
     // Ensure header is visible when entering a doc page
     if (isDocRouteRef.current) setHeaderHidden(false);
   }, [location.pathname]);
@@ -93,7 +94,7 @@ export default function App() {
 
       requestAnimationFrame(() => {
         // Never auto-hide on desktop, and never auto-hide on doc pages:
-        // the doc sticky sub-header uses position:fixed with top=header.offsetHeight,
+        // the doc sticky sub-header uses position:sticky with top: var(--header-height),
         // so hiding the main header would leave the sub-header floating at the
         // wrong vertical position.
         if (window.innerWidth >= 768 || isDocRouteRef.current) {
