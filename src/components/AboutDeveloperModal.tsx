@@ -67,24 +67,26 @@ export default function AboutDeveloperModal({
         </p>
 
         {/* Social Links / Contact Badges */}
-        <div className="pt-5 md:pt-6 border-t border-[#E5E1DA] dark:border-[#262A33] flex items-center justify-center gap-3">
+        <div className="pt-5 md:pt-6 border-t border-[#E5E1DA] dark:border-[#262A33] flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
             href="https://github.com/TR-Mohd"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub Profile"
-            className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-gray-100 text-gray-900 dark:bg-white/10 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 transition-colors duration-200 shadow-2xs"
+            className="w-full sm:w-auto px-4 py-2 rounded-none inline-flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider bg-gray-100 text-gray-900 border border-[#E5E1DA] dark:bg-[#1E222A] dark:text-white dark:border-[#2C323E] hover:bg-gray-200 dark:hover:bg-[#262A33] transition-colors duration-200 shadow-2xs"
           >
-            <Github size={20} />
+            <Github className="w-4 h-4" />
+            <span>GitHub</span>
           </a>
           <a
             href="https://www.linkedin.com/in/mohammed-aatef-saleh/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn Profile"
-            className="w-9 h-9 rounded-full inline-flex items-center justify-center bg-[#0A66C2]/10 text-[#0A66C2] dark:bg-[#0A66C2]/20 dark:text-[#38BDF8] hover:bg-[#0A66C2]/20 dark:hover:bg-[#0A66C2]/35 transition-colors duration-200 shadow-2xs"
+            className="w-full sm:w-auto px-4 py-2 rounded-none inline-flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider bg-[#0A66C2]/10 text-[#0A66C2] border border-[#0A66C2]/20 dark:bg-[#0A66C2]/20 dark:text-[#38BDF8] dark:border-[#0A66C2]/40 hover:bg-[#0A66C2]/20 dark:hover:bg-[#0A66C2]/35 transition-colors duration-200 shadow-2xs"
           >
-            <Linkedin size={20} />
+            <Linkedin className="w-4 h-4" />
+            <span>LinkedIn</span>
           </a>
         </div>
       </div>
