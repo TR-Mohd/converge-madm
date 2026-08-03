@@ -98,3 +98,50 @@ body {
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #F59E0B;
 }
+
+/* Always-visible scrollbars for code boxes, tables, and scrollable containers */
+.always-visible-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #A89F94 #F1EFE9;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dark .always-visible-scrollbar {
+  scrollbar-color: #4B5563 #121419;
+}
+
+.always-visible-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+  display: block;
+}
+
+.always-visible-scrollbar::-webkit-scrollbar-track {
+  background: #F1EFE9;
+  border-radius: 4px;
+}
+
+.dark .always-visible-scrollbar::-webkit-scrollbar-track {
+  background: #121419;
+  border-radius: 4px;
+}
+
+.always-visible-scrollbar::-webkit-scrollbar-thumb {
+  background: #A89F94;
+  border-radius: 9999px;
+  border: 2px solid #F1EFE9;
+}
+
+.dark .always-visible-scrollbar::-webkit-scrollbar-thumb {
+  background: #4B5563;
+  border-radius: 9999px;
+  border: 2px solid #121419;
+}
+
+.always-visible-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8C8275;
+}
+
+.dark .always-visible-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #F59E0B;
+}
