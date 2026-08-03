@@ -57,7 +57,7 @@ export default function ScrollableTableWrapper({
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className={`${isHorizontal ? "overflow-x-auto" : "overflow-y-auto"} ${className}`}
+        className={`${isHorizontal ? "overflow-x-auto" : "overflow-y-auto"} always-visible-scrollbar ${className}`}
       >
         {children}
       </div>

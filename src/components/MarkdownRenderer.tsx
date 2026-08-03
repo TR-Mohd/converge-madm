@@ -68,7 +68,7 @@ export const markdownComponents: Components = {
     </em>
   ),
   pre: ({ children, ...props }) => (
-    <div className="my-5 overflow-x-auto bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-4 sm:p-5 shadow-2xs">
+    <div className="my-5 overflow-x-auto always-visible-scrollbar bg-[#FBF9F7] dark:bg-[#1A1E27] border border-[#E5E1DA] dark:border-[#2C323E] rounded-none p-4 sm:p-5 shadow-2xs">
       <pre className="font-mono text-xs sm:text-sm text-[#121212] dark:text-gray-200 leading-relaxed m-0" {...props}>
         {children}
       </pre>
