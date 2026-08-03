@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 interface DocPageLayoutProps {
   title: string;
@@ -16,25 +15,28 @@ export default function DocPageLayout({
 }: DocPageLayoutProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(81);
 
-  // Track actual header height, re-measure on resize
+  // Set actual header height directly on document.documentElement via CSS variable
+  // to avoid React state re-renders during active scrolling, preventing frame lag.
   useEffect(() => {
     const measure = () => {
       const header = document.getElementById("app-header");
       if (header) {
-        // getBoundingClientRect().bottom gives the exact sub-pixel position of
-        // the header's bottom edge in the viewport. offsetHeight rounds to an
-        // integer, which causes a hairline gap on mobile HiDPI screens
-        // (e.g. devicePixelRatio=3: 80.333px header → offsetHeight=80 → 0.333px gap).
-        setHeaderHeight(header.getBoundingClientRect().bottom);
+        const bottom = header.getBoundingClientRect().bottom;
+        document.documentElement.style.setProperty(
+          "--header-height",
+          `${bottom}px`
+        );
       }
     };
     measure();
     const ro = new ResizeObserver(measure);
     const header = document.getElementById("app-header");
     if (header) ro.observe(header);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty("--header-height");
+    };
   }, []);
 
   // IntersectionObserver: show sticky bar when hero scrolls out of view
@@ -54,39 +56,8 @@ export default function DocPageLayout({
     return () => setShowStickyBar(false);
   }, []);
 
-  const stickyBar = (
-    <div
-      style={{
-        position: "fixed",
-        top: headerHeight,
-        left: 0,
-        right: 0,
-        zIndex: 40,
-        opacity: showStickyBar ? 1 : 0,
-        transform: showStickyBar ? "translateY(0)" : "translateY(-6px)",
-        pointerEvents: showStickyBar ? "auto" : "none",
-        transition: "opacity 180ms ease, transform 180ms ease",
-      }}
-      className="bg-white dark:bg-[#15181E] border-b border-[#E5E1DA] dark:border-[#262A33]"
-      id="doc-sticky-subheader"
-      aria-hidden={!showStickyBar}
-    >
-      <div className="max-w-4xl mx-auto px-4 max-[499px]:py-2.5 min-[500px]:py-3 flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3">
-        <span className="font-serif italic font-bold text-sm text-[#121212] dark:text-white shrink-0 leading-snug">
-          {title}
-        </span>
-        <span className="text-[11px] text-gray-500 dark:text-[#6B7280] leading-snug">
-          {shortDesc}
-        </span>
-      </div>
-    </div>
-  );
-
   return (
     <div className="space-y-6 animate-fade-in" id="doc-page-layout">
-      {/* Sticky sub-header portaled to body so it spans full viewport width */}
-      {typeof document !== "undefined" && createPortal(stickyBar, document.body)}
-
       {/* Hero block — watched by IntersectionObserver */}
       <div
         ref={heroRef}
@@ -99,6 +70,35 @@ export default function DocPageLayout({
         <p className="text-sm text-gray-500 dark:text-[#9CA3AF] font-sans leading-relaxed">
           {fullDesc}
         </p>
+      </div>
+
+      {/* Sticky sub-header: native position:sticky within page DOM flow, using negative bottom margin so it doesn't displace content when hidden at top */}
+      <div
+        style={{
+          position: "sticky",
+          top: "var(--header-height, 81px)",
+          width: "100vw",
+          marginLeft: "calc(50% - 50vw)",
+          marginRight: "calc(50% - 50vw)",
+          marginBottom: "-49px",
+          zIndex: 40,
+          opacity: showStickyBar ? 1 : 0,
+          transform: showStickyBar ? "translateY(0)" : "translateY(-6px)",
+          pointerEvents: showStickyBar ? "auto" : "none",
+          transition: "opacity 180ms ease, transform 180ms ease",
+        }}
+        className="bg-white dark:bg-[#15181E] border-b border-[#E5E1DA] dark:border-[#262A33] !my-0"
+        id="doc-sticky-subheader"
+        aria-hidden={!showStickyBar}
+      >
+        <div className="max-w-4xl mx-auto px-4 max-[499px]:py-2.5 min-[500px]:py-3 flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3">
+          <span className="font-serif italic font-bold text-sm text-[#121212] dark:text-white shrink-0 leading-snug">
+            {title}
+          </span>
+          <span className="text-[11px] text-gray-500 dark:text-[#6B7280] leading-snug">
+            {shortDesc}
+          </span>
+        </div>
       </div>
 
       {/* Page content */}
