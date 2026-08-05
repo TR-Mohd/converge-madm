@@ -1,6 +1,0 @@
-{
-  "name": "Converge",
-  "description": "An AI-powered Multi-Attribute Decision Making (MADM) engine using AHP and TOPSIS for structured and rational decision support.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
